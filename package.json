@@ -4,7 +4,8 @@
   "description": "This library will optimize the AsyncAPI specification file.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/asyncapi/optimizer/issues"
   },
-  "homepage": "https://github.com/asyncapi/optimizer#readme"
+  "homepage": "https://github.com/asyncapi/optimizer#readme",
+  "devDependencies": {
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/github": "^7.2.0",
+    "@semantic-release/npm": "^7.1.1",
+    "@types/jest": "^23.3.2",
+    "@types/node": "^10.11.0",
+    "jest": "^23.6.0",
+    "typescript": "^3.0.3"
+  }
 }
