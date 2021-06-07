@@ -1,5 +1,5 @@
 {
-  "name": "optimizer",
+  "name": "@asyncapi/optimizer",
   "version": "0.0.1",
   "description": "This library will optimize the AsyncAPI specification file.",
   "main": "index.js",
