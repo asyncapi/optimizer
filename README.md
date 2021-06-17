@@ -220,6 +220,7 @@ components:
 
 #### getReport() : OptimizerReport
 #### getOptimizedDocument([options]) : string
+`options` is an OPTIONAL object that contains the following customizations:
 * `rules`: using rules different optimization types can be enabled or disabled.
     * `reuseComponents` if set to true, optimizer will apply all of *reuseComponents* changes from report. (default: *false*)
     * `removeComponents` if set to true, optimizer will apply all of *removeComponents* changes from report. (default: *false*)
