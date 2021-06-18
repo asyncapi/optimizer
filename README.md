@@ -214,7 +214,7 @@ components:
 
 #### new Optimizer(document)
 
-`document` is a mandatory object that is parsed with `@asyncapi/parser`:
+`document` is a mandatory object which is the parsed AsyncAPI specification from `@asyncapi/parser`:
 
 ### Methods
 
