@@ -7,6 +7,7 @@ AsyncAPI offers many ways to reuse certain parts of the document like messages o
 
 ```typescript
 import { Optimizer } from '@asyncapi/optimizer';
+import type { Report } from '@asyncapi/optimizer';
 import { parse } from '@asyncapi/parser';
 let asyncApiDocument = parse(`
 asyncapi: 2.0.0
