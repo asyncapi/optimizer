@@ -128,7 +128,13 @@ the report value will be:
   ]
 }
  */
-const optimizedDocument = optimizer.getOptimizedDocument({rules: {reuseComponents: true,removeComponents: true,moveToComponents: true }});
+const optimizedDocument = optimizer.getOptimizedDocument({
+  rules: {
+    reuseComponents: true,
+    removeComponents: true,
+    moveToComponents: true 
+  }
+});
 /*
 the optimizedDocument value will be:
 
