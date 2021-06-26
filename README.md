@@ -96,6 +96,9 @@ components:
 );
 
 const optimizer = new Optimizer(asyncApiDocument);
+```
+### Generating report
+```typescript
 const report: Report = await optimizer.getReport();
 /*
 the report value will be:
@@ -128,6 +131,9 @@ the report value will be:
   ]
 }
  */
+```
+### Applying the suggested changes
+```typescript
 const optimizedDocument = optimizer.getOptimizedDocument({
   rules: {
     reuseComponents: true,
