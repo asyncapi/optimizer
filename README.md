@@ -9,6 +9,7 @@ AsyncAPI offers many ways to reuse certain parts of the document like messages o
 import { Optimizer } from '@asyncapi/optimizer';
 import type { Report } from '@asyncapi/optimizer';
 import { parse } from '@asyncapi/parser';
+
 let asyncApiDocument = parse(`
 asyncapi: 2.0.0
 info:
@@ -93,6 +94,7 @@ components:
       type: string
       format: date-time`
 );
+
 let optimizer = new Optimizer(asyncApiDocument);
 let report: Report = await optimizer.getReport();
 /*
@@ -126,7 +128,7 @@ the report value will be:
   ]
 }
  */
-let optimizedDocument = optimizer.getOptimizedDocument({rules: {reuseComponents: true,removeComponents: true,moveToComponents: true }})
+let optimizedDocument = optimizer.getOptimizedDocument({rules: {reuseComponents: true,removeComponents: true,moveToComponents: true }});
 /*
 the optimizedDocument value will be:
 
