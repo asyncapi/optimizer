@@ -10,7 +10,7 @@ import { Optimizer } from '@asyncapi/optimizer';
 import type { Report } from '@asyncapi/optimizer';
 import { parse } from '@asyncapi/parser';
 
-let asyncApiDocument = parse(`
+const asyncApiDocument = parse(`
 asyncapi: 2.0.0
 info:
   title: Streetlights API
@@ -95,8 +95,8 @@ components:
       format: date-time`
 );
 
-let optimizer = new Optimizer(asyncApiDocument);
-let report: Report = await optimizer.getReport();
+const optimizer = new Optimizer(asyncApiDocument);
+const report: Report = await optimizer.getReport();
 /*
 the report value will be:
 {
@@ -128,7 +128,7 @@ the report value will be:
   ]
 }
  */
-let optimizedDocument = optimizer.getOptimizedDocument({rules: {reuseComponents: true,removeComponents: true,moveToComponents: true }});
+const optimizedDocument = optimizer.getOptimizedDocument({rules: {reuseComponents: true,removeComponents: true,moveToComponents: true }});
 /*
 the optimizedDocument value will be:
 
@@ -224,7 +224,7 @@ components:
 #### getReport() : OptimizerReport
 #### getOptimizedDocument([options]) : string
 `options` is an OPTIONAL object that contains the following customizations:
-* `rules`: using rules different optimization types can be enabled or disabled.
+* `rules` using rules different optimization types can be enabled or disabled.
     * `reuseComponents` if set to true, optimizer will apply all of *reuseComponents* changes from report. (default: *true*)
     * `removeComponents` if set to true, optimizer will apply all of *removeComponents* changes from report. (default: *true*)
     * `moveToComponents` if set to true, optimizer will apply all of *moveToComponents* changes from report. (default: *true*) 
