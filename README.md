@@ -233,8 +233,9 @@ components:
 
 ### Methods
 
-#### getReport() : OptimizerReport
-#### getOptimizedDocument([options]) : string
+#### getReport(): OptimizerReport
+`OptimizerReport` is an object that will be returned by this function. This object will contain all the suggested changes by the optimizer grouped by their category.
+#### getOptimizedDocument([options]): string
 `options` is an OPTIONAL object that contains the following customizations:
 * `rules` using rules different optimization types can be enabled or disabled.
     * `reuseComponents` if set to true, optimizer will apply all of *reuseComponents* changes from report. (default: *true*)
