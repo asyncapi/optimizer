@@ -21,16 +21,23 @@ export class ReuseComponents implements OptimizerInterface {
    * @defaultValue `true`
    */
   getReport = (): ReportElement[] => {
-    return this.findDuplicateComponents(this.provider.schemas, 'schema').concat(
-      this.findDuplicateComponents(this.provider.messages, 'message'),
-      this.findDuplicateComponents(this.provider.parameters, 'parameter')
+    return this.findDuplicateComponents(this.provider.schemas).concat(
+      this.findDuplicateComponents(this.provider.messages),
+      this.findDuplicateComponents(this.provider.parameters)
     );
   }
 
-  findDuplicateComponents = (component: Map<string, any>, componentType: string): ReportElement[] => {
+  findDuplicateComponents = (component: Map<string, any>): ReportElement[] => {
     const elements = [];
     const arr = [...component].map(([path, object]) => ({path, object}));
-    
+
+    for (const [key1, value1] of component) {
+      for (const [key2, value2] of component) {
+        if (key1 === key2 || !this.isChannelToComponent(key1, key2)) {continue;}
+        if (value1.json().hasOwnProperty('x-parser-schema-id') && compareSchemas(value1.json(), value2.json))
+      }
+    }
+
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length; j++) {
         let compareResult = false;
@@ -57,7 +64,7 @@ export class ReuseComponents implements OptimizerInterface {
     }
     return elements;
   }
-  isChannelToComponent = (object1: string, object2: string, componentType: string): boolean => {
-    return object1.startsWith('#/channels') && object2.startsWith(`#/components/${componentType}`);
+  isChannelToComponent = (object1: string, object2: string): boolean => {
+    return object1.startsWith('#/channels') && object2.startsWith('#/components/');
   }
 }
