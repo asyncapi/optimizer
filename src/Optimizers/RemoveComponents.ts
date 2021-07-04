@@ -1,4 +1,4 @@
-import { OptimizerInterface } from '../Models/Optimizer';
+import { OptimizerInterface } from '../Models/OptimizerInterface';
 import { ReportElement } from '../Models/Report';
 import { ComponentProvider } from '../ComponentProvider';
 import { AsyncAPIDocument } from '@asyncapi/parser';

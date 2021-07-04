@@ -1,4 +1,4 @@
-import { Schema, Message, AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
+import type { Schema, Message, AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
 
 /**
  * This Singleton class will provide all sorts of data for optimizers.
