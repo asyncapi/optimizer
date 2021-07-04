@@ -2,15 +2,13 @@
  * Compares two components.
  * @remarks
  *
- * this function will return false if one of components is a ref of another in spec file.
+ * this recursive function is responsible for comparing two component.
  *
  * @param component1 - the first component that we are going to compare.
  * @param component2 - the second component that we are going to compare.
- * @returns true, if both components are identical; false, if the components are not identical or one is a reference of another in spec file.
+ * @returns true, if both components are identical; false, if the components are not identical.
  *
- * @beta @virtual
  */
-
 const shallowEqual = (component1: any, component2: any): boolean => {
   try {
     const keys1 = Object.keys(component1);
@@ -22,12 +20,12 @@ const shallowEqual = (component1: any, component2: any): boolean => {
 
     for (const key of keys1) {
       if (!key.startsWith('x-')) {
-        const objectType = typeof component1[key] === 'object';
+        const objectType = typeof component1[String(key)] === 'object';
         if (objectType) {
-          if (!shallowEqual(component1[key], component2[key])) {
+          if (!shallowEqual(component1[String(key)], component2[String(key)])) {
             return true;
           }
-        } else if (component1[key] !== component2[key]) {
+        } else if (component1[String(key)] !== component2[String(key)]) {
           return false;
         }
       }
@@ -37,12 +35,19 @@ const shallowEqual = (component1: any, component2: any): boolean => {
   }
   return true;
 };
-
+/**
+ * if one component is a $ref of another, it will return false. otherwise it will pass the comparing task to {@link shallowEqual}
+ *
+ * @param component1 - the first component that we are going to compare.
+ * @param component2 - the second component that we are going to compare.
+ * @returns true, if both components are identical; false, if the components are not identical or one is a reference of another in spec file.
+ *
+ */
 const compareComponents = (component1: any, component2: any): boolean => {
-  const schemaID = 'x-parser-schema-id';
-  if (Object.prototype.hasOwnProperty.call(component1, 'x-parser-schema-id') && component1[schemaID] === component2[schemaID]) {
+  //if one component is a $ref on another.
+  if (component1 === component2) {
     return false;
-  } 
+  }
   return shallowEqual(component1, component2);
 };
 export { compareComponents };
