@@ -1,8 +1,8 @@
 import { ReportElement } from '../Models/Report';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import { ComponentProvider } from '../ComponentProvider';
-import { compareMessages, compareSchemas } from '../Utils';
-import { OptimizerInterface } from '../Models/Optimizer';
+import { compareComponents } from '../Utils';
+import { OptimizerInterface } from '../Models/OptimizerInterface';
 
 /**
  * This optimizer will find all of the components that are declared in _components_ section of the AsyncAPI spec that can be reused in other part of the spec and generate a detailed report of them.
@@ -11,9 +11,11 @@ import { OptimizerInterface } from '../Models/Optimizer';
  */
 export class ReuseComponents implements OptimizerInterface {
   provider: ComponentProvider;
+
   constructor(private document: AsyncAPIDocument) {
     this.provider = ComponentProvider.getInstance(document);
   }
+
   /**
    * After initializing this class, getReport function can be used to generate a report of components that can be reused.
    *
@@ -29,33 +31,16 @@ export class ReuseComponents implements OptimizerInterface {
 
   findDuplicateComponents = (component: Map<string, any>): ReportElement[] => {
     const elements = [];
-    const arr = [...component].map(([path, object]) => ({path, object}));
-
     for (const [key1, value1] of component) {
       for (const [key2, value2] of component) {
-        if (key1 === key2 || !this.isChannelToComponent(key1, key2)) {continue;}
-        if (value1.json().hasOwnProperty('x-parser-schema-id') && compareSchemas(value1.json(), value2.json))
-      }
-    }
-
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0; j < arr.length; j++) {
-        let compareResult = false;
-        switch (componentType) {
-        case 'schema':
-          compareResult = compareSchemas(arr[i].object.json(), arr[j].object.json());
-          break;
-        case 'message':
-          compareResult = compareMessages(arr[i].object, arr[j].object);
-          break;
-        case 'parameter':
-          compareResult = compareMessages(arr[i].object, arr[j].object);
+        if (key1 === key2 || !this.isChannelToComponent(key1, key2)) {
+          continue;
         }
-        if (i !== j && this.isChannelToComponent(arr[i].path, arr[j].path, componentType) && compareResult) {
+        if (compareComponents(value1.json(), value2.json())) {
           const element: ReportElement = {
-            path: arr[i].path,
+            path: key1,
             action: 'reuse',
-            target: arr[j].path
+            target: key2
           };
           elements.push(element);
           break;
@@ -64,7 +49,7 @@ export class ReuseComponents implements OptimizerInterface {
     }
     return elements;
   }
-  isChannelToComponent = (object1: string, object2: string): boolean => {
-    return object1.startsWith('#/channels') && object2.startsWith('#/components/');
-  }
+    isChannelToComponent = (object1: string, object2: string): boolean => {
+      return object1.startsWith('#/channels') && object2.startsWith('#/components/');
+    }
 }
