@@ -36,7 +36,7 @@ export class ReuseComponents implements OptimizerInterface {
         if (key1 === key2 || !this.isChannelToComponent(key1, key2)) {
           continue;
         }
-        if (compareComponents(value1.json(), value2.json())) {
+        if (value1.json() !== value2.json() && compareComponents(value1.json(), value2.json())) {
           const element: ReportElement = {
             path: key1,
             action: 'reuse',
