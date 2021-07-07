@@ -38,6 +38,7 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.8.0-125",
     "jest": "^27.0.4",
+    "semantic-release": "^17.4.4",
     "typescript": "^4.3.2"
   },
   "publishConfig": {
