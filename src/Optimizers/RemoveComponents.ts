@@ -12,7 +12,10 @@ export class RemoveComponents implements OptimizerInterface {
   }
 
   getReport = (): ReportElement[] => {
-    return this.findUnusedComponents(this.provider.parameters);
+    return this.findUnusedComponents(this.provider.schemas).concat(
+      this.findUnusedComponents(this.provider.messages),
+      this.findUnusedComponents(this.provider.parameters)
+    );
   }
 
   findUnusedComponents = (components: Map<string, any>): ReportElement[] => {
