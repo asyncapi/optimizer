@@ -18,42 +18,49 @@ export class MoveToComponents implements OptimizerInterface {
       this.findDuplicateComponents(this.provider.parameters, 'parameter')
     );
   }
-
+  getMatch = (key: string, value: any, components: Map<string, any>): string => {
+    let matchedKey = '';
+    if (key.startsWith('#/components/')) {
+      return '';
+    }
+    for (const [key2, value2] of components) {
+      if (value.json() !== value2.json() && compareComponents(value.json(),value2.json())) {
+        if (key2.startsWith('#/components/')) {
+          matchedKey = '';
+          break;
+        }
+        matchedKey = key2;
+      }
+    }
+    return matchedKey;
+  }
+  reuseOldEntry = (key:string, matchedKey: string, elements: ReportElement[]): boolean => {
+    for (const reportElement of elements) {
+      if (reportElement.path === matchedKey || reportElement.path === key) {
+        const newElement = {
+          path: key,
+          action: 'reuse',
+          target: reportElement.target
+        };
+        if (!elements.some(element => element.path === newElement.path)) {
+          elements.push(newElement);
+        }
+        return false;
+      }
+    }
+    return true;
+  }
   findDuplicateComponents = (components: Map<string, any>, componentType: string): ReportElement[] => {
     const elements = [] as ReportElement[];
     let counter = 1;
     for (const [key1, value1] of components) {
-      let matchedKey = '';
-      if (key1.startsWith('#/components/')) {
-        continue;
-      }
-      for (const [key2, value2] of components) {
-        if (value1.json() !== value2.json() && compareComponents(value1.json(),value2.json())) {
-          if (key2.startsWith('#/components/')) {
-            matchedKey = '';
-            break;
-          }
-          matchedKey = key2;
-        }
-      }
-      let alreadyMoved = false;
+      const matchedKey = this.getMatch(key1,value1,components);
+      let shouldCreateNewEntry = false;
       if (matchedKey) {
-        for (const reportElement of elements) {
-          if (reportElement.path === matchedKey || reportElement.path === key1) {
-            const newElement = {
-              path: key1,
-              action: 'reuse',
-              target: reportElement.target
-            };
-            if (!elements.some(element => element.path === newElement.path)) {
-              elements.push(newElement);
-            }
-            alreadyMoved = true;
-            break;
-          }
-        }
-        if (!alreadyMoved) {
-          const target = `#/components/${componentType}s/${value1.json().name || `${componentType}-${counter++}`}`;
+        shouldCreateNewEntry = this.reuseOldEntry(key1,matchedKey, elements);
+        if (shouldCreateNewEntry) {
+          const componentName = value1.json().name || `${componentType}-${counter++}`;
+          const target = `#/components/${componentType}s/${componentName}`;
           elements.push({
             path: key1,
             action: 'move',
@@ -67,8 +74,8 @@ export class MoveToComponents implements OptimizerInterface {
         }
       }
     }
-    // @ts-ignore
-    elements.sort((a, b) => a.target.localeCompare(b.target));
+
+    //elements.sort((a, b) => a.target.localeCompare(b.target));
     return elements;
   }
 }
