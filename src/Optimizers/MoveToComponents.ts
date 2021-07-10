@@ -74,8 +74,6 @@ export class MoveToComponents implements OptimizerInterface {
         }
       }
     }
-
-    //elements.sort((a, b) => a.target.localeCompare(b.target));
     return elements;
   }
 }

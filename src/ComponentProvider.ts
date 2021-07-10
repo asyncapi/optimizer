@@ -68,21 +68,22 @@ export class ComponentProvider {
   }
   private scanComponents = (): void => {
     const components = this.document.components();
-    if (components) {
-      if (components.hasMessages()) {
-        for (const [messageName, message] of Object.entries(components.messages())) {
-          this.messages.set(`#/components/messages/${messageName}`, message);
-        }
+    if (!components) {
+      return;
+    }
+    if (components.hasMessages()) {
+      for (const [messageName, message] of Object.entries(components.messages())) {
+        this.messages.set(`#/components/messages/${messageName}`, message);
       }
-      if (components.hasSchemas()) {
-        for (const [schemaName, schema] of Object.entries(components.schemas())) {
-          this.schemas.set(`#/components/schemas/${schemaName}`, schema);
-        }
+    }
+    if (components.hasSchemas()) {
+      for (const [schemaName, schema] of Object.entries(components.schemas())) {
+        this.schemas.set(`#/components/schemas/${schemaName}`, schema);
       }
-      if (components.hasParameters()) {
-        for (const [parameterName, parameter] of Object.entries(components.parameters())) {
-          this.parameters.set(`#/components/parameters/${parameterName}`, parameter);
-        }
+    }
+    if (components.hasParameters()) {
+      for (const [parameterName, parameter] of Object.entries(components.parameters())) {
+        this.parameters.set(`#/components/parameters/${parameterName}`, parameter);
       }
     }
   }
