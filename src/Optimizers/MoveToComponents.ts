@@ -20,12 +20,12 @@ export class MoveToComponents implements OptimizerInterface {
   }
   getMatch = (key: string, value: any, components: Map<string, any>): string => {
     let matchedKey = '';
-    if (key.startsWith('#/components/')) {
+    if (key.startsWith('components.')) {
       return '';
     }
     for (const [key2, value2] of components) {
       if (value.json() !== value2.json() && compareComponents(value.json(),value2.json())) {
-        if (key2.startsWith('#/components/')) {
+        if (key2.startsWith('components.')) {
           matchedKey = '';
           break;
         }
@@ -60,7 +60,7 @@ export class MoveToComponents implements OptimizerInterface {
         shouldCreateNewEntry = this.reuseOldEntry(key1,matchedKey, elements);
         if (shouldCreateNewEntry) {
           const componentName = value1.json().name || `${componentType}-${counter++}`;
-          const target = `#/components/${componentType}s/${componentName}`;
+          const target = `components.${componentType}s.${componentName}`;
           elements.push({
             path: key1,
             action: 'move',

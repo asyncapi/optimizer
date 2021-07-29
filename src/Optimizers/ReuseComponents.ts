@@ -50,6 +50,6 @@ export class ReuseComponents implements OptimizerInterface {
     return elements;
   }
     isChannelToComponent = (object1: string, object2: string): boolean => {
-      return object1.startsWith('#/channels') && object2.startsWith('#/components/');
+      return object1.startsWith('channels') && object2.startsWith('components.');
     }
 }

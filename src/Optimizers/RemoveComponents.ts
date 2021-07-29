@@ -22,7 +22,7 @@ export class RemoveComponents implements OptimizerInterface {
     const elements = [];
     for (const [key1, value1] of components) {
       let isUsed = false;
-      if (!key1.startsWith('#/components/')) {
+      if (!key1.startsWith('components.')) {
         continue;
       }
       for (const [key2, value2] of components) {
