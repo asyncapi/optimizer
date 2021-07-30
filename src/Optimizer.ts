@@ -6,8 +6,8 @@ import { ReuseComponents } from './Optimizers/ReuseComponents';
 import { Options } from './Models/Options';
 import { ReportElement } from './Models/Report';
 import YAML from 'yaml';
-const merge = require('merge-deep');
-const _ = require('lodash');
+import merge from 'merge-deep';
+import * as _ from 'lodash';
 /**
  * this class is the starting point of the library.
  * user will only interact with this class. here we generate different kind of reports using optimizers, apply changes and return the results to the user.
