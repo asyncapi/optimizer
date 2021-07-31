@@ -70,8 +70,12 @@ export class Optimizer {
     for (const change of changes) {
       switch (change.action) {
       case 'move':
-        _.set(this.outputObject,change.target,_.get(this.outputObject,change.path));
-        _.set(this.outputObject,change.path,{$ref: `#/${change.target?.replace(/\./g,'/')}`});
+        if (change.target) {
+          _.set(this.outputObject,change.target,_.get(this.outputObject,change.path));
+          _.set(this.outputObject,change.path,{$ref: `#/${change.target?.replace(/\./g,'/')}`});
+        } else {
+          throw new Error('The target of report element for "move" should NOT be empty.');
+        }
         break;
       case 'reuse':
         _.set(this.outputObject,change.path,{$ref: `#/${change.target?.replace(/\./g,'/')}`});

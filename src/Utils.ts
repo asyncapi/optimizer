@@ -1,4 +1,5 @@
 
+import * as _ from 'lodash';
 /**
  * Compares two components.
  * @remarks
@@ -12,7 +13,7 @@
  */
 const backwardsCheck = (x: any, y: any): boolean => {
   for (const p in y) {
-    if (Object.prototype.hasOwnProperty.call(y, p) && !Object.prototype.hasOwnProperty.call(x, p)) {return false;}
+    if (_.has(y, p) && !_.has(x, p)) {return false;}
   }
   return true;
 };
@@ -20,9 +21,9 @@ const compareComponents = (x: any, y: any): boolean => {
   if (!(x instanceof Object) || !(y instanceof Object)) {return false;}
   // if they are not strictly equal, they both need to be Objects
   for (const p in x) {
-    if (!Object.prototype.hasOwnProperty.call(x, p)) {continue;}
+    if (!_.has(x, p)) {continue;}
 
-    if (!Object.prototype.hasOwnProperty.call(y, p)) {return false;}
+    if (!_.has(y, p)) {return false;}
     // allows to compare x[ p ] and y[ p ] when set to undefined
 
     if (x[String(p)] === y[String(p)] || p.startsWith('x-')) {continue;}
