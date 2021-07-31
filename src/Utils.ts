@@ -45,4 +45,8 @@ const isEqual = (component1: any, component2: any, referentialEqualityCheck: boo
   }
   return component1.json() !== component2.json() && compareComponents(component1.json(), component2.json());
 };
-export { compareComponents, isEqual };
+
+const isInComponents = (path: string): boolean => {
+  return path.startsWith('components.');
+};
+export { compareComponents, isEqual, isInComponents };

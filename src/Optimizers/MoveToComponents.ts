@@ -2,7 +2,7 @@ import { OptimizerInterface } from '../Models/OptimizerInterface';
 import { ReportElement } from '../Models/Report';
 import { ComponentProvider } from '../ComponentProvider';
 import { AsyncAPIDocument } from '@asyncapi/parser';
-import { isEqual } from '../Utils';
+import { isEqual, isInComponents } from '../Utils';
 
 export class MoveToComponents implements OptimizerInterface {
   provider: ComponentProvider;
@@ -20,12 +20,12 @@ export class MoveToComponents implements OptimizerInterface {
   }
   getMatch = (key: string, value: any, components: Map<string, any>): string => {
     let matchedKey = '';
-    if (key.startsWith('components.')) {
+    if (isInComponents(key)) {
       return '';
     }
     for (const [key2, value2] of components) {
       if (isEqual(value,value2,false)) {
-        if (key2.startsWith('components.')) {
+        if (isInComponents(key2)) {
           matchedKey = '';
           break;
         }
