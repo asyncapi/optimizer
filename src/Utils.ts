@@ -1,5 +1,13 @@
 
 import * as _ from 'lodash';
+
+const backwardsCheck = (x: any, y: any): boolean => {
+  for (const p in y) {
+    if (_.has(y, p) && !_.has(x, p)) {return false;}
+  }
+  return true;
+};
+
 /**
  * Compares two components.
  * @remarks
@@ -11,12 +19,6 @@ import * as _ from 'lodash';
  * @returns true, if both components are identical; false, if the components are not identical.
  *
  */
-const backwardsCheck = (x: any, y: any): boolean => {
-  for (const p in y) {
-    if (_.has(y, p) && !_.has(x, p)) {return false;}
-  }
-  return true;
-};
 const compareComponents = (x: any, y: any): boolean => {
   // if they are not strictly equal, they both need to be Objects
   if (!(x instanceof Object) || !(y instanceof Object)) {return false;}
