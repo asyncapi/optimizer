@@ -1,7 +1,7 @@
 import { ReportElement } from '../Models/Report';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import { ComponentProvider } from '../ComponentProvider';
-import { compareComponents } from '../Utils';
+import { isEqual } from '../Utils';
 import { OptimizerInterface } from '../Models/OptimizerInterface';
 
 /**
@@ -36,7 +36,7 @@ export class ReuseComponents implements OptimizerInterface {
         if (key1 === key2 || !this.isChannelToComponent(key1, key2)) {
           continue;
         }
-        if (value1.json() !== value2.json() && compareComponents(value1.json(), value2.json())) {
+        if (isEqual(value1,value2,false)) {
           const element: ReportElement = {
             path: key1,
             action: 'reuse',

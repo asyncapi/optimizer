@@ -2,7 +2,7 @@ import { OptimizerInterface } from '../Models/OptimizerInterface';
 import { ReportElement } from '../Models/Report';
 import { ComponentProvider } from '../ComponentProvider';
 import { AsyncAPIDocument } from '@asyncapi/parser';
-import { compareComponents } from '../Utils';
+import { isEqual } from '../Utils';
 
 export class MoveToComponents implements OptimizerInterface {
   provider: ComponentProvider;
@@ -24,7 +24,7 @@ export class MoveToComponents implements OptimizerInterface {
       return '';
     }
     for (const [key2, value2] of components) {
-      if (value.json() !== value2.json() && compareComponents(value.json(),value2.json())) {
+      if (isEqual(value,value2,false)) {
         if (key2.startsWith('components.')) {
           matchedKey = '';
           break;

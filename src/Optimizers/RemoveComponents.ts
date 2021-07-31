@@ -2,7 +2,7 @@ import { OptimizerInterface } from '../Models/OptimizerInterface';
 import { ReportElement } from '../Models/Report';
 import { ComponentProvider } from '../ComponentProvider';
 import { AsyncAPIDocument } from '@asyncapi/parser';
-import { compareComponents } from '../Utils';
+import { isEqual } from '../Utils';
 
 export class RemoveComponents implements OptimizerInterface {
   provider: ComponentProvider;
@@ -29,7 +29,7 @@ export class RemoveComponents implements OptimizerInterface {
         if (key1 === key2) {
           continue;
         }
-        if (value1.json() === value2.json() || compareComponents(value1.json(), value2.json())) {
+        if (isEqual(value1,value2,true)) {
           isUsed = true;
         }
       }

@@ -39,4 +39,10 @@ const compareComponents = (x: any, y: any): boolean => {
   }
   return backwardsCheck(x,y);
 };
-export { compareComponents };
+const isEqual = (component1: any, component2: any, referentialEqualityCheck: boolean): boolean => {
+  if (referentialEqualityCheck) {
+    return component1.json() === component2.json() || compareComponents(component1.json(), component2.json());
+  }
+  return component1.json() !== component2.json() && compareComponents(component1.json(), component2.json());
+};
+export { compareComponents, isEqual };
