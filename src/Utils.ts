@@ -18,22 +18,22 @@ const backwardsCheck = (x: any, y: any): boolean => {
   return true;
 };
 const compareComponents = (x: any, y: any): boolean => {
-  if (!(x instanceof Object) || !(y instanceof Object)) {return false;}
   // if they are not strictly equal, they both need to be Objects
+  if (!(x instanceof Object) || !(y instanceof Object)) {return false;}
   for (const p in x) {
     if (!_.has(x, p)) {continue;}
-
-    if (!_.has(y, p)) {return false;}
+    
     // allows to compare x[ p ] and y[ p ] when set to undefined
+    if (!_.has(y, p)) {return false;}
 
-    if (x[String(p)] === y[String(p)] || p.startsWith('x-')) {continue;}
     // if they have the same strict value or identity then they are equal
+    if (x[String(p)] === y[String(p)] || p.startsWith('x-')) {continue;}
 
-    if (typeof (x[String(p)]) !== 'object') {return false;}
     // Numbers, Strings, Functions, Booleans must be strictly equal
+    if (typeof (x[String(p)]) !== 'object') {return false;}
 
-    if (!compareComponents(x[String(p)], y[String(p)])) {return false;}
     // Objects and Arrays must be tested recursively
+    if (!compareComponents(x[String(p)], y[String(p)])) {return false;}
   }
   return backwardsCheck(x,y);
 };
