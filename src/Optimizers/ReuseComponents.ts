@@ -1,7 +1,7 @@
 import { ReportElement } from '../Models/Report';
 import { AsyncAPIDocument } from '@asyncapi/parser';
 import { ComponentProvider } from '../ComponentProvider';
-import { isEqual } from '../Utils';
+import { isEqual, isInChannels, isInComponents } from '../Utils';
 import { OptimizerInterface } from '../Models/OptimizerInterface';
 
 /**
@@ -49,7 +49,7 @@ export class ReuseComponents implements OptimizerInterface {
     }
     return elements;
   }
-    isChannelToComponent = (object1: string, object2: string): boolean => {
-      return object1.startsWith('channels') && object2.startsWith('components.');
+    isChannelToComponent = (path1: string, path2: string): boolean => {
+      return isInChannels(path1) && isInComponents(path2);
     }
 }

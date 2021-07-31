@@ -49,4 +49,7 @@ const isEqual = (component1: any, component2: any, referentialEqualityCheck: boo
 const isInComponents = (path: string): boolean => {
   return path.startsWith('components.');
 };
-export { compareComponents, isEqual, isInComponents };
+const isInChannels = (path: string): boolean => {
+  return path.startsWith('channels.');
+};
+export { compareComponents, isEqual, isInComponents, isInChannels };
