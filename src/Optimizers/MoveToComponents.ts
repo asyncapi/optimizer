@@ -55,24 +55,21 @@ export class MoveToComponents implements OptimizerInterface {
     let counter = 1;
     for (const [key1, value1] of components) {
       const matchedKey = this.getMatch(key1,value1,components);
-      let shouldCreateNewEntry = false;
-      if (matchedKey) {
-        shouldCreateNewEntry = this.reuseOldEntry(key1,matchedKey, elements);
-        if (shouldCreateNewEntry) {
-          const componentName = value1.json().name || `${componentType}-${counter++}`;
-          const target = `components.${componentType}s.${componentName}`;
-          elements.push({
-            path: key1,
-            action: 'move',
-            target
-          });
-          elements.push({
-            path: matchedKey,
-            action: 'reuse',
-            target
-          });
-        }
-      }
+      if (!matchedKey) {continue;}
+      const shouldCreateNewEntry = this.reuseOldEntry(key1,matchedKey, elements);
+      if (!shouldCreateNewEntry) { continue; }
+      const componentName = value1.json().name || `${componentType}-${counter++}`;
+      const target = `components.${componentType}s.${componentName}`;
+      elements.push({
+        path: key1,
+        action: 'move',
+        target
+      });
+      elements.push({
+        path: matchedKey,
+        action: 'reuse',
+        target
+      });
     }
     return elements;
   }
