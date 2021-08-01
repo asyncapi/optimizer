@@ -1,3 +1,3 @@
-import {Optimizer} from './Optimizer';
+import { Optimizer } from './Optimizer';
 
 export { Optimizer };
