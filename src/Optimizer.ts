@@ -66,6 +66,13 @@ export class Optimizer {
 
     return YAML.stringify(this.outputObject);
   }
+  removeEmptyParent = (childPath: string): void => {
+    const parentPath = childPath.substr(0,childPath.lastIndexOf('.'));
+    const parent = _.get(this.outputObject,parentPath);
+    if (Object.keys(parent).length === 0) {
+      _.unset(this.outputObject,parentPath);
+    }
+  }
   applyChanges = (changes: ReportElement[]): void => {
     for (const change of changes) {
       switch (change.action) {
@@ -82,6 +89,8 @@ export class Optimizer {
         break;
       case 'remove':
         _.unset(this.outputObject,change.path);
+        //if parent becomes empty after removing, parent should be removed as well.
+        this.removeEmptyParent(change.path);
         break;
       }
     }
