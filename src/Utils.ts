@@ -37,7 +37,7 @@ const compareComponents = (x: any, y: any): boolean => {
     // Objects and Arrays must be tested recursively
     if (!compareComponents(x[String(p)], y[String(p)])) {return false;}
   }
-  return backwardsCheck(x,y);
+  return backwardsCheck(x, y);
 };
 const isEqual = (component1: any, component2: any, referentialEqualityCheck: boolean): boolean => {
   if (referentialEqualityCheck) {

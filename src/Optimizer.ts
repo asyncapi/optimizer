@@ -59,7 +59,7 @@ export class Optimizer {
     options = merge(defaultOptions, options);
     this.outputObject = YAML.parse(this.YAMLorJSON);
     if (options.rules?.moveToComponents) {
-      this.applyChanges(this.moveToComponentsReport.sort((a,b) => b.path.length - a.path.length));
+      this.applyChanges(this.moveToComponentsReport.sort((a, b) => b.path.length - a.path.length));
     }
     if (options.rules?.reuseComponents) {
       this.applyChanges(this.reuseComponentsReport);
@@ -71,10 +71,10 @@ export class Optimizer {
     return YAML.stringify(this.outputObject);
   }
   removeEmptyParent = (childPath: string): void => {
-    const parentPath = childPath.substr(0,childPath.lastIndexOf('.'));
-    const parent = _.get(this.outputObject,parentPath);
+    const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
+    const parent = _.get(this.outputObject, parentPath);
     if (Object.keys(parent).length === 0) {
-      _.unset(this.outputObject,parentPath);
+      _.unset(this.outputObject, parentPath);
     }
   }
   applyChanges = (changes: ReportElement[]): void => {
@@ -82,17 +82,17 @@ export class Optimizer {
       switch (change.action) {
       case 'move':
         if (change.target) {
-          _.set(this.outputObject,change.target,_.get(this.outputObject,change.path));
-          _.set(this.outputObject,change.path,{$ref: `#/${change.target?.replace(/\./g,'/')}`});
+          _.set(this.outputObject, change.target, _.get(this.outputObject, change.path));
+          _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
         } else {
           throw new Error('The target of report element for "move" should NOT be empty.');
         }
         break;
       case 'reuse':
-        _.set(this.outputObject,change.path,{$ref: `#/${change.target?.replace(/\./g,'/')}`});
+        _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
         break;
       case 'remove':
-        _.unset(this.outputObject,change.path);
+        _.unset(this.outputObject, change.path);
         //if parent becomes empty after removing, parent should be removed as well.
         this.removeEmptyParent(change.path);
         break;

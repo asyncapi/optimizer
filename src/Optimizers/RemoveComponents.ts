@@ -28,7 +28,7 @@ export class RemoveComponents implements OptimizerInterface {
         if (key1 === key2) {
           continue;
         }
-        if (isEqual(value1,value2,true)) {
+        if (isEqual(value1, value2, true)) {
           isUsed = true;
         }
       }

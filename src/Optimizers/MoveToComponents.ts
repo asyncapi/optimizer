@@ -19,11 +19,12 @@ export class MoveToComponents implements OptimizerInterface {
   }
   getMatch = (key: string, value: any, components: Map<string, any>): string => {
     let matchedKey = '';
+
     if (isInComponents(key)) {
       return '';
     }
     for (const [key2, value2] of components) {
-      if (isEqual(value,value2,false)) {
+      if (isEqual(value, value2, false)) {
         if (isInComponents(key2)) {
           matchedKey = '';
           break;
@@ -41,6 +42,7 @@ export class MoveToComponents implements OptimizerInterface {
           action: 'reuse',
           target: reportElement.target
         };
+
         if (!elements.some(element => element.path === newElement.path)) {
           elements.push(newElement);
         }
@@ -49,9 +51,10 @@ export class MoveToComponents implements OptimizerInterface {
     }
     return true;
   }
-  doesHaveACopy = (searchValue: any,components: Map<string, any>): boolean => {
+  doesHaveACopy = (searchValue: any, components: Map<string, any>): boolean => {
     for (const [key, value] of components) {
       if (!isInComponents(key)) {continue; }
+
       if (isEqual(searchValue, value, true)) {
         return true;
       }
@@ -62,9 +65,11 @@ export class MoveToComponents implements OptimizerInterface {
     const elements = [] as ReportElement[];
     let counter = 1;
     for (const [key1, value1] of components) {
-      const matchedKey = this.getMatch(key1,value1,components);
+      const matchedKey = this.getMatch(key1, value1, components);
+
       if (!matchedKey) {continue;}
-      const shouldCreateNewEntry = this.reuseOldEntry(key1,matchedKey, elements);
+      const shouldCreateNewEntry = this.reuseOldEntry(key1, matchedKey, elements);
+
       if (!shouldCreateNewEntry) { continue; }
       
       //check if the component already has a copy in components section of the specification. If it already has then we don't need to apply this optimization. 
