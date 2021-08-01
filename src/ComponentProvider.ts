@@ -40,10 +40,15 @@ export class ComponentProvider {
       }
     }
   }
+  private scanHeader = (path: string, headers: any): void => {
+    this.schemas.set(path,headers);
+    const headersProperties = headers.properties;
+    for (const [propertyName, propertySchema] of Object.entries(headersProperties)) {
+      this.schemas.set(`${path}.properties.${propertyName}`, propertySchema as Schema);
+    }
+  }
   private scanMessage = (path: string, message: Message): void => {
     const payload = message.payload();
-    const headers = message.headers();
-
     if (payload) {
       this.schemas.set(`${path}.payload`,payload);
       const payloadProperties = payload.properties();
@@ -51,12 +56,11 @@ export class ComponentProvider {
         this.schemas.set(`${path}.payload.properties.${propertyName}`, propertySchema);
       }
     }
-    if (headers) {
-      this.schemas.set(`${path}.traits[0].headers`,headers);
-      const headersProperties = headers.properties();
-      for (const [propertyName, propertySchema] of Object.entries(headersProperties)) {
-        this.schemas.set(`${path}.traits[0].headers.properties.${propertyName}`, propertySchema);
-      }
+    
+    //scanning the traits.
+    const traits = message.extension('x-parser-original-traits');
+    for (let i = 0; i < traits.length; i++) {
+      if (Object.keys(traits[i]).includes('headers')) {this.scanHeader(`${path}.traits[${i}].headers`, message.headers());}
     }
   }
   private scanComponents = (): void => {

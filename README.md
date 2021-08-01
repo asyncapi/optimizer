@@ -301,15 +301,13 @@ components:
     sentAt:
       type: string
       format: date-time
-    schema-2:
-      type: integer
-      minimum: 0
-      maximum: 100
     schema-1:
       type: object
       properties:
         my-app-header:
-          $ref: "#/components/schemas/schema-2"
+          type: integer
+          minimum: 0
+          maximum: 100
   parameters:
     parameter-1:
       schema:
