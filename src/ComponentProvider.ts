@@ -10,16 +10,9 @@ export class ComponentProvider {
   schemas = new Map<string, Schema>();
   parameters = new Map<string, ChannelParameter>();
 
-  private static instance: ComponentProvider;
-  private constructor(private document: AsyncAPIDocument) {
+  constructor(private document: AsyncAPIDocument) {
     this.scanChannels();
     this.scanComponents();
-  }
-  static getInstance(document: AsyncAPIDocument): ComponentProvider {
-    if (!ComponentProvider.instance) {
-      ComponentProvider.instance = new ComponentProvider(document);
-    }
-    return ComponentProvider.instance;
   }
 
   private scanChannels = (): void => {

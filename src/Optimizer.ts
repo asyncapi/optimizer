@@ -1,5 +1,5 @@
 import { Report } from './Models/Report';
-import { AsyncAPIDocument, parse } from '@asyncapi/parser';
+import { parse } from '@asyncapi/parser';
 import { RemoveComponents } from './Optimizers/RemoveComponents';
 import { MoveToComponents } from './Optimizers/MoveToComponents';
 import { ReuseComponents } from './Optimizers/ReuseComponents';
@@ -8,6 +8,7 @@ import { ReportElement } from './Models/Report';
 import YAML from 'yaml';
 import merge from 'merge-deep';
 import * as _ from 'lodash';
+import { ComponentProvider } from './ComponentProvider';
 /**
  * this class is the starting point of the library.
  * user will only interact with this class. here we generate different kind of reports using optimizers, apply changes and return the results to the user.
@@ -15,12 +16,13 @@ import * as _ from 'lodash';
  * @public
  */
 export class Optimizer {
+  componentProvider!: ComponentProvider;
   reuseComponentsReport: ReportElement[] = [];
   removeComponentsReport: ReportElement[] = [];
   moveToComponentsReport: ReportElement[] = [];
-  parsedDocument!: AsyncAPIDocument;
   outputObject = {};
   constructor(private YAMLorJSON: any) {
+
   }
 
   /**
@@ -28,13 +30,15 @@ export class Optimizer {
    * @public
    */
   getReport = async (): Promise<Report> => {
-    this.parsedDocument = await parse(this.YAMLorJSON);
-
-    const reuseComponents = new ReuseComponents(this.parsedDocument);
+    if (!this.componentProvider) {
+      const parsedDocument = await parse(this.YAMLorJSON);
+      this.componentProvider = new ComponentProvider(parsedDocument);
+    }
+    const reuseComponents = new ReuseComponents(this.componentProvider);
     this.reuseComponentsReport = reuseComponents.getReport();
-    const removeComponents = new RemoveComponents(this.parsedDocument);
+    const removeComponents = new RemoveComponents(this.componentProvider);
     this.removeComponentsReport = removeComponents.getReport();
-    const moveToComponents = new MoveToComponents(this.parsedDocument);
+    const moveToComponents = new MoveToComponents(this.componentProvider);
     this.moveToComponentsReport = moveToComponents.getReport();
 
     return {

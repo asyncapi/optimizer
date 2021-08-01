@@ -1,14 +1,13 @@
 import { OptimizerInterface } from '../Models/OptimizerInterface';
 import { ReportElement } from '../Models/Report';
 import { ComponentProvider } from '../ComponentProvider';
-import { AsyncAPIDocument } from '@asyncapi/parser';
 import { isEqual, isInComponents } from '../Utils';
 
 export class RemoveComponents implements OptimizerInterface {
   provider: ComponentProvider;
 
-  constructor(private document: AsyncAPIDocument) {
-    this.provider = ComponentProvider.getInstance(document);
+  constructor(private componentProvider: ComponentProvider) {
+    this.provider = componentProvider;
   }
 
   getReport = (): ReportElement[] => {

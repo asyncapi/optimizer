@@ -1,5 +1,4 @@
 import { ReportElement } from '../Models/Report';
-import { AsyncAPIDocument } from '@asyncapi/parser';
 import { ComponentProvider } from '../ComponentProvider';
 import { isEqual, isInChannels, isInComponents } from '../Utils';
 import { OptimizerInterface } from '../Models/OptimizerInterface';
@@ -12,8 +11,8 @@ import { OptimizerInterface } from '../Models/OptimizerInterface';
 export class ReuseComponents implements OptimizerInterface {
   provider: ComponentProvider;
 
-  constructor(private document: AsyncAPIDocument) {
-    this.provider = ComponentProvider.getInstance(document);
+  constructor(private componentProvider: ComponentProvider) {
+    this.provider = componentProvider;
   }
 
   /**
