@@ -50,6 +50,15 @@ export class MoveToComponents implements OptimizerInterface {
     }
     return true;
   }
+  doesHaveACopy = (searchValue: any,components: Map<string, any>): boolean => {
+    for (const [key, value] of components) {
+      if (!isInComponents(key)) {continue; }
+      if (isEqual(searchValue, value, true)) {
+        return true;
+      }
+    }
+    return false;
+  }
   findDuplicateComponents = (components: Map<string, any>, componentType: string): ReportElement[] => {
     const elements = [] as ReportElement[];
     let counter = 1;
@@ -58,6 +67,10 @@ export class MoveToComponents implements OptimizerInterface {
       if (!matchedKey) {continue;}
       const shouldCreateNewEntry = this.reuseOldEntry(key1,matchedKey, elements);
       if (!shouldCreateNewEntry) { continue; }
+      
+      //check if the component already has a copy in components section of the specification. If it already has then we don't need to apply this optimization. 
+      //It will be taken care of by ReuseComponents
+      if (this.doesHaveACopy(value1, components)) { continue; }
       const componentName = value1.json().name || `${componentType}-${counter++}`;
       const target = `components.${componentType}s.${componentName}`;
       elements.push({

@@ -2,7 +2,7 @@ import { OptimizerInterface } from '../Models/OptimizerInterface';
 import { ReportElement } from '../Models/Report';
 import { ComponentProvider } from '../ComponentProvider';
 import { AsyncAPIDocument } from '@asyncapi/parser';
-import { isEqual } from '../Utils';
+import { isEqual, isInComponents } from '../Utils';
 
 export class RemoveComponents implements OptimizerInterface {
   provider: ComponentProvider;
@@ -22,7 +22,7 @@ export class RemoveComponents implements OptimizerInterface {
     const elements = [];
     for (const [key1, value1] of components) {
       let isUsed = false;
-      if (!key1.startsWith('components.')) {
+      if (!isInComponents(key1)) {
         continue;
       }
       for (const [key2, value2] of components) {
