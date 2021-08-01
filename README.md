@@ -96,7 +96,7 @@ optimizer.getReport().then(report => {
   console.log(report);
   const optimizedDocument = optimizer.getOptimizedDocument({ rules: {
     reuseComponents: true,
-    removeComponents: false,
+    removeComponents: true,
     moveToComponents: true
   }});
   console.log(optimizedDocument);
@@ -104,6 +104,7 @@ optimizer.getReport().then(report => {
 
 export { Optimizer };
 ```
+4) run `npm run run`.
 ## Usage
 
 ### Node.js

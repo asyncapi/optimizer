@@ -46,7 +46,7 @@ export class Optimizer {
       moveToComponents: this.moveToComponentsReport
     };
   }
-
+  sortFunction = (a: ReportElement, b: ReportElement): number => b.path.length - a.path.length;
   getOptimizedDocument = (options: Options): string => {
     const defaultOptions = {
       rules: {
@@ -58,7 +58,7 @@ export class Optimizer {
     options = merge(defaultOptions, options);
     this.outputObject = YAML.parse(this.YAMLorJSON);
     if (options.rules?.moveToComponents) {
-      this.moveToComponentsReport = this.moveToComponentsReport.sort((a, b) => b.path.length - a.path.length);
+      this.moveToComponentsReport = this.moveToComponentsReport.sort(this.sortFunction);
       this.applyChanges(this.moveToComponentsReport);
     }
     if (options.rules?.reuseComponents) {
