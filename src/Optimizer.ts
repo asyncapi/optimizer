@@ -1,10 +1,9 @@
-import { Report } from './Models/Report';
+import { Report, ReportElement } from './Models/Report';
 import { parse } from '@asyncapi/parser';
 import { RemoveComponents } from './Optimizers/RemoveComponents';
 import { MoveToComponents } from './Optimizers/MoveToComponents';
 import { ReuseComponents } from './Optimizers/ReuseComponents';
 import { Options } from './Models/Options';
-import { ReportElement } from './Models/Report';
 import YAML from 'yaml';
 import merge from 'merge-deep';
 import * as _ from 'lodash';
@@ -59,7 +58,8 @@ export class Optimizer {
     options = merge(defaultOptions, options);
     this.outputObject = YAML.parse(this.YAMLorJSON);
     if (options.rules?.moveToComponents) {
-      this.applyChanges(this.moveToComponentsReport.sort((a, b) => b.path.length - a.path.length));
+      this.moveToComponentsReport = this.moveToComponentsReport.sort((a, b) => b.path.length - a.path.length);
+      this.applyChanges(this.moveToComponentsReport);
     }
     if (options.rules?.reuseComponents) {
       this.applyChanges(this.reuseComponentsReport);
