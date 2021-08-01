@@ -248,14 +248,12 @@ the optimizedDocument value will be:
 asyncapi: 2.0.0
 info:
   title: Streetlights API
-  version: '1.0.0'
-
+  version: 1.0.0
 channels:
-
-  smartylighting/event/{streetlightId}/lighting/measured:
+  "smartylighting/event/{streetlightId}/lighting/measured":
     parameters:
       streetlightId:
-        $ref: "#/components/schemas/streetlightId"
+        $ref: "#/components/parameters/parameter-1"
     subscribe:
       operationId: receiveLightMeasurement
       traits:
@@ -268,26 +266,19 @@ channels:
         contentType: application/json
         traits:
           - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
+              $ref: "#/components/schemas/schema-1"
         payload:
           type: object
           properties:
             lumens:
               type: integer
               minimum: 0
-            #full form is used, we can ref it to: #/components/schemas/sentAt
             sentAt:
               $ref: "#/components/schemas/sentAt"
-
-  smartylighting/action/{streetlightId}/turn/on:
+  "smartylighting/action/{streetlightId}/turn/on":
     parameters:
       streetlightId:
-        $ref: "#/components/schemas/streetlightId"
+        $ref: "#/components/parameters/parameter-1"
     publish:
       operationId: turnOn
       traits:
@@ -299,28 +290,30 @@ channels:
         title: Turn on/off
         traits:
           - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
+              $ref: "#/components/schemas/schema-1"
         payload:
           type: object
           properties:
             sentAt:
               $ref: "#/components/schemas/sentAt"
-
 components:
-  parameters:
-    streetlightId:
-      schema:
-      type: string
   schemas:
-    #this schema is ref-ed in one channel and used full form in another. library should be able to identify and ref the second channel as well.
     sentAt:
       type: string
-      format: date-time`
+      format: date-time
+    schema-2:
+      type: integer
+      minimum: 0
+      maximum: 100
+    schema-1:
+      type: object
+      properties:
+        my-app-header:
+          $ref: "#/components/schemas/schema-2"
+  parameters:
+    parameter-1:
+      schema:
+        type: string`
  */
 ```
 
