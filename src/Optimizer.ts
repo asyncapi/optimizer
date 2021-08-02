@@ -58,7 +58,7 @@ export class Optimizer {
     options = merge(defaultOptions, options);
     this.outputObject = YAML.parse(this.YAMLorJSON);
     if (options.rules?.moveToComponents) {
-      this.moveToComponentsReport = this.moveToComponentsReport.sort(this.sortFunction);
+      this.moveToComponentsReport.sort(this.sortFunction);
       this.applyChanges(this.moveToComponentsReport);
     }
     if (options.rules?.reuseComponents) {
