@@ -1,4 +1,4 @@
-# optimizer
+# Optimizer
 AsyncAPI offers many ways to reuse certain parts of the document like messages or schemas definitions or references to external files, not to even mention the traits. Purpose of **AsyncAPI Optimizer** is to enable different ways to optimize AsyncAPI files. It is a library that can be used in UIs and CLIs.
 ## Testing
 1) Clone the project
