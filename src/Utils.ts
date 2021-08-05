@@ -1,6 +1,9 @@
 
 import * as _ from 'lodash';
 
+const isExtension = (fieldName: string): boolean => {
+  return fieldName.startsWith('x-');
+};
 const backwardsCheck = (x: any, y: any): boolean => {
   for (const p in y) {
     if (_.has(y, p) && !_.has(x, p)) {return false;}
@@ -23,13 +26,15 @@ const compareComponents = (x: any, y: any): boolean => {
   // if they are not strictly equal, they both need to be Objects
   if (!(x instanceof Object) || !(y instanceof Object)) {return false;}
   for (const p in x) {
+    //extensions have different values for objects that are equal (duplicated.) If you don't skip the extensions this function always returns false.
+    if (isExtension(p)) {continue;}
     if (!_.has(x, p)) {continue;}
     
     // allows to compare x[ p ] and y[ p ] when set to undefined
     if (!_.has(y, p)) {return false;}
 
     // if they have the same strict value or identity then they are equal
-    if (x[String(p)] === y[String(p)] || p.startsWith('x-')) {continue;}
+    if (x[String(p)] === y[String(p)]) {continue;}
 
     // Numbers, Strings, Functions, Booleans must be strictly equal
     if (typeof (x[String(p)]) !== 'object') {return false;}
