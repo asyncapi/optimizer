@@ -17,9 +17,9 @@ const backwardsCheck = (x: any, y: any): boolean => {
  *
  * this recursive function is responsible for comparing two component.
  *
- * @param x - the first component that we are going to compare.
- * @param y - the second component that we are going to compare.
- * @returns true, if both components are identical; false, if the components are not identical.
+ * @param {any} x - the first component that we are going to compare.
+ * @param {any} y - the second component that we are going to compare.
+ * @returns {boolean } true, if both components are identical; false, if the components are not identical.
  *
  */
 const compareComponents = (x: any, y: any): boolean => {
