@@ -1,5 +1,5 @@
 import type { Schema, Message, AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
-
+import { compareComponents } from './Utils';
 /**
  * This Singleton class will provide all sorts of data for optimizers.
  *
@@ -15,6 +15,11 @@ export class ComponentProvider {
     this.scanComponents();
   }
 
+  /**
+   * This function is responsible for scanning the document's channels section.
+   *
+   * @returns {void}
+   */
   private scanChannels = (): void => {
     const channels = this.document.channels();
     for (const channelName in channels) {
@@ -43,31 +48,129 @@ export class ComponentProvider {
       }
     }
   }
-  private scanHeader = (path: string, headers: any): void => {
-    this.schemas.set(path, headers);
-    const headersProperties = headers.properties;
-
-    for (const [propertyName, propertySchema] of Object.entries(headersProperties)) {
-      this.schemas.set(`${path}.properties.${propertyName}`, propertySchema as Schema);
+  /**
+   * This function is responsible for scanning any schema that is passed to it.
+   *
+   * @param {string} path - path of the schema that needs to be scanned.
+   * @param {Schema} schema - the actual schema object.
+   *
+   * @returns {void}
+   */
+  private scanSchema = (path: string, schema: Schema): void => {
+    this.schemas.set(path, schema);
+    const schemaProperties = schema.properties();
+    for (const [propertyName, propertySchema] of Object.entries(schemaProperties)) {
+      this.schemas.set(`${path}.properties.${propertyName}`, propertySchema);
     }
   }
-  private scanMessage = (path: string, message: Message): void => {
-    const payload = message.payload();
 
-    if (payload) {
-      this.schemas.set(`${path}.payload`, payload);
-      const payloadProperties = payload.properties();
-      for (const [propertyName, propertySchema] of Object.entries(payloadProperties)) {
-        this.schemas.set(`${path}.payload.properties.${propertyName}`, propertySchema);
+  /**
+   * This function will determine if a component is in its respective traits or not.
+   *
+   * @param {string} type - A string to pass the name of the child component. it should
+   * be the field name that is passed in childComponent field.
+   * @param {any} childComponent - this is the child component that needs to be checked.
+   * @param {any} parent - this is the childComponent's parent. it should contain traits filed.
+   * @returns {number} It will return 0 if childComponent is in traits and is completely taken from traits by parser.
+   * 1 if some filds were taken from traits.
+   * 2 if it was not found in traits.
+   *
+   * @example
+   *
+   *     isInTraits('payload', payload, message)
+   */
+  private isInTraits = (type: string, childComponent: any, parent: any): number => {
+    const traits = parent.extension('x-parser-original-traits');
+    if (Array.isArray(traits)) {
+      for (const trait of traits) {
+        for (const key in trait) {
+          if (key === type) {
+            if (compareComponents(childComponent.json(), trait[String(key)])) {
+              return 0;
+            }
+            return 1;
+          }
+        }
       }
     }
-    
-    //scanning the traits.
-    const traits = message.extension('x-parser-original-traits');
+    return 2;
+  }
+
+  /**
+   * This function will scan a component by name from traits of another component.
+   *
+   * @param {string} name - the name of the component that needs to be extracted from traits.
+   * @param {any} child - the child that needs to be scanned.
+   * @param {any} parent - this is the parent. it should contain traits to be scanned.
+   * @param {string} path - path of the parent.
+   * @returns {void}
+   *
+   * @example
+   *
+   *     scanInTrait('payload', payload, message, path)
+   */
+  private scanInTrait = (name: string, child: any, parent: any, path: string): void => {
+    const traits = parent.extension('x-parser-original-traits');
     for (let i = 0; i < traits.length; i++) {
-      if (Object.keys(traits[i]).includes('headers')) {this.scanHeader(`${path}.traits[${i}].headers`, message.headers());}
+      for (const key in traits[i]) {
+        if (key === name) {
+          this.scanSchema(`${path}.traits[${i}].${name}`, child);
+        }
+      }
     }
   }
+
+  /**
+   * This function will handle the cases which it is possible that the values of a
+   * field is coming from a trait.
+   *
+   * @param {string} name - the name of the component that needs to be extracted from traits.
+   * @param {string} parentPath - path of the parent.
+   * @param {any} child - the child that needs to be scanned.
+   * @param {any} parent - this is the parent. it should contain traits to be scanned.
+   * @returns {void}
+   *
+   * @example
+   *
+   *     handlePossibleInTraitsComponents('payload', path, payload, message)
+   */
+  private handlePossibleInTraitsComponents = (name: string, parentPath: string, child: any, parent: any) => {
+    switch (this.isInTraits(name, child, parent)) {
+    case 0:
+      this.scanInTrait(name, child, parent, parentPath);
+      break;
+    case 2:
+      this.scanSchema(`${parentPath}.${name}`, child);
+      break;
+    case 1:
+      console.log(`LOG: ${parentPath}.${name} can be optimized if it has its properties in traits or in filed (not in both places)`);
+      break;
+    }
+  }
+  /**
+   * This function is responsible for scanning any message that is passed to it.
+   *
+   * @param {string} path - path of the message that needs to be scanned.
+   * @param {Message} message - the actual message object.
+   *
+   * @returns {void}
+   */
+  private scanMessage = (path: string, message: Message): void => {
+    const payload = message.payload();
+    const headers = message.headers();
+    if (payload) {
+      this.handlePossibleInTraitsComponents('payload', path, payload, message);
+    }
+    
+    if (headers) {
+      this.handlePossibleInTraitsComponents('headers', path, headers, message);
+    }
+  }
+  /**
+   * This function is responsible for scanning the document's components section.
+   *
+   * @returns {void}
+   */
   private scanComponents = (): void => {
     const components = this.document.components();
     if (!components) {
