@@ -12,6 +12,10 @@
     "plugin:sonarjs/recommended",
     "plugin:security/recommended"
   ],
+  "env": {
+    "browser": true,
+    "node": true
+  },
   "rules": {
     "strict": 0,
     "object-curly-spacing": ["error", "always"],
@@ -162,7 +166,7 @@
         "nonwords": false
       }
     ],
-    "no-console": "error",
+    "no-console": "warn",
     "wrap-regex": 2,
     //"linebreak-style": ["error", "unix"],
     "linebreak-style": 0,
