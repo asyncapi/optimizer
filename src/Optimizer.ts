@@ -46,7 +46,21 @@ export class Optimizer {
       moveToComponents: this.moveToComponentsReport
     };
   }
-  sortFunction = (a: ReportElement, b: ReportElement): number => b.path.length - a.path.length;
+
+  /**
+   * this sort function can be used by .sort function to sort the {@link ReportElement} arrays.
+   *
+   *
+   */
+  private sortFunction = (a: ReportElement, b: ReportElement): number => b.path.length - a.path.length;
+
+  /**
+   * This function is used to get the optimized document after seeing the report.
+   *
+   * @param {Options} options - the options are a way to customize the final output.
+   * @returns {string } returns an stringified version of the YAML output.
+   *
+   */
   getOptimizedDocument = (options: Options): string => {
     const defaultOptions = {
       rules: {
@@ -70,14 +84,31 @@ export class Optimizer {
 
     return YAML.stringify(this.outputObject);
   }
-  removeEmptyParent = (childPath: string): void => {
+
+  /**
+   * Sometimes removing and optimizing components leaves the parent empty and an empty object is of no use. this function
+   * checks if the parent is empty or not, if empty it will remove it.
+   *
+   * @param {string} childPath - the path of the child that we need to check its parent.
+   * @returns {void}
+   *
+   */
+  private removeEmptyParent = (childPath: string): void => {
     const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
     const parent = _.get(this.outputObject, parentPath);
     if (Object.keys(parent).length === 0) {
       _.unset(this.outputObject, parentPath);
     }
   }
-  applyChanges = (changes: ReportElement[]): void => {
+
+  /**
+   * This function is used to apply an array of {@link ReportElement} changes on the result.
+   *
+   * @param {ReportElement[]} changes - A list of changes that needs to be applied.
+   * @returns {void}
+   *
+   */
+  private applyChanges = (changes: ReportElement[]): void => {
     for (const change of changes) {
       switch (change.action) {
       case 'move':
