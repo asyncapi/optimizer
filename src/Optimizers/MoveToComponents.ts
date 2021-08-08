@@ -10,7 +10,6 @@ export class MoveToComponents implements OptimizerInterface {
     this.provider = componentProvider;
   }
 
-  //yet to be implemented.
   getReport = (): ReportElement[] => {
     return this.findDuplicateComponents(this.provider.schemas, 'schema').concat(
       this.findDuplicateComponents(this.provider.messages, 'message'),
