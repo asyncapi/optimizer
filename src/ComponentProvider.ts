@@ -112,7 +112,7 @@ export class ComponentProvider {
   private scanInTrait = (name: string, child: any, parent: any, path: string): void => {
     const traits = parent.extension('x-parser-original-traits');
     for (let i = 0; i < traits.length; i++) {
-      for (const key in traits[i]) {
+      for (const key in traits[parseInt(`${i}`, 10)]) {
         if (key === name) {
           this.scanSchema(`${path}.traits[${i}].${name}`, child);
         }
@@ -143,7 +143,8 @@ export class ComponentProvider {
       this.scanSchema(`${parentPath}.${name}`, child);
       break;
     case 1:
-      console.log(`LOG: ${parentPath}.${name} can be optimized if it has its properties in traits or in filed (not in both places)`);
+      // When we have mixed components that has fields in both traits and
+      // in component itself. we ignore this case for now.
       break;
     }
   }
