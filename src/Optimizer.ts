@@ -35,10 +35,13 @@ export class Optimizer {
     }
     const reuseComponents = new ReuseComponents(this.componentProvider);
     this.reuseComponentsReport = reuseComponents.getReport();
+    this.reuseComponentsReport.sort(this.sortFunction);
     const removeComponents = new RemoveComponents(this.componentProvider);
     this.removeComponentsReport = removeComponents.getReport();
+    this.removeComponentsReport.sort(this.sortFunction);
     const moveToComponents = new MoveToComponents(this.componentProvider);
     this.moveToComponentsReport = moveToComponents.getReport();
+    this.moveToComponentsReport.sort(this.sortFunction);
 
     return {
       reuseComponents: this.reuseComponentsReport,
@@ -52,7 +55,7 @@ export class Optimizer {
    *
    *
    */
-  private sortFunction = (a: ReportElement, b: ReportElement): number => b.path.length - a.path.length;
+  private sortFunction = (a: ReportElement, b: ReportElement): number => { return (a.action.length - b.action.length || b.path.length - a.path.length);};
 
   /**
    * This function is used to get the optimized document after seeing the report.
@@ -71,12 +74,11 @@ export class Optimizer {
     };
     options = merge(defaultOptions, options);
     this.outputObject = YAML.parse(this.YAMLorJSON);
-    if (options.rules?.moveToComponents) {
-      this.moveToComponentsReport.sort(this.sortFunction);
-      this.applyChanges(this.moveToComponentsReport);
-    }
     if (options.rules?.reuseComponents) {
       this.applyChanges(this.reuseComponentsReport);
+    }
+    if (options.rules?.moveToComponents) {
+      this.applyChanges(this.moveToComponentsReport);
     }
     if (options.rules?.removeComponents) {
       this.applyChanges(this.removeComponentsReport);
@@ -100,7 +102,18 @@ export class Optimizer {
       _.unset(this.outputObject, parentPath);
     }
   }
-
+  /**
+   * this function will check if a component has parent or is a $ref to another component.
+   *
+   * @param {string} childPath - the path of child.
+   * @returns {void}
+   *
+   */
+  private hasParent = (childPath: string): boolean => {
+    const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
+    const parent = _.get(this.outputObject, parentPath);
+    return !(!parent || _.has(parent, '$ref'));
+  }
   /**
    * This function is used to apply an array of {@link ReportElement} changes on the result.
    *
@@ -110,17 +123,18 @@ export class Optimizer {
    */
   private applyChanges = (changes: ReportElement[]): void => {
     for (const change of changes) {
+      if (!this.hasParent(change.path)) {
+        continue;
+      }
       switch (change.action) {
       case 'move':
-        if (change.target) {
-          _.set(this.outputObject, change.target, _.get(this.outputObject, change.path));
-          _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
-        } else {
-          throw new Error('The target of report element for "move" should NOT be empty.');
-        }
+        _.set(this.outputObject, change.target as string, _.get(this.outputObject, change.path));
+        _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
         break;
       case 'reuse':
-        _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
+        if (_.get(this.outputObject, change.target as string)) {
+          _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
+        }
         break;
       case 'remove':
         _.unset(this.outputObject, change.path);
