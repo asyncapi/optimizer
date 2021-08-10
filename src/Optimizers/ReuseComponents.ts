@@ -1,7 +1,6 @@
-import { ReportElement } from '../Models/Report';
+import { Action, OptimizerInterface, ReportElement } from '../Models';
 import { ComponentProvider } from '../ComponentProvider';
 import { isEqual, isInChannels, isInComponents } from '../Utils';
-import { OptimizerInterface } from '../Models/OptimizerInterface';
 
 /**
  * This optimizer will find all of the components that are declared in _components_ section of the AsyncAPI spec that can be reused in other part of the spec and generate a detailed report of them.
@@ -28,7 +27,7 @@ export class ReuseComponents implements OptimizerInterface {
     );
   }
 
-  findDuplicateComponents = (component: Map<string, any>): ReportElement[] => {
+  private findDuplicateComponents = (component: Map<string, any>): ReportElement[] => {
     const elements = [];
     for (const [key1, value1] of component) {
       for (const [key2, value2] of component) {
@@ -39,7 +38,7 @@ export class ReuseComponents implements OptimizerInterface {
         if (isEqual(value1, value2, false)) {
           const element: ReportElement = {
             path: key1,
-            action: 'reuse',
+            action: Action.Reuse,
             target: key2
           };
           elements.push(element);
@@ -49,7 +48,7 @@ export class ReuseComponents implements OptimizerInterface {
     }
     return elements;
   }
-    isChannelToComponent = (path1: string, path2: string): boolean => {
-      return isInChannels(path1) && isInComponents(path2);
-    }
+  private isChannelToComponent = (path1: string, path2: string): boolean => {
+    return isInChannels(path1) && isInComponents(path2);
+  }
 }

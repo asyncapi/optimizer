@@ -1,5 +1,4 @@
-import { OptimizerInterface } from '../Models/OptimizerInterface';
-import { ReportElement } from '../Models/Report';
+import { Action, OptimizerInterface, ReportElement } from '../Models';
 import { ComponentProvider } from '../ComponentProvider';
 import { isEqual, isInComponents } from '../Utils';
 
@@ -17,7 +16,7 @@ export class RemoveComponents implements OptimizerInterface {
     );
   }
 
-  findUnusedComponents = (components: Map<string, any>): ReportElement[] => {
+  private findUnusedComponents = (components: Map<string, any>): ReportElement[] => {
     const elements = [];
     for (const [key1, value1] of components) {
       let isUsed = false;
@@ -35,7 +34,7 @@ export class RemoveComponents implements OptimizerInterface {
       if (!isUsed) {
         const element: ReportElement = {
           path: key1,
-          action: 'remove',
+          action: Action.Remove,
         };
         elements.push(element);
       }

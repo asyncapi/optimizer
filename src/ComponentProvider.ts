@@ -1,5 +1,7 @@
-import type { Schema, Message, AsyncAPIDocument, ChannelParameter } from '@asyncapi/parser';
+import type { AsyncAPIDocument, ChannelParameter, Message, Schema } from '@asyncapi/parser';
 import { compareComponents } from './Utils';
+import { ComponentStatus } from './Models';
+
 /**
  * This Singleton class will provide all sorts of data for optimizers.
  *
@@ -71,29 +73,27 @@ export class ComponentProvider {
    * be the field name that is passed in childComponent field.
    * @param {any} childComponent - this is the child component that needs to be checked.
    * @param {any} parent - this is the childComponent's parent. it should contain traits filed.
-   * @returns {number} It will return 0 if childComponent is in traits and is completely taken from traits by parser.
-   * 1 if some filds were taken from traits.
-   * 2 if it was not found in traits.
+   * @returns {ComponentStatus} Returns the location of the component.
    *
    * @example
    *
    *     isInTraits('payload', payload, message)
    */
-  private isInTraits = (type: string, childComponent: any, parent: any): number => {
+  private isInTraits = (type: string, childComponent: any, parent: any): ComponentStatus => {
     const traits = parent.extension('x-parser-original-traits');
     if (Array.isArray(traits)) {
       for (const trait of traits) {
         for (const key in trait) {
           if (key === type) {
             if (compareComponents(childComponent.json(), trait[String(key)])) {
-              return 0;
+              return ComponentStatus.InTrait;
             }
-            return 1;
+            return ComponentStatus.Mixed;
           }
         }
       }
     }
-    return 2;
+    return ComponentStatus.InField;
   }
 
   /**
@@ -136,13 +136,13 @@ export class ComponentProvider {
    */
   private handlePossibleInTraitsComponents = (name: string, parentPath: string, child: any, parent: any) => {
     switch (this.isInTraits(name, child, parent)) {
-    case 0:
+    case ComponentStatus.InTrait:
       this.scanInTrait(name, child, parent, parentPath);
       break;
-    case 2:
+    case ComponentStatus.InField:
       this.scanSchema(`${parentPath}.${name}`, child);
       break;
-    case 1:
+    case ComponentStatus.Mixed:
       // When we have mixed components that has fields in both traits and
       // in component itself. we ignore this case for now.
       break;

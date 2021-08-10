@@ -1,5 +1,4 @@
-import { OptimizerInterface } from '../Models/OptimizerInterface';
-import { ReportElement } from '../Models/Report';
+import { OptimizerInterface, ReportElement, Action } from '../Models';
 import { ComponentProvider } from '../ComponentProvider';
 import { isEqual, isInComponents } from '../Utils';
 
@@ -38,7 +37,7 @@ export class MoveToComponents implements OptimizerInterface {
       if (reportElement.path === matchedKey || reportElement.path === key) {
         const newElement = {
           path: key,
-          action: 'reuse',
+          action: Action.Reuse,
           target: reportElement.target
         };
 
@@ -78,12 +77,12 @@ export class MoveToComponents implements OptimizerInterface {
       const target = `components.${componentType}s.${componentName}`;
       elements.push({
         path: key1,
-        action: 'move',
+        action: Action.Move,
         target
       });
       elements.push({
         path: matchedKey,
-        action: 'reuse',
+        action: Action.Reuse,
         target
       });
     }

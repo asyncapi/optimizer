@@ -1,13 +1,11 @@
-import { Report, ReportElement } from './Models/Report';
+import { Action, Report, ReportElement, Options } from './Models';
 import { parse } from '@asyncapi/parser';
-import { RemoveComponents } from './Optimizers/RemoveComponents';
-import { MoveToComponents } from './Optimizers/MoveToComponents';
-import { ReuseComponents } from './Optimizers/ReuseComponents';
-import { Options } from './Models/Options';
+import { RemoveComponents, ReuseComponents, MoveToComponents } from './Optimizers';
 import YAML from 'yaml';
 import merge from 'merge-deep';
 import * as _ from 'lodash';
 import { ComponentProvider } from './ComponentProvider';
+
 /**
  * this class is the starting point of the library.
  * user will only interact with this class. here we generate different kind of reports using optimizers, apply changes and return the results to the user.
@@ -127,16 +125,18 @@ export class Optimizer {
         continue;
       }
       switch (change.action) {
-      case 'move':
+      case Action.Move:
         _.set(this.outputObject, change.target as string, _.get(this.outputObject, change.path));
         _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
         break;
-      case 'reuse':
+
+      case Action.Reuse:
         if (_.get(this.outputObject, change.target as string)) {
           _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
         }
         break;
-      case 'remove':
+
+      case Action.Remove:
         _.unset(this.outputObject, change.path);
         //if parent becomes empty after removing, parent should be removed as well.
         this.removeEmptyParent(change.path);

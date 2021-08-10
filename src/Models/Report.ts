@@ -1,6 +1,8 @@
+import { Action } from './Enums';
+
 export interface ReportElement {
   path: string;
-  action: string;
+  action: Action;
   target?: string;
 }
 
