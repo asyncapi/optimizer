@@ -112,7 +112,8 @@ export class ComponentProvider {
   private scanInTrait = (name: string, child: any, parent: any, path: string): void => {
     const traits = parent.extension('x-parser-original-traits');
     for (let i = 0; i < traits.length; i++) {
-      for (const key in traits[parseInt(`${i}`, 10)]) {
+      // eslint-disable-next-line security/detect-object-injection
+      for (const key in traits[i]) {
         if (key === name) {
           this.scanSchema(`${path}.traits[${i}].${name}`, child);
         }

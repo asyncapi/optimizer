@@ -96,7 +96,7 @@ export class Optimizer {
   private removeEmptyParent = (childPath: string): void => {
     const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
     const parent = _.get(this.outputObject, parentPath);
-    if (Object.keys(parent).length === 0) {
+    if (_.isEmpty(parent)) {
       _.unset(this.outputObject, parentPath);
     }
   }
@@ -110,7 +110,7 @@ export class Optimizer {
   private hasParent = (childPath: string): boolean => {
     const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
     const parent = _.get(this.outputObject, parentPath);
-    return !(!parent || _.has(parent, '$ref'));
+    return !(_.has(parent, '$ref'));
   }
   /**
    * This function is used to apply an array of {@link ReportElement} changes on the result.
