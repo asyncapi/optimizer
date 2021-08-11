@@ -4,15 +4,9 @@ import { ComponentProvider } from '../src/ComponentProvider';
 import { isInComponents } from '../src/Utils';
 
 describe('ComponentProvider', () => {
-  let componentProviderWithoutComponents: ComponentProvider;
-  let componentProviderWithComponents: ComponentProvider;
-  beforeAll(async () => {
-    let asyncapiDocument = await parse(asyncapiYAMLWithoutComponents);
-    componentProviderWithoutComponents = new ComponentProvider(asyncapiDocument);
-    asyncapiDocument = await parse(asyncapiYAML);
-    componentProviderWithComponents = new ComponentProvider(asyncapiDocument);
-  });
-  test('should not contain any component from components section', () => {
+  it('should not contain any component from components section', async () => {
+    const asyncapiDocument = await parse(asyncapiYAMLWithoutComponents);
+    const componentProviderWithoutComponents = new ComponentProvider(asyncapiDocument);
     for (const key of componentProviderWithoutComponents.parameters.keys()) {
       expect(isInComponents(key)).toBe(false);
     }
@@ -23,7 +17,10 @@ describe('ComponentProvider', () => {
       expect(isInComponents(key)).toBe(false);
     }
   });
-  test('should contain some components from components section', () => {
+
+  it('should contain some components from components section', async () => {
+    const asyncapiDocument = await parse(asyncapiYAML);
+    const componentProviderWithComponents = new ComponentProvider(asyncapiDocument);
     let inComponentsCounter = 0;
     for (const key of componentProviderWithComponents.parameters.keys()) {
       if (isInComponents(key)) {
