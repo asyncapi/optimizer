@@ -1,9 +1,7 @@
-import { MoveToComponents } from '../../src/Optimizers/MoveToComponents';
-import { asyncapiYAML } from '../inputs';
+import { MoveToComponents, ReuseComponents, RemoveComponents } from '../../src/Optimizers';
+import { asyncapiYAML } from '../fixtures';
 import { parse } from '@asyncapi/parser';
 import { ComponentProvider } from '../../src/ComponentProvider';
-import { RemoveComponents } from '../../src/Optimizers/RemoveComponents';
-import { ReuseComponents } from '../../src/Optimizers/ReuseComponents';
 
 const MoveToComponentsExpectedResult = [{ path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.subscribe.message.traits[0].headers', action: 'move', target: 'components.schemas.schema-1' }, { path: 'channels.smartylighting/action/{streetlightId}/turn/on.publish.message.traits[0].headers', action: 'reuse', target: 'components.schemas.schema-1' }, { path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.subscribe.message.traits[0].headers.properties.my-app-header', action: 'move', target: 'components.schemas.schema-2' }, { path: 'channels.smartylighting/action/{streetlightId}/turn/on.publish.message.traits[0].headers.properties.my-app-header', action: 'reuse', target: 'components.schemas.schema-2' }, { path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.parameters.streetlightId', action: 'move', target: 'components.parameters.parameter-1' }, { path: 'channels.smartylighting/action/{streetlightId}/turn/on.parameters.streetlightId', action: 'reuse', target: 'components.parameters.parameter-1' }];
 const RemoveComponentsExpectedResult = [{ path: 'components.messages.unusedMessage', action: 'remove' }, { path: 'components.parameters.unusedParameter', action: 'remove' }];

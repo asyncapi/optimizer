@@ -1,4 +1,4 @@
-const asyncapiYAMLWithoutComponents = `asyncapi: 2.0.0
+export const asyncapiYAMLWithoutComponents = `asyncapi: 2.0.0
 info:
   title: Streetlights API
   version: '1.0.0'
@@ -67,7 +67,7 @@ channels:
               type: string
               format: date-time`;
 
-const asyncapiYAML = `asyncapi: 2.0.0
+export const asyncapiYAML = `asyncapi: 2.0.0
 info:
   title: Streetlights API
   version: '1.0.0'
@@ -149,4 +149,3 @@ components:
     unusedParameter:
       schema:
         type: number`;
-export { asyncapiYAML, asyncapiYAMLWithoutComponents };

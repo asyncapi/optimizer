@@ -1,4 +1,4 @@
-import { asyncapiYAML } from './inputs';
+import { asyncapiYAML } from './fixtures';
 import { Optimizer } from '../src';
 
 const output = `asyncapi: 2.0.0
