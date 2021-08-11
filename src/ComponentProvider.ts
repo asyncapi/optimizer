@@ -5,7 +5,7 @@ import { ComponentStatus } from './Models';
 /**
  * This class will provide all sorts of data for optimizers.
  *
- * @public
+ * @private
  */
 export class ComponentProvider {
   messages = new Map<string, Message>();

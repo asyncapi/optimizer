@@ -12,7 +12,8 @@
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "get:version": "echo $npm_package_version",
     "get:name": "echo $npm_package_name",
-    "generate:assets": "npm run build",
+    "generate:readme:toc": "markdown-toc -i \"README.md\"",
+    "generate:assets": "npm run build && npm run docs && npm run generate:readme:toc",
     "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
     "release": "semantic-release"
   },
@@ -43,6 +44,7 @@
     "eslint-plugin-sonarjs": "^0.8.0-125",
     "jest": "^27.0.4",
     "jsdoc-to-markdown": "^7.0.1",
+    "markdown-toc": "^1.2.0",
     "semantic-release": "^17.4.4",
     "typescript": "^4.3.2"
   },

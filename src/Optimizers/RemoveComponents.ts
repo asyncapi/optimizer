@@ -4,7 +4,7 @@ import { isEqual, isInComponents } from '../Utils';
 /**
  * This optimizer will find all of the components that are declared in _components_ section of the AsyncAPI spec but are not used anywhere. So they can be deleted.
  *
- * @public
+ * @private
  */
 export class RemoveComponents implements OptimizerInterface {
   provider: ComponentProvider;

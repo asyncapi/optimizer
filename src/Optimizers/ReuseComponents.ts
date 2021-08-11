@@ -5,7 +5,7 @@ import { isEqual, isInChannels, isInComponents } from '../Utils';
 /**
  * This optimizer will find all of the components that are declared in _components_ section of the AsyncAPI spec that can be reused in other part of the spec and generate a detailed report of them.
  *
- * @public
+ * @private
  */
 export class ReuseComponents implements OptimizerInterface {
   provider: ComponentProvider;

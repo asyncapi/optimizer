@@ -1,5 +1,28 @@
-# Optimizer
-AsyncAPI offers many ways to reuse certain parts of the document like messages or schemas definitions or references to external files, not to even mention the traits. Purpose of **AsyncAPI Optimizer** is to enable different ways to optimize AsyncAPI files. It is a library that can be used in UIs and CLIs.
+<h5 align="center">
+  <br>
+  <a href="https://www.asyncapi.org"><img src="https://github.com/asyncapi/parser-nodejs/raw/master/assets/logo.png" alt="AsyncAPI logo" width="200"></a>
+  <br>
+  Optimizer
+</h5>
+<p align="center">
+  <em>AsyncAPI offers many ways to reuse certain parts of the document like messages or schemas definitions or references to external files, not to even mention the traits. Purpose of **AsyncAPI Optimizer** is to enable different ways to optimize AsyncAPI files. It is a library that can be used in UIs and CLIs.</em>
+</p>
+
+![npm](https://img.shields.io/npm/v/@asyncapi/optimizer?style=for-the-badge) ![npm](https://img.shields.io/npm/dt/@asyncapi/optimizer?style=for-the-badge)
+
+<!-- toc is generated with GitHub Actions do not remove toc markers -->
+
+<!-- toc -->
+
+- [Testing](#testing)
+- [Usage](#usage)
+  * [Node.js](#nodejs)
+  * [Generating report](#generating-report)
+  * [Applying the suggested changes](#applying-the-suggested-changes)
+- [API documentation](#api-documentation)
+
+<!-- tocstop -->
+
 ## Testing
 1) Clone the project
   `git https://github.com/asyncapi/optimizer.git`

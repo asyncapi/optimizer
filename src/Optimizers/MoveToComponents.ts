@@ -4,7 +4,7 @@ import { isEqual, isInComponents } from '../Utils';
 /**
  * This optimizer will find all of the components that are duplicated in _channels_ section of the AsyncAPI spec and can be moved to _components_ section and reused.
  *
- * @public
+ * @private
  */
 export class MoveToComponents implements OptimizerInterface {
   provider: ComponentProvider;

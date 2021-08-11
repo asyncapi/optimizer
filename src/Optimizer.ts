@@ -24,7 +24,7 @@ export class Optimizer {
 
   /**
    * @returns {Report} an object containing all of the optimizations that the library can do.
-   * @public
+   *
    */
   getReport = async (): Promise<Report> => {
     if (!this.componentProvider) {
@@ -51,7 +51,7 @@ export class Optimizer {
   /**
    * this sort function can be used by .sort function to sort the {@link ReportElement} arrays.
    *
-   *
+   * @private
    */
   private sortFunction = (a: ReportElement, b: ReportElement): number => { return (a.action.length - b.action.length || b.path.length - a.path.length);};
 
@@ -89,6 +89,7 @@ export class Optimizer {
    * Sometimes removing and optimizing components leaves the parent empty and an empty object is of no use. this function
    * checks if the parent is empty or not, if empty it will remove it.
    *
+   * @private
    * @param {string} childPath - the path of the child that we need to check its parent.
    * @returns {void}
    *
@@ -103,6 +104,7 @@ export class Optimizer {
   /**
    * this function will check if a component has parent or is a $ref to another component.
    *
+   * @private
    * @param {string} childPath - the path of child.
    * @returns {void}
    *
@@ -115,6 +117,7 @@ export class Optimizer {
   /**
    * This function is used to apply an array of {@link ReportElement} changes on the result.
    *
+   * @private
    * @param {ReportElement[]} changes - A list of changes that needs to be applied.
    * @returns {void}
    *
