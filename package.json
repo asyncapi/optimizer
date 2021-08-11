@@ -8,11 +8,13 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "build": "tsc",
+    "docs": "jsdoc2md lib/Optimizer.js -f lib/**/*.js > API.md",
     "example": "tsc && node examples/index.js",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "get:version": "echo $npm_package_version",
     "get:name": "echo $npm_package_name",
-    "generate:assets": "npm run build",
+    "generate:readme:toc": "markdown-toc -i README.md",
+    "generate:assets": "npm run build && npm run docs && npm run generate:readme:toc",
     "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
     "release": "semantic-release"
   },
@@ -44,7 +46,9 @@
     "semantic-release": "^17.4.4",
     "ts-jest": "^27.0.4",
     "conventional-changelog-conventionalcommits": "^4.6.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "jsdoc-to-markdown": "^7.0.1",
+    "markdown-toc": "^1.2.0"
   },
   "publishConfig": {
     "access": "public"
