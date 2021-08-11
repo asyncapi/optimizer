@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 /**
  * Checks if the field is an extention by checking its name.
  *
+ * @private
  * @param {string} fieldName - the name of the field.
  * @returns {boolean } true, if the field is an extension.
  *
@@ -18,11 +19,9 @@ const backwardsCheck = (x: any, y: any): boolean => {
 };
 
 /**
- * Compares two components.
- * @remarks
- *
  * this recursive function is responsible for comparing two component.
  *
+ * @private
  * @param {any} x - the first component that we are going to compare.
  * @param {any} y - the second component that we are going to compare.
  * @returns {boolean } true, if both components are identical; false, if the components are not identical.
@@ -53,6 +52,7 @@ const compareComponents = (x: any, y: any): boolean => {
 /**
  * Compares two components but also considers equality check. the referential equality check can be disabled by referentialEqualityCheck argument.
  *
+ * @private
  * @param {any} component1 - the first component that we are going to compare.
  * @param {any} component2 - the second component that we are going to compare.
  * @param {boolean} referentialEqualityCheck - this argument controls whether the referential equality should be checked or not.
@@ -69,6 +69,7 @@ const isEqual = (component1: any, component2: any, referentialEqualityCheck: boo
 /**
  * Checks if the component is located in `components` section of the file by its path.
  *
+ * @private
  * @param {string} path - the path of the component.
  * @returns {boolean } true, if the component is located in `components` section of the file.
  *
@@ -79,6 +80,7 @@ const isInComponents = (path: string): boolean => {
 /**
  * Checks if the component is located in `channels` section of the file by its path.
  *
+ * @private
  * @param {string} path - the path of the component.
  * @returns {boolean } true, if the component is located in `channels` section of the file.
  *

@@ -3,9 +3,9 @@ import { compareComponents } from './Utils';
 import { ComponentStatus } from './Models';
 
 /**
- * This Singleton class will provide all sorts of data for optimizers.
+ * This class will provide all sorts of data for optimizers.
  *
- * @public
+ * @private
  */
 export class ComponentProvider {
   messages = new Map<string, Message>();

@@ -5,7 +5,7 @@ import { isEqual, isInChannels, isInComponents } from '../Utils';
 /**
  * This optimizer will find all of the components that are declared in _components_ section of the AsyncAPI spec that can be reused in other part of the spec and generate a detailed report of them.
  *
- * @public
+ * @private
  */
 export class ReuseComponents implements OptimizerInterface {
   provider: ComponentProvider;
@@ -17,8 +17,7 @@ export class ReuseComponents implements OptimizerInterface {
   /**
    * After initializing this class, getReport function can be used to generate a report of components that can be reused.
    *
-   * @returns ReportElement[]
-   * @defaultValue `true`
+   * @returns {ReportElement[]} a list of elements that can be reused.
    */
   getReport = (): ReportElement[] => {
     return this.findDuplicateComponents(this.provider.schemas).concat(

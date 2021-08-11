@@ -7,11 +7,13 @@
   "scripts": {
     "test": "echo \"No test specified\"",
     "build": "tsc",
+    "docs": "jsdoc2md lib/Optimizer.js -f lib/**/*.js > API.md",
     "example": "tsc && node examples/index.js",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
     "get:version": "echo $npm_package_version",
     "get:name": "echo $npm_package_name",
-    "generate:assets": "npm run build",
+    "generate:readme:toc": "markdown-toc -i README.md",
+    "generate:assets": "npm run build && npm run docs && npm run generate:readme:toc",
     "bump:version": "npm --no-git-tag-version --allow-same-version version $VERSION",
     "release": "semantic-release"
   },
@@ -35,14 +37,16 @@
     "@types/node": "^15.12.1",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",
+    "conventional-changelog-conventionalcommits": "^4.6.0",
     "eslint": "^7.28.0",
     "eslint-plugin-github": "^4.1.3",
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-sonarjs": "^0.8.0-125",
     "jest": "^27.0.4",
+    "jsdoc-to-markdown": "^7.0.1",
+    "markdown-toc": "^1.2.0",
     "semantic-release": "^17.4.4",
-    "typescript": "^4.3.2",
-    "conventional-changelog-conventionalcommits": "^4.6.0"
+    "typescript": "^4.3.2"
   },
   "publishConfig": {
     "access": "public"
