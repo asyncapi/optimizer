@@ -17,8 +17,7 @@ export class ReuseComponents implements OptimizerInterface {
   /**
    * After initializing this class, getReport function can be used to generate a report of components that can be reused.
    *
-   * @returns ReportElement[]
-   * @defaultValue `true`
+   * @returns {ReportElement[]} a list of elements that can be reused.
    */
   getReport = (): ReportElement[] => {
     return this.findDuplicateComponents(this.provider.schemas).concat(

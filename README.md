@@ -218,21 +218,8 @@ components:
  */
 ```
 
-## API
+## API documentation
 
-### Constructor
+For using the optimizer to optimize file you just need to import the `Optimizer` class. Use its two methods to get the report (`getReport()`) and get the optimized document (`getOptimizedDocument()`).
 
-#### new Optimizer(document)
-
-`document` is a mandatory object which is a string of asyncapi yaml file:
-
-### Methods
-
-#### getReport(): Promise<OptimizerReport>
-`OptimizerReport` is an object that will be returned by this function. This object will contain all the suggested changes by the optimizer grouped by their category.
-#### getOptimizedDocument([options]): string
-`options` is an OPTIONAL object that contains the following customizations:
-* `rules` using rules different optimization types can be enabled or disabled.
-    * `reuseComponents` if set to true, optimizer will apply all of *reuseComponents* changes from report. (default: *true*)
-    * `removeComponents` if set to true, optimizer will apply all of *removeComponents* changes from report. (default: *true*)
-    * `moveToComponents` if set to true, optimizer will apply all of *moveToComponents* changes from report. (default: *true*) 
+See [API documentation](/API.md) for more example and full API reference information.

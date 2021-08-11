@@ -23,7 +23,7 @@ export class Optimizer {
   }
 
   /**
-   * @returns a {@link Report} object containing all of the optimizations that the library can do.
+   * @returns {Report} an object containing all of the optimizations that the library can do.
    * @public
    */
   getReport = async (): Promise<Report> => {

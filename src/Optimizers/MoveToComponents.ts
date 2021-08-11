@@ -1,14 +1,22 @@
 import { OptimizerInterface, ReportElement, Action } from '../Models';
 import { ComponentProvider } from '../ComponentProvider';
 import { isEqual, isInComponents } from '../Utils';
-
+/**
+ * This optimizer will find all of the components that are duplicated in _channels_ section of the AsyncAPI spec and can be moved to _components_ section and reused.
+ *
+ * @public
+ */
 export class MoveToComponents implements OptimizerInterface {
   provider: ComponentProvider;
 
   constructor(private componentProvider: ComponentProvider) {
     this.provider = componentProvider;
   }
-
+  /**
+   * After initializing this class, getReport function can be used to generate a report of components that are duplicated and can be moved to _components_ section.
+   *
+   * @returns {ReportElement[]} a list of all the components that can be moved to _components_.
+   */
   getReport = (): ReportElement[] => {
     return this.findDuplicateComponents(this.provider.schemas, 'schema').concat(
       this.findDuplicateComponents(this.provider.messages, 'message'),
