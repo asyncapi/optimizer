@@ -2,7 +2,7 @@ import { compareComponents, isEqual, isInComponents, isInChannels } from '../../
 
 describe('Helpers', () => {
   const testObject1 = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'string', 'x-extension': 'different_value' } } }) };
-  const testObject1_copy = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'string', 'x-extension': 'value' } } })};
+  const testObject1_copy = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'string', 'x-extension': 'value' } } }) };
   const testObject2 = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'number' } } }) };
   const testObject2_reference = testObject2;
 
