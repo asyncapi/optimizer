@@ -5,7 +5,8 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "test": "echo \"No test specified\"",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
     "build": "tsc",
     "docs": "jsdoc2md lib/Optimizer.js -f lib/**/*.js > API.md",
     "example": "tsc && node examples/index.js",
@@ -31,7 +32,7 @@
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/github": "^7.2.3",
     "@semantic-release/npm": "^7.1.3",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.171",
     "@types/merge-deep": "^3.0.0",
     "@types/node": "^15.12.1",
