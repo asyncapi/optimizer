@@ -66,7 +66,7 @@ export class ComponentProvider {
   }
 
   /**
-   * This function will scan a component by name from traits of another component.
+   * This function will scan traits of messages.
    *
    * @param {string} path - path of the current messageTraits.
    * @param {MessageTrait[]} traits - message traits that is going to be scanned.
