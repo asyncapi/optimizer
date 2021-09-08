@@ -3,9 +3,3 @@ export enum Action {
   Remove = 'remove',
   Reuse = 'reuse'
 }
-
-export enum ComponentStatus {
-  InTrait,
-  Mixed,
-  InField
-}
