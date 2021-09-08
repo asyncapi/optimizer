@@ -28,7 +28,7 @@ export class Optimizer {
    */
   getReport = async (): Promise<Report> => {
     if (!this.componentProvider) {
-      const parsedDocument = await parse(this.YAMLorJSON);
+      const parsedDocument = await parse(this.YAMLorJSON, { applyTraits: false });
       this.componentProvider = new ComponentProvider(parsedDocument);
     }
     const reuseComponents = new ReuseComponents(this.componentProvider);

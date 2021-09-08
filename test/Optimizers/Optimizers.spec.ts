@@ -10,7 +10,7 @@ const ReuseComponentsExpectedResult = [{ path: 'channels.smartylighting/event/{s
 describe('Optimizers', () => {
   let componentProvider: ComponentProvider;
   beforeAll(async () => {
-    const asyncapiDocument = await parse(asyncapiYAML);
+    const asyncapiDocument = await parse(asyncapiYAML, { applyTraits: false });
     componentProvider = new ComponentProvider(asyncapiDocument);
   });
   describe('MoveToComponents', () => {
