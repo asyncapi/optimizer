@@ -5,7 +5,7 @@ import { isInComponents } from '../src/Utils';
 
 describe('ComponentProvider', () => {
   it('should not contain any component from components section', async () => {
-    const asyncapiDocument = await parse(asyncapiYAMLWithoutComponents);
+    const asyncapiDocument = await parse(asyncapiYAMLWithoutComponents, { applyTraits: false });
     const componentProviderWithoutComponents = new ComponentProvider(asyncapiDocument);
     for (const key of componentProviderWithoutComponents.parameters.keys()) {
       expect(isInComponents(key)).toBe(false);
