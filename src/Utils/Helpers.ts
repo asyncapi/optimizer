@@ -1,5 +1,6 @@
 
 import * as _ from 'lodash';
+import YAML from 'yaml';
 /**
  * Checks if the field is an extention by checking its name.
  *
@@ -88,4 +89,15 @@ const isInComponents = (path: string): boolean => {
 const isInChannels = (path: string): boolean => {
   return path.startsWith('channels.');
 };
-export { compareComponents, isEqual, isInComponents, isInChannels };
+const toJS = (asyncapiYAMLorJSON: any): any => {
+  if (asyncapiYAMLorJSON.constructor && asyncapiYAMLorJSON.constructor.name === 'Object') {
+    return JSON.parse(JSON.stringify(asyncapiYAMLorJSON));
+  } 
+  if (typeof asyncapiYAMLorJSON === 'string') {
+    if (asyncapiYAMLorJSON.trimLeft().startsWith('{')) {
+      return JSON.parse(asyncapiYAMLorJSON);
+    } 
+    return YAML.parse(asyncapiYAMLorJSON);
+  }
+};
+export { compareComponents, isEqual, isInComponents, isInChannels, toJS };
