@@ -1,5 +1,5 @@
 import { MoveToComponents, ReuseComponents, RemoveComponents } from '../../src/Optimizers';
-import { asyncapiYAML } from '../fixtures';
+import { inputYAML } from '../fixtures';
 import { parse } from '@asyncapi/parser';
 import { ComponentProvider } from '../../src/ComponentProvider';
 
@@ -10,7 +10,7 @@ const ReuseComponentsExpectedResult = [{ path: 'channels.smartylighting/event/{s
 describe('Optimizers', () => {
   let componentProvider: ComponentProvider;
   beforeAll(async () => {
-    const asyncapiDocument = await parse(asyncapiYAML, { applyTraits: false });
+    const asyncapiDocument = await parse(inputYAML, { applyTraits: false });
     componentProvider = new ComponentProvider(asyncapiDocument);
   });
   describe('MoveToComponents', () => {

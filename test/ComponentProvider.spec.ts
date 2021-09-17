@@ -1,4 +1,4 @@
-import { asyncapiYAMLWithoutComponents, asyncapiYAML } from './fixtures';
+import { asyncapiYAMLWithoutComponents, inputYAML } from './fixtures';
 import { parse } from '@asyncapi/parser';
 import { ComponentProvider } from '../src/ComponentProvider';
 import { isInComponents } from '../src/Utils';
@@ -19,7 +19,7 @@ describe('ComponentProvider', () => {
   });
 
   it('should contain some components from components section', async () => {
-    const asyncapiDocument = await parse(asyncapiYAML);
+    const asyncapiDocument = await parse(inputYAML);
     const componentProviderWithComponents = new ComponentProvider(asyncapiDocument);
     let inComponentsCounter = 0;
     for (const key of componentProviderWithComponents.parameters.keys()) {
