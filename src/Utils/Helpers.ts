@@ -94,9 +94,6 @@ const toJS = (asyncapiYAMLorJSON: any): any => {
     return JSON.parse(JSON.stringify(asyncapiYAMLorJSON));
   } 
   if (typeof asyncapiYAMLorJSON === 'string') {
-    if (asyncapiYAMLorJSON.trimLeft().startsWith('{')) {
-      return JSON.parse(asyncapiYAMLorJSON);
-    } 
     return YAML.parse(asyncapiYAMLorJSON);
   }
 };
