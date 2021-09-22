@@ -1,6 +1,6 @@
 
 import * as _ from 'lodash';
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 /**
  * Checks if the field is an extention by checking its name.
  *
@@ -94,7 +94,7 @@ const toJS = (asyncapiYAMLorJSON: any): any => {
     return JSON.parse(JSON.stringify(asyncapiYAMLorJSON));
   } 
   if (typeof asyncapiYAMLorJSON === 'string') {
-    return YAML.parse(asyncapiYAMLorJSON);
+    return YAML.load(asyncapiYAMLorJSON);
   }
 };
 export { compareComponents, isEqual, isInComponents, isInChannels, toJS };

@@ -1,7 +1,7 @@
 import { Action, Report, ReportElement, Options, Output } from './Models';
 import { parse } from '@asyncapi/parser';
 import { RemoveComponents, ReuseComponents, MoveToComponents } from './Optimizers';
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 import merge from 'merge-deep';
 import * as _ from 'lodash';
 import { ComponentProvider } from './ComponentProvider';
@@ -86,7 +86,7 @@ export class Optimizer {
     if (options.output === Output.JSON) {
       return JSON.stringify(this.outputObject);
     }
-    return YAML.stringify(this.outputObject);
+    return YAML.dump(this.outputObject);
   }
 
   /**

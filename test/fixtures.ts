@@ -154,10 +154,10 @@ info:
   title: Streetlights API
   version: 1.0.0
 channels:
-  "smartylighting/event/{streetlightId}/lighting/measured":
+  smartylighting/event/{streetlightId}/lighting/measured:
     parameters:
       streetlightId:
-        $ref: "#/components/parameters/parameter-1"
+        $ref: '#/components/parameters/parameter-1'
     subscribe:
       operationId: receiveLightMeasurement
       traits:
@@ -170,7 +170,7 @@ channels:
         contentType: application/json
         traits:
           - headers:
-              $ref: "#/components/schemas/schema-1"
+              $ref: '#/components/schemas/schema-1'
         payload:
           type: object
           properties:
@@ -178,11 +178,11 @@ channels:
               type: integer
               minimum: 0
             sentAt:
-              $ref: "#/components/schemas/sentAt"
-  "smartylighting/action/{streetlightId}/turn/on":
+              $ref: '#/components/schemas/sentAt'
+  smartylighting/action/{streetlightId}/turn/on:
     parameters:
       streetlightId:
-        $ref: "#/components/parameters/parameter-1"
+        $ref: '#/components/parameters/parameter-1'
     publish:
       operationId: turnOn
       traits:
@@ -194,12 +194,12 @@ channels:
         title: Turn on/off
         traits:
           - headers:
-              $ref: "#/components/schemas/schema-1"
+              $ref: '#/components/schemas/schema-1'
         payload:
           type: object
           properties:
             sentAt:
-              $ref: "#/components/schemas/sentAt"
+              $ref: '#/components/schemas/sentAt'
 components:
   schemas:
     sentAt:
@@ -213,7 +213,7 @@ components:
       type: object
       properties:
         my-app-header:
-          $ref: "#/components/schemas/schema-2"
+          $ref: '#/components/schemas/schema-2'
   parameters:
     parameter-1:
       schema:
