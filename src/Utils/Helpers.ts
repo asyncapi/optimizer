@@ -91,6 +91,8 @@ const isInChannels = (path: string): boolean => {
 };
 const toJS = (asyncapiYAMLorJSON: any): any => {
   if (asyncapiYAMLorJSON.constructor && asyncapiYAMLorJSON.constructor.name === 'Object') {
+    //NOTE: this approach can have problem with circular references between object and JSON.stringify doesn't support it.
+    //more info: https://github.com/asyncapi/parser-js/issues/293
     return JSON.parse(JSON.stringify(asyncapiYAMLorJSON));
   } 
   if (typeof asyncapiYAMLorJSON === 'string') {
