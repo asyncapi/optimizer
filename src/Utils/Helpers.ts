@@ -97,6 +97,7 @@ const toJS = (asyncapiYAMLorJSON: any): any => {
   } 
   if (typeof asyncapiYAMLorJSON === 'string') {
     return YAML.load(asyncapiYAMLorJSON);
-  }
+  } 
+  throw new Error('Unknown input: Please make sure that your input is an Object/String of a valid AsyncAPI specification document.');
 };
 export { compareComponents, isEqual, isInComponents, isInChannels, toJS };
