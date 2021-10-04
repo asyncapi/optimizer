@@ -9,7 +9,7 @@ user will only interact with this class. here we generate different kind of repo
 
 * [Optimizer](#Optimizer)
     * [.getReport()](#Optimizer+getReport) ⇒ <code>Report</code>
-    * [.getOptimizedDocument(options)](#Optimizer+getOptimizedDocument) ⇒ <code>string</code>
+    * [.getOptimizedDocument([Options])](#Optimizer+getOptimizedDocument) ⇒ <code>string</code>
 
 <a name="Optimizer+getReport"></a>
 
@@ -18,7 +18,7 @@ user will only interact with this class. here we generate different kind of repo
 **Returns**: <code>Report</code> - an object containing all of the optimizations that the library can do.  
 <a name="Optimizer+getOptimizedDocument"></a>
 
-### optimizer.getOptimizedDocument(options) ⇒ <code>string</code>
+### optimizer.getOptimizedDocument([Options]) ⇒ <code>string</code>
 This function is used to get the optimized document after seeing the report.
 
 **Kind**: instance method of [<code>Optimizer</code>](#Optimizer)  
@@ -26,5 +26,5 @@ This function is used to get the optimized document after seeing the report.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options | <code>Options</code> | the options are a way to customize the final output. |
+| [Options] | <code>Options</code> | the options are a way to customize the final output. |
 
