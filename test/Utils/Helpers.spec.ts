@@ -1,4 +1,6 @@
-import { compareComponents, isEqual, isInComponents, isInChannels } from '../../src/Utils';
+import YAML from 'yaml';
+import _ from 'lodash';
+import { compareComponents, isEqual, isInComponents, isInChannels, toJS } from '../../src/Utils';
 
 describe('Helpers', () => {
   const testObject1 = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'string', 'x-extension': 'different_value' } } }) };
@@ -37,6 +39,16 @@ describe('Helpers', () => {
     });
   });
 
+  describe('toJS', () => {
+    const json_object = { components: { messages: { unusedMessage: { name: 'unusedMessage', title: 'Thismessageisnotusedinanychannel.' } } } };
+    const json_string = JSON.stringify(json_object);
+    const yaml_string = YAML.stringify(json_object);
+    test('should convert all input types to Object.', () => {
+      expect(_.isEqual(toJS(json_object), json_object)).toEqual(true);
+      expect(_.isEqual(toJS(json_string), json_object)).toEqual(true);
+      expect(_.isEqual(toJS(yaml_string), json_object)).toEqual(true);
+    });
+  });
   describe('isInChannels', () => {
     test('should return true.', () => {
       expect(isInChannels('channels.channel1.message')).toEqual(true);

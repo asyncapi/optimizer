@@ -1,5 +1,6 @@
 
 import * as _ from 'lodash';
+import YAML from 'js-yaml';
 /**
  * Checks if the field is an extention by checking its name.
  *
@@ -88,4 +89,15 @@ const isInComponents = (path: string): boolean => {
 const isInChannels = (path: string): boolean => {
   return path.startsWith('channels.');
 };
-export { compareComponents, isEqual, isInComponents, isInChannels };
+const toJS = (asyncapiYAMLorJSON: any): any => {
+  if (asyncapiYAMLorJSON.constructor && asyncapiYAMLorJSON.constructor.name === 'Object') {
+    //NOTE: this approach can have problem with circular references between object and JSON.stringify doesn't support it.
+    //more info: https://github.com/asyncapi/parser-js/issues/293
+    return JSON.parse(JSON.stringify(asyncapiYAMLorJSON));
+  } 
+  if (typeof asyncapiYAMLorJSON === 'string') {
+    return YAML.load(asyncapiYAMLorJSON);
+  } 
+  throw new Error('Unknown input: Please make sure that your input is an Object/String of a valid AsyncAPI specification document.');
+};
+export { compareComponents, isEqual, isInComponents, isInChannels, toJS };

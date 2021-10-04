@@ -1,10 +1,11 @@
-import { Action, Report, ReportElement, Options } from './Models';
+import { Action, Report, ReportElement, Options, Output } from './Models';
 import { parse } from '@asyncapi/parser';
 import { RemoveComponents, ReuseComponents, MoveToComponents } from './Optimizers';
-import YAML from 'yaml';
+import YAML from 'js-yaml';
 import merge from 'merge-deep';
 import * as _ from 'lodash';
 import { ComponentProvider } from './ComponentProvider';
+import { toJS } from './Utils';
 
 /**
  * this class is the starting point of the library.
@@ -19,7 +20,7 @@ export class Optimizer {
   moveToComponentsReport: ReportElement[] = [];
   outputObject = {};
   constructor(private YAMLorJSON: any) {
-
+    this.outputObject = toJS(this.YAMLorJSON);
   }
 
   /**
@@ -58,20 +59,20 @@ export class Optimizer {
   /**
    * This function is used to get the optimized document after seeing the report.
    *
-   * @param {Options} options - the options are a way to customize the final output.
+   * @param {Options=} Options - the options are a way to customize the final output.
    * @returns {string } returns an stringified version of the YAML output.
    *
    */
-  getOptimizedDocument = (options: Options): string => {
+  getOptimizedDocument = (options?: Options): string => {
     const defaultOptions = {
       rules: {
         reuseComponents: true,
         removeComponents: true,
         moveToComponents: true
-      }
+      },
+      output: Output.YAML
     };
     options = merge(defaultOptions, options);
-    this.outputObject = YAML.parse(this.YAMLorJSON);
     if (options.rules?.reuseComponents) {
       this.applyChanges(this.reuseComponentsReport);
     }
@@ -82,7 +83,10 @@ export class Optimizer {
       this.applyChanges(this.removeComponentsReport);
     }
 
-    return YAML.stringify(this.outputObject);
+    if (options.output === Output.JSON) {
+      return JSON.stringify(this.outputObject);
+    }
+    return YAML.dump(this.outputObject);
   }
 
   /**

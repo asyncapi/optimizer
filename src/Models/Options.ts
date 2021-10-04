@@ -1,3 +1,7 @@
+export enum Output {
+  JSON = 'JSON',
+  YAML = 'YAML'
+}
 interface Rules {
   reuseComponents?: boolean;
   removeComponents?: boolean;
@@ -5,4 +9,5 @@ interface Rules {
 }
 export interface Options {
   rules?: Rules;
+  output?: Output;
 }
