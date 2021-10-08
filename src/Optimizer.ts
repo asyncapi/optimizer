@@ -21,10 +21,8 @@ export class Optimizer {
   outputObject = {};
 
   /**
-   * You can initialize the Optimizer class using this constructor.
-   * @param {any} YAMLorJSON - YAML or JSON document that you want to optimize. you can pass Object, YAML or JSON version of your AsyncAPI document here.
+   * @param {any} YAMLorJSON - YAML or JSON document that you want to optimize. You can pass Object, YAML or JSON version of your AsyncAPI document here.
    */
-
   constructor(private YAMLorJSON: any) {
     this.outputObject = toJS(this.YAMLorJSON);
   }
