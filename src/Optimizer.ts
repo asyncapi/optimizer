@@ -61,7 +61,6 @@ export class Optimizer {
   private sortFunction = (a: ReportElement, b: ReportElement): number => { return (a.action.length - b.action.length || b.path.length - a.path.length);};
 
   /**
-   * The complete list of getOptimizedDocument configuration options used to parse the optimized document.
    * @typedef {Object} Rules
    * @property {Boolean=} reuseComponents - whether to reuse components from `components` section or not. Defaults to `true`.
    * @property {Boolean=} removeComponents - whether to remove un-used components from `components` section or not. Defaults to `true`.
@@ -69,7 +68,6 @@ export class Optimizer {
    */
 
   /**
-   * The complete list of getOptimizedDocument configuration options used to parse the optimized document.
    * @typedef {Object} Options
    * @property {Rules=} rules - the list of rules that specifies which type of optimizations should be applied.
    * @property {String=} output - specifies which type of output user wants, `'JSON'` or `'YAML'`. Defaults to `'YAML'`;
