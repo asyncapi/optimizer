@@ -19,6 +19,10 @@ export class Optimizer {
   removeComponentsReport: ReportElement[] = [];
   moveToComponentsReport: ReportElement[] = [];
   outputObject = {};
+
+  /**
+   * @param {any} YAMLorJSON - YAML or JSON document that you want to optimize. You can pass Object, YAML or JSON version of your AsyncAPI document here.
+   */
   constructor(private YAMLorJSON: any) {
     this.outputObject = toJS(this.YAMLorJSON);
   }
@@ -56,6 +60,18 @@ export class Optimizer {
    */
   private sortFunction = (a: ReportElement, b: ReportElement): number => { return (a.action.length - b.action.length || b.path.length - a.path.length);};
 
+  /**
+   * @typedef {Object} Rules
+   * @property {Boolean=} reuseComponents - whether to reuse components from `components` section or not. Defaults to `true`.
+   * @property {Boolean=} removeComponents - whether to remove un-used components from `components` section or not. Defaults to `true`.
+   * @property {Boolean=} moveToComponents - whether to move duplicated components to the `components` section or not. Defaults to `true`.
+   */
+
+  /**
+   * @typedef {Object} Options
+   * @property {Rules=} rules - the list of rules that specifies which type of optimizations should be applied.
+   * @property {String=} output - specifies which type of output user wants, `'JSON'` or `'YAML'`. Defaults to `'YAML'`;
+   */
   /**
    * This function is used to get the optimized document after seeing the report.
    *
