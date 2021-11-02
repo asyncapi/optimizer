@@ -76,7 +76,7 @@
     ]
   },
   "dependencies": {
-    "@asyncapi/parser": "^1.10.1",
+    "@asyncapi/parser": "^1.10.2",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "merge-deep": "^3.0.3"
