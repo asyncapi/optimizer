@@ -4,6 +4,11 @@
   "description": "This library will optimize the AsyncAPI specification file.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "files": [
+    "/lib",
+    "./README.md",
+    "./LICENSE"
+  ],
   "scripts": {
     "test": "jest --coverage",
     "test:watch": "jest --watch",
