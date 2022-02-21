@@ -31,7 +31,7 @@ export class Optimizer {
    * @returns {Report} an object containing all of the optimizations that the library can do.
    *
    */
-  getReport = async (): Promise<Report> => {
+  async getReport(): Promise<Report> {
     if (!this.componentProvider) {
       const parsedDocument = await parse(this.YAMLorJSON, { applyTraits: false });
       this.componentProvider = new ComponentProvider(parsedDocument);
@@ -58,7 +58,7 @@ export class Optimizer {
    *
    * @private
    */
-  private sortFunction = (a: ReportElement, b: ReportElement): number => { return (a.action.length - b.action.length || b.path.length - a.path.length);};
+  private sortFunction(a: ReportElement, b: ReportElement): number { return (a.action.length - b.action.length || b.path.length - a.path.length);};
 
   /**
    * @typedef {Object} Rules
@@ -79,7 +79,7 @@ export class Optimizer {
    * @returns {string } returns an stringified version of the YAML output.
    *
    */
-  getOptimizedDocument = (options?: Options): string => {
+  getOptimizedDocument(options?: Options): string {
     const defaultOptions = {
       rules: {
         reuseComponents: true,
@@ -114,7 +114,7 @@ export class Optimizer {
    * @returns {void}
    *
    */
-  private removeEmptyParent = (childPath: string): void => {
+  private removeEmptyParent(childPath: string): void {
     const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
     const parent = _.get(this.outputObject, parentPath);
     if (_.isEmpty(parent)) {
@@ -129,7 +129,7 @@ export class Optimizer {
    * @returns {void}
    *
    */
-  private hasParent = (childPath: string): boolean => {
+  private hasParent(childPath: string): boolean {
     const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
     const parent = _.get(this.outputObject, parentPath);
     return !(_.has(parent, '$ref'));
@@ -142,7 +142,7 @@ export class Optimizer {
    * @returns {void}
    *
    */
-  private applyChanges = (changes: ReportElement[]): void => {
+  private applyChanges(changes: ReportElement[]): void {
     for (const change of changes) {
       if (!this.hasParent(change.path)) {
         continue;
