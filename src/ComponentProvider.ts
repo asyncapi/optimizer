@@ -15,12 +15,7 @@ export class ComponentProvider {
     this.scanComponents();
   }
 
-  /**
-   * This function is responsible for scanning the document's channels section.
-   *
-   * @returns {void}
-   */
-  private scanChannels(): void{
+  private scanChannels(): void {
     const channels = this.document.channels();
     for (const channelName in channels) {
       const path = `channels.${channelName}`;
@@ -48,15 +43,8 @@ export class ComponentProvider {
       }
     }
   }
-  /**
-   * This function is responsible for scanning any schema that is passed to it.
-   *
-   * @param {string} path - path of the schema that needs to be scanned.
-   * @param {Schema} schema - the actual schema object.
-   *
-   * @returns {void}
-   */
-  private scanSchema(path: string, schema: Schema): void{
+
+  private scanSchema(path: string, schema: Schema): void {
     if (!schema) {return;}
     this.schemas.set(path, schema);
     const schemaProperties = schema.properties();
@@ -65,17 +53,6 @@ export class ComponentProvider {
     }
   }
 
-  /**
-   * This function will scan traits of messages.
-   *
-   * @param {string} path - path of the current messageTraits.
-   * @param {MessageTrait[]} traits - message traits that is going to be scanned.
-   * @returns {void}
-   *
-   * @example
-   *
-   *     scanMessageTraits(path, traits)
-   */
   private scanMessageTraits(path: string, traits: MessageTrait[]): void {
     for (const [index, trait] of Object.entries(traits)) {
       if (trait.headers()) {
@@ -83,24 +60,13 @@ export class ComponentProvider {
       }
     }
   }
-  /**
-   * This function is responsible for scanning any message that is passed to it.
-   *
-   * @param {string} path - path of the message that needs to be scanned.
-   * @param {Message} message - the actual message object.
-   *
-   * @returns {void}
-   */
-  private scanMessage(path: string, message: Message): void{
+
+  private scanMessage(path: string, message: Message): void {
     this.scanSchema(`${path}.payload`, message.payload());
     this.scanSchema(`${path}.headers`, message.headers());
     this.scanMessageTraits(`${path}.traits`, message.traits());
   }
-  /**
-   * This function is responsible for scanning the document's components section.
-   *
-   * @returns {void}
-   */
+
   private scanComponents(): void {
     const components = this.document.components();
     if (!components) {
