@@ -18,14 +18,14 @@ export class RemoveComponents implements OptimizerInterface {
    *
    * @returns {ReportElement[]} a list of all the components that can be removed.
    */
-  getReport = (): ReportElement[] => {
+  getReport(): ReportElement[] {
     return this.findUnusedComponents(this.provider.schemas).concat(
       this.findUnusedComponents(this.provider.messages),
       this.findUnusedComponents(this.provider.parameters)
     );
   }
 
-  private findUnusedComponents = (components: Map<string, any>): ReportElement[] => {
+  private findUnusedComponents(components: Map<string, any>): ReportElement[] {
     const elements = [];
     for (const [key1, value1] of components) {
       let isUsed = false;

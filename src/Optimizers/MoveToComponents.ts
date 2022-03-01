@@ -17,7 +17,7 @@ export class MoveToComponents implements OptimizerInterface {
    *
    * @returns {ReportElement[]} a list of all the components that can be moved to _components_.
    */
-  getReport = (): ReportElement[] => {
+  getReport(): ReportElement[] {
     return this.findDuplicateComponents(this.provider.schemas, 'schema').concat(
       this.findDuplicateComponents(this.provider.messages, 'message'),
       this.findDuplicateComponents(this.provider.parameters, 'parameter')

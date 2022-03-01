@@ -19,14 +19,14 @@ export class ReuseComponents implements OptimizerInterface {
    *
    * @returns {ReportElement[]} a list of elements that can be reused.
    */
-  getReport = (): ReportElement[] => {
+  getReport(): ReportElement[] {
     return this.findDuplicateComponents(this.provider.schemas).concat(
       this.findDuplicateComponents(this.provider.messages),
       this.findDuplicateComponents(this.provider.parameters)
     );
   }
 
-  private findDuplicateComponents = (component: Map<string, any>): ReportElement[] => {
+  private findDuplicateComponents(component: Map<string, any>): ReportElement[] {
     const elements = [];
     for (const [key1, value1] of component) {
       for (const [key2, value2] of component) {
@@ -47,7 +47,7 @@ export class ReuseComponents implements OptimizerInterface {
     }
     return elements;
   }
-  private isChannelToComponent = (path1: string, path2: string): boolean => {
+  private isChannelToComponent(path1: string, path2: string): boolean {
     return isInChannels(path1) && isInComponents(path2);
   }
 }
