@@ -40,9 +40,9 @@ const compareComponents = (x: any, y: any): boolean => {
 //Compares two components but also considers equality check. the referential equality check can be disabled by referentialEqualityCheck argument.
 const isEqual = (component1: any, component2: any, referentialEqualityCheck: boolean): boolean => {
   if (referentialEqualityCheck) {
-    return component1.json() === component2.json() || compareComponents(component1.json(), component2.json());
+    return component1 === component2 || compareComponents(component1, component2);
   }
-  return component1.json() !== component2.json() && compareComponents(component1.json(), component2.json());
+  return component1 !== component2 && compareComponents(component1, component2);
 };
 
 const isInComponents = (path: string): boolean => {

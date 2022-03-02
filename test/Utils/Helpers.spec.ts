@@ -3,28 +3,28 @@ import _ from 'lodash';
 import { compareComponents, isEqual, isInComponents, isInChannels, toJS } from '../../src/Utils';
 
 describe('Helpers', () => {
-  const testObject1 = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'string', 'x-extension': 'different_value' } } }) };
-  const testObject1_copy = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'string', 'x-extension': 'value' } } }) };
-  const testObject2 = { json: jest.fn().mockReturnValueOnce({ streetlightId: { schema: { type: 'number' } } }) };
+  const testObject1 = { streetlightId: { schema: { type: 'string', 'x-extension': 'different_value' } } };
+  const testObject1_copy = { streetlightId: { schema: { type: 'string', 'x-extension': 'value' } } };
+  const testObject2 = { streetlightId: { schema: { type: 'number' } } };
   const testObject2_reference = testObject2;
 
   describe('compareComponents', () => {
     test('should return true.', () => {
-      expect(compareComponents(testObject1.json(), testObject1_copy.json())).toEqual(true);
+      expect(compareComponents(testObject1, testObject1_copy)).toEqual(true);
     });
 
     test('should return false.', () => {
-      expect(compareComponents(testObject1.json(), testObject2.json())).toEqual(false);
+      expect(compareComponents(testObject1, testObject2)).toEqual(false);
     });
   });
   describe('isEqual', () => {
     test('should return true.', () => {
       expect(isEqual(testObject2, testObject2_reference, true)).toEqual(true);
       expect(isEqual(testObject1, testObject1_copy, true)).toEqual(true);
+      expect(isEqual(testObject1, testObject1_copy, false)).toEqual(true);
     });
 
     test('should return false.', () => {
-      expect(isEqual(testObject1, testObject1_copy, false)).toEqual(false);
       expect(isEqual(testObject2, testObject2_reference, false)).toEqual(false);
     });
   });
