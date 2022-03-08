@@ -13,7 +13,7 @@ import _ from 'lodash';
  * @private
  */
 export class ComponentProvider {
-  messagePaths = ['$.channels.*.*.message', '$.components.messages.*'];
+  messagePaths = ['$.channels.*.*.message[?(@property !== "oneOf")]^', '$.channels.*.*.message.oneOf.*', '$.components.messages.*'];
   schemaPaths = [
     '$.channels.*.*.message.traits[*]..[?(@.type)]',
     '$.channels.*.*.message.headers',
@@ -44,16 +44,16 @@ export class ComponentProvider {
   }
   private parseComponents(paths: string[]): any {
     return _.chain(paths)
-      .map((messagePath) => {
+      .map((path) => {
         return JSONPath({
-          path: messagePath,
           resultType: 'all',
           json: this.document.json(),
+          path
         });
       })
       .flatten()
-      .reduce((red, message) => {
-        return red.set(this.toLodashPath(message.path), message.value);
+      .reduce((red, component) => {
+        return red.set(this.toLodashPath(component.path), component.value);
       }, new Map())
       .value();
   }
