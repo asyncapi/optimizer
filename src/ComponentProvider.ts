@@ -36,8 +36,8 @@ export class ComponentProvider {
     this.parameters = this.parseComponents(this.parameterPaths);
   }
 
-  private toLodashPath(JSONPath: string) {
-    return JSONPath.replace(/'\]\['/g, '.')
+  private toLodashPath(path: string) {
+    return path.replace(/'\]\['/g, '.')
       .slice(3, -2)
       .replace(/'\]/g, '')
       .replace(/\['/g, '.');
