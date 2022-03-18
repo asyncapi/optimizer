@@ -81,7 +81,7 @@ export class MoveToComponents implements OptimizerInterface {
       //check if the component already has a copy in components section of the specification. If it already has then we don't need to apply this optimization. 
       //It will be taken care of by ReuseComponents
       if (this.doesHaveACopy(value1, components)) { continue; }
-      const componentName = value1.json().name || `${componentType}-${counter++}`;
+      const componentName = value1.name || `${componentType}-${counter++}`;
       const target = `components.${componentType}s.${componentName}`;
       elements.push({
         path: key1,
