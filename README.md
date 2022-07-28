@@ -239,4 +239,4 @@ components:
 
 For using the optimizer to optimize file you just need to import the `Optimizer` class. Use its two methods to get the report (`getReport()`) and get the optimized document (`getOptimizedDocument()`).
 
-See [API documentation](/API.md) for more example and full API reference information.
+See [API documentation](./API.md) for more example and full API reference information.
