@@ -43,7 +43,7 @@ export class Optimizer {
     return {
       reuseComponents: this.reuseComponentsReport,
       removeComponents: this.removeComponentsReport,
-      moveToComponents: this.moveToComponentsReport,
+      moveToComponents: this.moveToComponentsReport
     };
   }
   private createReport(optimizer: OptimizerInterface) {
