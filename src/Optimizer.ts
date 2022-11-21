@@ -1,4 +1,4 @@
-import { Action, Report, ReportElement, Options, Output } from './Models';
+import { Action, Report, ReportElement, Options, Output, OptimizerInterface } from './Models';
 import { parse } from '@asyncapi/parser';
 import { RemoveComponents, ReuseComponents, MoveToComponents } from './Optimizers';
 import YAML from 'js-yaml';
@@ -36,22 +36,25 @@ export class Optimizer {
       const parsedDocument = await parse(this.YAMLorJSON, { applyTraits: false });
       this.componentProvider = new ComponentProvider(parsedDocument);
     }
-    const reuseComponents = new ReuseComponents(this.componentProvider);
-    this.reuseComponentsReport = reuseComponents.getReport();
-    this.reuseComponentsReport.sort(this.sortFunction);
-    const removeComponents = new RemoveComponents(this.componentProvider);
-    this.removeComponentsReport = removeComponents.getReport();
-    this.removeComponentsReport.sort(this.sortFunction);
-    const moveToComponents = new MoveToComponents(this.componentProvider);
-    this.moveToComponentsReport = moveToComponents.getReport();
-    this.moveToComponentsReport.sort(this.sortFunction);
+    this.reuseComponentsReport = this.createReport(new ReuseComponents(this.componentProvider));
+    this.removeComponentsReport = this.createReport(new RemoveComponents(this.componentProvider));
+    this.moveToComponentsReport = this.createReport(new MoveToComponents(this.componentProvider));
 
     return {
       reuseComponents: this.reuseComponentsReport,
       removeComponents: this.removeComponentsReport,
-      moveToComponents: this.moveToComponentsReport
+      moveToComponents: this.moveToComponentsReport,
     };
   }
+  private createReport(optimizer: OptimizerInterface) {
+    return optimizer
+      .getReport()
+      .filter(this.reportFilter)
+      .sort(this.sortFunction);
+  }
+  reportFilter = (reportElement: ReportElement): boolean => {
+    return this.hasParent(reportElement.path);
+  };
 
   private sortFunction(a: ReportElement, b: ReportElement): number { return (a.action.length - b.action.length || b.path.length - a.path.length);}
 
@@ -116,9 +119,6 @@ export class Optimizer {
 
   private applyChanges(changes: ReportElement[]): void {
     for (const change of changes) {
-      if (!this.hasParent(change.path)) {
-        continue;
-      }
       switch (change.action) {
       case Action.Move:
         _.set(this.outputObject, change.target as string, _.get(this.outputObject, change.path));
