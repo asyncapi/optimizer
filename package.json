@@ -82,7 +82,7 @@
     ]
   },
   "dependencies": {
-    "@asyncapi/parser": "^1.17.3",
+    "@asyncapi/parser": "^1.18.0",
     "js-yaml": "^4.1.0",
     "jsonpath-plus": "^6.0.1",
     "lodash": "^4.17.21",
