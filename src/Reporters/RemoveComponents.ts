@@ -6,7 +6,7 @@ const findUnusedComponents = (componentsGroup: OptimizableComponentGroup): Repor
   const elements = []
   for (const optimizableComponent1 of componentsGroup.components) {
     let isUsed = false
-    if (!isInComponents(optimizableComponent1.path)) continue
+    if (!isInComponents(optimizableComponent1)) continue
     for (const optimizableComponent2 of componentsGroup.components) {
       if (optimizableComponent1.path === optimizableComponent2.path) continue
       if (isEqual(optimizableComponent1.component, optimizableComponent2.component, true)) {

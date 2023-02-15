@@ -9,7 +9,7 @@ describe('ComponentProvider', () => {
     const componentProviderWithoutComponents = getOptimizableComponents(asyncapiDocument)
     for (const componentsGroup of componentProviderWithoutComponents) {
       for (const component of componentsGroup.components) {
-        expect(isInComponents(component.path)).toBe(false)
+        expect(isInComponents(component)).toBe(false)
       }
     }
   })
@@ -21,7 +21,7 @@ describe('ComponentProvider', () => {
 
     for (const componentsGroup of componentProviderWithComponents) {
       for (const component of componentsGroup.components) {
-        if (isInComponents(component.path)) {
+        if (isInComponents(component)) {
           inComponentsCounter++
         }
       }

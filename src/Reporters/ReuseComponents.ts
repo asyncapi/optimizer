@@ -1,9 +1,17 @@
 import { Action } from '../Optimizer'
-import { OptimizableComponentGroup, ReportElement, Reporter } from '../index.d'
+import {
+  OptimizableComponent,
+  OptimizableComponentGroup,
+  ReportElement,
+  Reporter,
+} from '../index.d'
 import { createReport, isEqual, isInChannels, isInComponents } from '../Utils'
 
-const isChannelToComponent = (path1: string, path2: string): boolean => {
-  return isInChannels(path1) && isInComponents(path2)
+const isChannelToComponent = (
+  component1: OptimizableComponent,
+  component2: OptimizableComponent
+): boolean => {
+  return isInChannels(component1) && isInComponents(component2)
 }
 
 const findDuplicateComponents = (
@@ -12,10 +20,7 @@ const findDuplicateComponents = (
   const elements = []
   for (const component1 of optimizableComponent.components) {
     for (const component2 of optimizableComponent.components) {
-      if (
-        component1.path === component2.path ||
-        !isChannelToComponent(component1.path, component2.path)
-      ) {
+      if (component1.path === component2.path || !isChannelToComponent(component1, component2)) {
         continue
       }
       if (isEqual(component1.component, component2.component, false)) {

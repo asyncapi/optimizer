@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import YAML from 'js-yaml'
-import { OptimizableComponentGroup, NewReport, ReportElement } from 'index.d'
+import { OptimizableComponentGroup, NewReport, ReportElement, OptimizableComponent } from 'index.d'
 
 export const hasParent = (reportElement: ReportElement, asyncapiFile: any): boolean => {
   const childPath = reportElement.path
@@ -88,12 +88,12 @@ const isEqual = (component1: any, component2: any, referentialEqualityCheck: boo
   return component1 !== component2 && compareComponents(component1, component2)
 }
 
-const isInComponents = (path: string): boolean => {
-  return path.startsWith('components.')
+const isInComponents = (optimizableComponent: OptimizableComponent): boolean => {
+  return optimizableComponent.path.startsWith('components.')
 }
 
-const isInChannels = (path: string): boolean => {
-  return path.startsWith('channels.')
+const isInChannels = (component: OptimizableComponent): boolean => {
+  return component.path.startsWith('channels.')
 }
 
 const toJS = (asyncapiYAMLorJSON: any): any => {
