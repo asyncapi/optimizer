@@ -1,60 +1,72 @@
-import type {
-  AsyncAPIDocument,
-  ChannelParameter,
-  Message,
-  Schema,
-} from '@asyncapi/parser';
+import type { AsyncAPIDocument } from '@asyncapi/parser'
+import { OptimizableComponentGroup, OptimizableComponent } from 'index.d'
 
-import { JSONPath } from 'jsonpath-plus';
-import _ from 'lodash';
-/**
- * This class will provide all sorts of data for optimizers.
- *
- * @private
- */
-export class ComponentProvider {
-  messagePaths = ['$.channels.*.*.message[?(@property !== "oneOf")]^', '$.channels.*.*.message.oneOf.*', '$.components.messages.*'];
-  schemaPaths = [
-    '$.channels.*.*.message.traits[*]..[?(@.type)]',
-    '$.channels.*.*.message.headers',
-    '$.channels.*.*.message.headers..[?(@.type)]',
-    '$.channels.*.*.message.payload',
-    '$.channels.*.*.message.payload..[?(@.type)]',
-    '$.channels.*.parameters.*.schema[?(@.type)]',
-    '$.channels.*.parameters.*.schema..[?(@.type)]',
-    '$.components.schemas..[?(@.type)]',
-  ];
+import { JSONPath } from 'jsonpath-plus'
+import _ from 'lodash'
 
-  parameterPaths = ['$.channels.*.parameters.*', '$.components.parameters.*'];
-  messages = new Map<string, Message>();
-  schemas = new Map<string, Schema>();
-  parameters = new Map<string, ChannelParameter>();
+//the type of object should match exactly with one of the fixed fields in asyncapi components object.
+const OPTIMIZABLE_PATHS = [
+  {
+    type: 'messages',
+    paths: [
+      '$.channels.*.*.message[?(@property !== "oneOf")]^',
+      '$.channels.*.*.message.oneOf.*',
+      '$.components.messages.*',
+    ],
+  },
+  {
+    type: 'schemas',
+    paths: [
+      '$.channels.*.*.message.traits[*]..[?(@.type)]',
+      '$.channels.*.*.message.headers',
+      '$.channels.*.*.message.headers..[?(@.type)]',
+      '$.channels.*.*.message.payload',
+      '$.channels.*.*.message.payload..[?(@.type)]',
+      '$.channels.*.parameters.*.schema[?(@.type)]',
+      '$.channels.*.parameters.*.schema..[?(@.type)]',
+      '$.components.schemas..[?(@.type)]',
+    ],
+  },
+  { type: 'parameters', paths: ['$.channels.*.parameters.*', '$.components.parameters.*'] },
+]
 
-  constructor(private document: AsyncAPIDocument) {
-    this.messages = this.parseComponents(this.messagePaths);
-    this.schemas = this.parseComponents(this.schemaPaths);
-    this.parameters = this.parseComponents(this.parameterPaths);
-  }
+export const toLodashPath = (path: string): string => {
+  return path
+    .replace(/'\]\['/g, '.')
+    .slice(3, -2)
+    .replace(/'\]/g, '')
+    .replace(/\['/g, '.')
+}
 
-  private toLodashPath(path: string) {
-    return path.replace(/'\]\['/g, '.')
-      .slice(3, -2)
-      .replace(/'\]/g, '')
-      .replace(/\['/g, '.');
-  }
-  private parseComponents(paths: string[]): any {
-    return _.chain(paths)
-      .map((path) => {
-        return JSONPath({
-          resultType: 'all',
-          json: this.document.json(),
-          path
-        });
+export const parseComponentsFromPath = (
+  asyncAPIDocument: AsyncAPIDocument,
+  paths: string[]
+): OptimizableComponent[] => {
+  return _.chain(paths)
+    .map((path) => {
+      return JSONPath({
+        resultType: 'all',
+        json: asyncAPIDocument.json(),
+        path,
       })
-      .flatten()
-      .reduce((red, component) => {
-        return red.set(this.toLodashPath(component.path), component.value);
-      }, new Map())
-      .value();
+    })
+    .flatten()
+    .map((component) => ({
+      path: toLodashPath(component.path),
+      component: component.value,
+    }))
+    .value()
+}
+
+export const getOptimizableComponents = (
+  asyncAPIDocument: AsyncAPIDocument
+): OptimizableComponentGroup[] => {
+  const optimizeableComponents: OptimizableComponentGroup[] = []
+  for (const componentsPaths of OPTIMIZABLE_PATHS) {
+    optimizeableComponents.push({
+      type: componentsPaths.type,
+      components: parseComponentsFromPath(asyncAPIDocument, componentsPaths.paths),
+    })
   }
+  return optimizeableComponents
 }
