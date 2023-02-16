@@ -2,6 +2,11 @@ import { Action } from '../Optimizer'
 import { createReport, isEqual, isInComponents } from '../Utils'
 import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'index.d'
 
+/**
+ *
+ * @param optimizableComponentGroup components that you want to analyze for duplicates.
+ * @returns A list of optimization report elements.
+ */
 const findDuplicateComponents = (
   optimizableComponentGroup: OptimizableComponentGroup
 ): ReportElement[] => {

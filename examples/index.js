@@ -82,7 +82,7 @@ components:
       format: date-time`
 const optimizer = new Optimizer(yaml)
 optimizer.getReport().then((report) => {
-  console.log(JSON.stringify(report))
+  //console.log(JSON.stringify(report))
   const optimizedDocument = optimizer.getOptimizedDocument({
     rules: {
       reuseComponents: true,
