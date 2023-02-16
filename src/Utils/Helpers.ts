@@ -2,6 +2,9 @@ import * as _ from 'lodash'
 import YAML from 'js-yaml'
 import { OptimizableComponentGroup, NewReport, ReportElement, OptimizableComponent } from 'index.d'
 
+/**
+ * Checks if a component's parent is a ref or not.
+ */
 export const hasParent = (reportElement: ReportElement, asyncapiFile: any): boolean => {
   const childPath = reportElement.path
   const parentPath = childPath.substr(0, childPath.lastIndexOf('.'))
@@ -10,7 +13,7 @@ export const hasParent = (reportElement: ReportElement, asyncapiFile: any): bool
 }
 
 export const createReport = (
-  reportFn: any,
+  reportFn: (optimizableComponent: OptimizableComponentGroup) => ReportElement[],
   optimizeableComponents: OptimizableComponentGroup[],
   reporterType: string
 ): NewReport => {
@@ -80,7 +83,13 @@ const compareComponents = (x: any, y: any): boolean => {
   return backwardsCheck(x, y)
 }
 
-//Compares two components but also considers equality check. the referential equality check can be disabled by referentialEqualityCheck argument.
+/**
+ *
+ * @param component1 The first component that you want to compare with the second component.
+ * @param component2 The second component.
+ * @param referentialEqualityCheck If `true` the function will return true if the two components have referential equality OR they have the same structure. If `false` the it will only return true if they have the same structure but they are NOT referentially equal.
+ * @returns whether the two components are equal.
+ */
 const isEqual = (component1: any, component2: any, referentialEqualityCheck: boolean): boolean => {
   if (referentialEqualityCheck) {
     return component1 === component2 || compareComponents(component1, component2)
@@ -88,14 +97,23 @@ const isEqual = (component1: any, component2: any, referentialEqualityCheck: boo
   return component1 !== component2 && compareComponents(component1, component2)
 }
 
+/**
+ * checks if a component is located in `components` section of an asyncapi document.
+ */
 const isInComponents = (optimizableComponent: OptimizableComponent): boolean => {
   return optimizableComponent.path.startsWith('components.')
 }
 
+/**
+ * checks if a component is located in `channels` section of an asyncapi document.
+ */
 const isInChannels = (component: OptimizableComponent): boolean => {
   return component.path.startsWith('channels.')
 }
 
+/**
+ * Converts JSON or YAML string object.
+ */
 const toJS = (asyncapiYAMLorJSON: any): any => {
   if (asyncapiYAMLorJSON.constructor && asyncapiYAMLorJSON.constructor.name === 'Object') {
     //NOTE: this approach can have problem with circular references between object and JSON.stringify doesn't support it.
