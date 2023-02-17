@@ -1,27 +1,19 @@
 import { Action } from '../Optimizer'
 import { OptimizableComponentGroup, ReportElement, Reporter } from '../index.d'
-import { createReport, isEqual, isInComponents } from '../Utils'
+import { createReport, isInComponents } from '../Utils'
 
 const findUnusedComponents = (componentsGroup: OptimizableComponentGroup): ReportElement[] => {
-  const elements = []
-  for (const optimizableComponent1 of componentsGroup.components) {
-    let isUsed = false
-    if (!isInComponents(optimizableComponent1)) continue
-    for (const optimizableComponent2 of componentsGroup.components) {
-      if (optimizableComponent1.path === optimizableComponent2.path) continue
-      if (isEqual(optimizableComponent1.component, optimizableComponent2.component, true)) {
-        isUsed = true
-      }
-    }
-    if (!isUsed) {
-      const element: ReportElement = {
-        path: optimizableComponent1.path,
-        action: Action.Remove,
-      }
-      elements.push(element)
-    }
-  }
-  return elements
+  const allComponents = componentsGroup.components
+  const insideComponentsSection = new Set([...allComponents].filter(isInComponents))
+  const outsideComponentsSection = new Set(
+    allComponents
+      .filter((component) => !insideComponentsSection.has(component))
+      .map((component) => component.component)
+  )
+  const unusedComponents = [...insideComponentsSection].filter(
+    (component) => !outsideComponentsSection.has(component.component)
+  )
+  return unusedComponents.map((component) => ({ path: component.path, action: Action.Remove }))
 }
 
 export const removeComponents: Reporter = (optimizeableComponents) => {

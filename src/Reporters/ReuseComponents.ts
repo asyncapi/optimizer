@@ -18,6 +18,7 @@ const findDuplicateComponents = (
   optimizableComponent: OptimizableComponentGroup
 ): ReportElement[] => {
   const elements = []
+  //compare components together and push a record in elements if a duplicated is found.
   for (const component1 of optimizableComponent.components) {
     for (const component2 of optimizableComponent.components) {
       if (component1.path === component2.path || !isChannelToComponent(component1, component2)) {

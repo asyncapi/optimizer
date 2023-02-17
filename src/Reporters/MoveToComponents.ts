@@ -12,14 +12,14 @@ const findDuplicateComponents = (
 ): ReportElement[] => {
   const allComponents = optimizableComponentGroup.components
   const insideComponentsSection = allComponents.filter(isInComponents)
-  const outsideComponentsSecion = getOutsideComponents(allComponents, insideComponentsSection)
+  const outsideComponentsSection = getOutsideComponents(allComponents, insideComponentsSection)
 
   const resultElements: ReportElement[] = []
 
   let counter = 1
 
-  for (const [index, component] of outsideComponentsSecion.entries()) {
-    for (const compareComponent of outsideComponentsSecion.slice(index + 1)) {
+  for (const [index, component] of outsideComponentsSection.entries()) {
+    for (const compareComponent of outsideComponentsSection.slice(index + 1)) {
       if (isEqual(component.component, compareComponent.component, false)) {
         const existingResult = resultElements.filter(
           (reportElement) => component.path === reportElement.path
