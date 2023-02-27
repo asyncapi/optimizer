@@ -114,7 +114,7 @@ export class Optimizer {
   }
 
   private removeEmptyParent(childPath: string): void {
-    const parentPath = childPath.substr(0, childPath.lastIndexOf('.'))
+    const parentPath = childPath.substring(0, childPath.lastIndexOf('.'))
     const parent = _.get(this.outputObject, parentPath)
     if (_.isEmpty(parent)) {
       _.unset(this.outputObject, parentPath)

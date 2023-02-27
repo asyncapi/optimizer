@@ -7,7 +7,7 @@ import { OptimizableComponentGroup, NewReport, ReportElement, OptimizableCompone
  */
 export const hasParent = (reportElement: ReportElement, asyncapiFile: any): boolean => {
   const childPath = reportElement.path
-  const parentPath = childPath.substr(0, childPath.lastIndexOf('.'))
+  const parentPath = childPath.substring(0, childPath.lastIndexOf('.'))
   const parent = _.get(asyncapiFile, parentPath)
   return !_.has(parent, '$ref')
 }
@@ -26,12 +26,8 @@ export const createReport = (
 }
 
 export const sortReportElements = (report: NewReport): NewReport => {
-  return {
-    type: report.type,
-    elements: report.elements.sort(
-      (a, b) => a.action.length - b.action.length || b.path.length - a.path.length
-    ),
-  }
+  report.elements.sort((a, b) => a.action.length - b.action.length || b.path.length - a.path.length)
+  return report
 }
 const isExtension = (fieldName: string): boolean => {
   return fieldName.startsWith('x-')
