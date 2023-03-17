@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { Optimizer } = require('../lib/Optimizer');
+const { Optimizer } = require('../lib/Optimizer')
 
 const yaml = `
 asyncapi: 2.0.0
@@ -79,14 +79,16 @@ components:
     #this schema is ref-ed in one channel and used full form in another. library should be able to identify and ref the second channel as well.
     sentAt:
       type: string
-      format: date-time`;
-const optimizer = new Optimizer(yaml);
-optimizer.getReport().then(report => {
-  console.log(report);
-  const optimizedDocument = optimizer.getOptimizedDocument({ rules: {
-    reuseComponents: true,
-    removeComponents: true,
-    moveToComponents: true
-  } });
-  console.log(optimizedDocument);
-});
+      format: date-time`
+const optimizer = new Optimizer(yaml)
+optimizer.getReport().then((report) => {
+  //console.log(JSON.stringify(report))
+  const optimizedDocument = optimizer.getOptimizedDocument({
+    rules: {
+      reuseComponents: true,
+      removeComponents: true,
+      moveToComponents: true,
+    },
+  })
+  console.log(optimizedDocument)
+})
