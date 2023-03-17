@@ -1,12 +1,29 @@
-import { Action, Report, ReportElement, Options, Output, OptimizerInterface } from './Models';
-import { parse } from '@asyncapi/parser';
-import { RemoveComponents, ReuseComponents, MoveToComponents } from './Optimizers';
-import YAML from 'js-yaml';
-import merge from 'merge-deep';
-import * as _ from 'lodash';
-import { ComponentProvider } from './ComponentProvider';
-import { toJS } from './Utils';
+import {
+  NewReport,
+  Report,
+  ReportElement,
+  Options,
+  OptimizableComponentGroup,
+  Reporter,
+} from './index.d'
+import { parse } from '@asyncapi/parser'
+import { removeComponents, reuseComponents, moveToComponents } from './Reporters'
+import YAML from 'js-yaml'
+import merge from 'merge-deep'
+import * as _ from 'lodash'
+import { getOptimizableComponents } from './ComponentProvider'
+import { hasParent, sortReportElements, toJS } from './Utils'
 
+export enum Action {
+  Move = 'move',
+  Remove = 'remove',
+  Reuse = 'reuse',
+}
+
+export enum Output {
+  JSON = 'JSON',
+  YAML = 'YAML',
+}
 /**
  * this class is the starting point of the library.
  * user will only interact with this class. here we generate different kind of reports using optimizers, apply changes and return the results to the user.
@@ -14,17 +31,17 @@ import { toJS } from './Utils';
  * @public
  */
 export class Optimizer {
-  componentProvider!: ComponentProvider;
-  reuseComponentsReport: ReportElement[] = [];
-  removeComponentsReport: ReportElement[] = [];
-  moveToComponentsReport: ReportElement[] = [];
-  outputObject = {};
+  private components!: OptimizableComponentGroup[]
+  private reporters: Reporter[]
+  private reports: NewReport[] | undefined
+  private outputObject = {}
 
   /**
    * @param {any} YAMLorJSON - YAML or JSON document that you want to optimize. You can pass Object, YAML or JSON version of your AsyncAPI document here.
    */
   constructor(private YAMLorJSON: any) {
-    this.outputObject = toJS(this.YAMLorJSON);
+    this.outputObject = toJS(this.YAMLorJSON)
+    this.reporters = [removeComponents, reuseComponents, moveToComponents]
   }
 
   /**
@@ -32,31 +49,21 @@ export class Optimizer {
    *
    */
   async getReport(): Promise<Report> {
-    if (!this.componentProvider) {
-      const parsedDocument = await parse(this.YAMLorJSON, { applyTraits: false });
-      this.componentProvider = new ComponentProvider(parsedDocument);
-    }
-    this.reuseComponentsReport = this.createReport(new ReuseComponents(this.componentProvider));
-    this.removeComponentsReport = this.createReport(new RemoveComponents(this.componentProvider));
-    this.moveToComponentsReport = this.createReport(new MoveToComponents(this.componentProvider));
+    const parsedDocument = await parse(this.YAMLorJSON, { applyTraits: false })
+    this.components = getOptimizableComponents(parsedDocument)
+    const rawReports = this.reporters.map((reporter) => reporter(this.components))
+    const filteredReports = rawReports.map((report) => ({
+      type: report.type,
+      elements: report.elements.filter((reportElement) =>
+        hasParent(reportElement, this.outputObject)
+      ),
+    }))
+    const sortedReports = filteredReports.map((report) => sortReportElements(report))
+    this.reports = sortedReports
 
-    return {
-      reuseComponents: this.reuseComponentsReport,
-      removeComponents: this.removeComponentsReport,
-      moveToComponents: this.moveToComponentsReport
-    };
+    // since changing the report format is considered a breaking change, we are going to return the report in the old format.
+    return convertToReportFormat(this.reports)
   }
-  private createReport(optimizer: OptimizerInterface) {
-    return optimizer
-      .getReport()
-      .filter(this.reportFilter)
-      .sort(this.sortFunction);
-  }
-  reportFilter = (reportElement: ReportElement): boolean => {
-    return this.hasParent(reportElement.path);
-  };
-
-  private sortFunction(a: ReportElement, b: ReportElement): number { return (a.action.length - b.action.length || b.path.length - a.path.length);}
 
   /**
    * @typedef {Object} Rules
@@ -82,61 +89,71 @@ export class Optimizer {
       rules: {
         reuseComponents: true,
         removeComponents: true,
-        moveToComponents: true
+        moveToComponents: true,
       },
-      output: Output.YAML
-    };
-    options = merge(defaultOptions, options);
-    if (options.rules?.reuseComponents) {
-      this.applyChanges(this.reuseComponentsReport);
+      output: Output.YAML,
     }
-    if (options.rules?.moveToComponents) {
-      this.applyChanges(this.moveToComponentsReport);
+    options = merge(defaultOptions, options)
+    if (!this.reports) {
+      throw new Error(
+        'No report has been generated. please first generate a report by calling getReport method.'
+      )
     }
-    if (options.rules?.removeComponents) {
-      this.applyChanges(this.removeComponentsReport);
+    for (const report of this.reports) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (options.rules[report.type] === true) {
+        this.applyReport(report.elements)
+      }
     }
 
     if (options.output === Output.JSON) {
-      return JSON.stringify(this.outputObject);
+      return JSON.stringify(this.outputObject)
     }
-    return YAML.dump(this.outputObject);
+    return YAML.dump(this.outputObject)
   }
 
   private removeEmptyParent(childPath: string): void {
-    const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
-    const parent = _.get(this.outputObject, parentPath);
+    const parentPath = childPath.substring(0, childPath.lastIndexOf('.'))
+    const parent = _.get(this.outputObject, parentPath)
     if (_.isEmpty(parent)) {
-      _.unset(this.outputObject, parentPath);
+      _.unset(this.outputObject, parentPath)
     }
   }
 
-  private hasParent(childPath: string): boolean {
-    const parentPath = childPath.substr(0, childPath.lastIndexOf('.'));
-    const parent = _.get(this.outputObject, parentPath);
-    return !(_.has(parent, '$ref'));
-  }
-
-  private applyChanges(changes: ReportElement[]): void {
+  private applyReport(changes: ReportElement[]): void {
     for (const change of changes) {
       switch (change.action) {
-      case Action.Move:
-        _.set(this.outputObject, change.target as string, _.get(this.outputObject, change.path));
-        _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
-        break;
+        case Action.Move:
+          _.set(this.outputObject, change.target as string, _.get(this.outputObject, change.path))
+          _.set(this.outputObject, change.path, {
+            $ref: `#/${change.target?.replace(/\./g, '/')}`,
+          })
+          break
 
-      case Action.Reuse:
-        if (_.get(this.outputObject, change.target as string)) {
-          _.set(this.outputObject, change.path, { $ref: `#/${change.target?.replace(/\./g, '/')}` });
-        }
-        break;
+        case Action.Reuse:
+          if (_.get(this.outputObject, change.target as string)) {
+            _.set(this.outputObject, change.path, {
+              $ref: `#/${change.target?.replace(/\./g, '/')}`,
+            })
+          }
+          break
 
-      case Action.Remove:
-        _.unset(this.outputObject, change.path);
-        //if parent becomes empty after removing, parent should be removed as well.
-        this.removeEmptyParent(change.path);
-        break;
+        case Action.Remove:
+          _.unset(this.outputObject, change.path)
+          //if parent becomes empty after removing, parent should be removed as well.
+          this.removeEmptyParent(change.path)
+          break
       }
     }
   }
+}
+function convertToReportFormat(reports: NewReport[]): Report {
+  const result = {}
+  for (const report of reports) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    result[report.type] = report.elements
+  }
+  return result as Report
 }
