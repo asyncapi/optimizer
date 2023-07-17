@@ -19,7 +19,7 @@ AsyncAPI offers many ways to reuse certain parts of the document like messages o
 
 ## Testing
 1) Clone the project
-  `git https://github.com/asyncapi/optimizer.git`
+  `git clone https://github.com/asyncapi/optimizer.git`
 2) Install the dependencies
   `npm i`
 3) for a quick check you can run `npm run example`. You can open `examples/index.js` modify it or add your own AsyncAPI document for optimization.

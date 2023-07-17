@@ -7,6 +7,27 @@ user will only interact with this class. here we generate different kind of repo
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#findDuplicateComponents">findDuplicateComponents(optimizableComponentGroup)</a> ⇒</dt>
+<dd></dd>
+<dt><a href="#hasParent">hasParent()</a></dt>
+<dd><p>Checks if a component&#39;s parent is a ref or not.</p>
+</dd>
+<dt><a href="#isEqual">isEqual(component1, component2, referentialEqualityCheck)</a> ⇒</dt>
+<dd></dd>
+<dt><a href="#isInComponents">isInComponents()</a></dt>
+<dd><p>checks if a component is located in <code>components</code> section of an asyncapi document.</p>
+</dd>
+<dt><a href="#isInChannels">isInChannels()</a></dt>
+<dd><p>checks if a component is located in <code>channels</code> section of an asyncapi document.</p>
+</dd>
+<dt><a href="#toJS">toJS()</a></dt>
+<dd><p>Converts JSON or YAML string object.</p>
+</dd>
+</dl>
+
 ## Typedefs
 
 <dl>
@@ -55,6 +76,52 @@ This function is used to get the optimized document after seeing the report.
 | --- | --- | --- |
 | [Options] | [<code>Options</code>](#Options) | the options are a way to customize the final output. |
 
+<a name="findDuplicateComponents"></a>
+
+## findDuplicateComponents(optimizableComponentGroup) ⇒
+**Kind**: global function  
+**Returns**: A list of optimization report elements.  
+
+| Param | Description |
+| --- | --- |
+| optimizableComponentGroup | components that you want to analyze for duplicates. |
+
+<a name="hasParent"></a>
+
+## hasParent()
+Checks if a component's parent is a ref or not.
+
+**Kind**: global function  
+<a name="isEqual"></a>
+
+## isEqual(component1, component2, referentialEqualityCheck) ⇒
+**Kind**: global function  
+**Returns**: whether the two components are equal.  
+
+| Param | Description |
+| --- | --- |
+| component1 | The first component that you want to compare with the second component. |
+| component2 | The second component. |
+| referentialEqualityCheck | If `true` the function will return true if the two components have referential equality OR they have the same structure. If `false` the it will only return true if they have the same structure but they are NOT referentially equal. |
+
+<a name="isInComponents"></a>
+
+## isInComponents()
+checks if a component is located in `components` section of an asyncapi document.
+
+**Kind**: global function  
+<a name="isInChannels"></a>
+
+## isInChannels()
+checks if a component is located in `channels` section of an asyncapi document.
+
+**Kind**: global function  
+<a name="toJS"></a>
+
+## toJS()
+Converts JSON or YAML string object.
+
+**Kind**: global function  
 <a name="Rules"></a>
 
 ## Rules : <code>Object</code>
