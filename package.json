@@ -59,6 +59,7 @@
     "js-yaml": "^4.1.0",
     "jsonpath-plus": "^6.0.1",
     "lodash": "^4.17.21",
-    "merge-deep": "^3.0.3"
+    "merge-deep": "^3.0.3",
+    "yaml": "^2.3.1"
   }
 }
