@@ -1,6 +1,6 @@
 import { moveToComponents, reuseComponents, removeComponents } from '../../src/Reporters'
 import { inputYAML } from '../fixtures'
-import { parse } from '@asyncapi/parser'
+import { Parser } from '@asyncapi/parser'
 import { getOptimizableComponents } from '../../src/ComponentProvider'
 import { OptimizableComponentGroup } from '../../src/index.d'
 
@@ -51,8 +51,8 @@ const ReuseComponentsExpectedResult = [
 describe('Optimizers', () => {
   let optimizableComponents: OptimizableComponentGroup[]
   beforeAll(async () => {
-    const asyncapiDocument = await parse(inputYAML, { applyTraits: false })
-    optimizableComponents = getOptimizableComponents(asyncapiDocument)
+    const asyncapiDocument = await new Parser().parse(inputYAML, { applyTraits: false })
+    optimizableComponents = getOptimizableComponents(asyncapiDocument.document!)
   })
   describe('MoveToComponents', () => {
     test('should contain the correct optimizations.', () => {

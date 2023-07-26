@@ -1,12 +1,14 @@
 import { asyncapiYAMLWithoutComponents, inputYAML } from './fixtures'
-import { parse } from '@asyncapi/parser'
+import { Parser } from '@asyncapi/parser'
 import { isInComponents } from '../src/Utils'
 import { getOptimizableComponents } from '../src/ComponentProvider'
 
 describe('ComponentProvider', () => {
   it('should not contain any component from components section', async () => {
-    const asyncapiDocument = await parse(asyncapiYAMLWithoutComponents, { applyTraits: false })
-    const componentProviderWithoutComponents = getOptimizableComponents(asyncapiDocument)
+    const asyncapiDocument = await new Parser().parse(asyncapiYAMLWithoutComponents, {
+      applyTraits: false,
+    })
+    const componentProviderWithoutComponents = getOptimizableComponents(asyncapiDocument.document!)
     for (const componentsGroup of componentProviderWithoutComponents) {
       for (const component of componentsGroup.components) {
         expect(isInComponents(component)).toBe(false)
@@ -15,8 +17,8 @@ describe('ComponentProvider', () => {
   })
 
   it('should contain some components from components section', async () => {
-    const asyncapiDocument = await parse(inputYAML)
-    const componentProviderWithComponents = getOptimizableComponents(asyncapiDocument)
+    const asyncapiDocument = await new Parser().parse(inputYAML)
+    const componentProviderWithComponents = getOptimizableComponents(asyncapiDocument.document!)
     let inComponentsCounter = 0
 
     for (const componentsGroup of componentProviderWithComponents) {

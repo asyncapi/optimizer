@@ -6,7 +6,7 @@ import {
   OptimizableComponentGroup,
   Reporter,
 } from './index.d'
-import { parse } from '@asyncapi/parser'
+import { Parser } from '@asyncapi/parser'
 import { removeComponents, reuseComponents, moveToComponents } from './Reporters'
 import YAML from 'js-yaml'
 import merge from 'merge-deep'
@@ -49,8 +49,10 @@ export class Optimizer {
    *
    */
   async getReport(): Promise<Report> {
-    const parsedDocument = await parse(this.YAMLorJSON, { applyTraits: false })
-    this.components = getOptimizableComponents(parsedDocument)
+    const parser = new Parser()
+    const parsedDocument = await parser.parse(this.YAMLorJSON, { applyTraits: false })
+    if (!parsedDocument.document) throw new Error('Parsing failed.')
+    this.components = getOptimizableComponents(parsedDocument.document)
     const rawReports = this.reporters.map((reporter) => reporter(this.components))
     const filteredReports = rawReports.map((report) => ({
       type: report.type,
