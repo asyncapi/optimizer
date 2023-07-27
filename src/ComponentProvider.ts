@@ -1,4 +1,4 @@
-import type { AsyncAPIDocument } from '@asyncapi/parser'
+import type { AsyncAPIDocumentInterface } from '@asyncapi/parser'
 import { OptimizableComponentGroup, OptimizableComponent } from 'index.d'
 
 import { JSONPath } from 'jsonpath-plus'
@@ -39,7 +39,7 @@ export const toLodashPath = (path: string): string => {
 }
 
 export const parseComponentsFromPath = (
-  asyncAPIDocument: AsyncAPIDocument,
+  asyncAPIDocument: AsyncAPIDocumentInterface,
   paths: string[]
 ): OptimizableComponent[] => {
   return _.chain(paths)
@@ -59,7 +59,7 @@ export const parseComponentsFromPath = (
 }
 
 export const getOptimizableComponents = (
-  asyncAPIDocument: AsyncAPIDocument
+  asyncAPIDocument: AsyncAPIDocumentInterface
 ): OptimizableComponentGroup[] => {
   const optimizeableComponents: OptimizableComponentGroup[] = []
   for (const componentsPaths of OPTIMIZABLE_PATHS) {
