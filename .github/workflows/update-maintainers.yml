@@ -153,7 +153,7 @@ jobs:
         run: |
           git add .
           git commit -m "Update MAINTAINERS.yaml"
-          git push https://${{ secrets.GH_TOKEN}}@github.com/asyncapi/community update-maintainers-${{ github.run_id }}
+          git push https://${{ secrets.GH_TOKEN }}@github.com/asyncapi/community
 
       - name: Create PR
         working-directory: ./community
