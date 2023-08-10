@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: asyncapi/community
-          token: ${{ secrets.GH_TOKEN}}
+          token: ${{ env.GITHUB_TOKEN }}
           path: community
 
       - name: Setup Node.js
@@ -46,7 +46,7 @@ jobs:
       - name: Compare CODEOWNERS
         id: compare-codeowners
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ env.GITHUB_TOKEN }}
         uses: actions/github-script@v6
         with:
           script: |
@@ -156,7 +156,7 @@ jobs:
           git config --global user.name "asyncapi-bot"
           git add .
           git commit -m "Update MAINTAINERS.yaml"
-          git push https://${{ secrets.GH_TOKEN }}@github.com/asyncapi/community
+          git push https://${{ env.GITHUB_TOKEN }}@github.com/asyncapi/community
 
       - name: Create PR
         working-directory: ./community
