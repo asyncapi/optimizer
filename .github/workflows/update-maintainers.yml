@@ -99,12 +99,15 @@ jobs:
               if (!maintainer) {
                 const { data } = await github.rest.users.getByUsername({ username });
                 const twitterUsername = data.twitter_username;
-                maintainers.push({
+                const newMaintainer = {
                   github: username,
-                  twitter: twitterUsername,
                   isTscMember: false,
                   repos: [repoName]
-                });
+                };
+                if (twitterUsername) {
+                  newMaintainer.twitter = twitterUsername;
+                }
+                maintainers.push(newMaintainer);
                 core.info('Added maintainer:', username);
               } else {
                 // If the maintainer already exists, check if the current repo is in their list
