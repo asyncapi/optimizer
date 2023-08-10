@@ -151,6 +151,8 @@ jobs:
       - name: Commit and push
         working-directory: ./community
         run: |
+          git config --global user.email "info@asyncapi.io"
+          git config --global user.name "asyncapi-bot"
           git add .
           git commit -m "Update MAINTAINERS.yaml"
           git push https://${{ secrets.GH_TOKEN }}@github.com/asyncapi/community
