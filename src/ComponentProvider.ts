@@ -4,38 +4,30 @@ import { OptimizableComponentGroup, OptimizableComponent } from 'index.d'
 import { JSONPath } from 'jsonpath-plus'
 import _ from 'lodash'
 
-//the type of object should match exactly with one of the fixed fields in asyncapi components object.
-const OPTIMIZABLE_PATHS = [
-  {
-    type: 'messages',
-    paths: [
-      '$.channels.*.*.message[?(@property !== "oneOf")]^',
-      '$.channels.*.*.message.oneOf.*',
-      '$.components.messages.*',
-    ],
-  },
-  {
-    type: 'schemas',
-    paths: [
-      '$.channels.*.*.message.traits[*]..[?(@.type)]',
-      '$.channels.*.*.message.headers',
-      '$.channels.*.*.message.headers..[?(@.type)]',
-      '$.channels.*.*.message.payload',
-      '$.channels.*.*.message.payload..[?(@.type)]',
-      '$.channels.*.parameters.*.schema[?(@.type)]',
-      '$.channels.*.parameters.*.schema..[?(@.type)]',
-      '$.components.schemas..[?(@.type)]',
-    ],
-  },
-  { type: 'parameters', paths: ['$.channels.*.parameters.*', '$.components.parameters.*'] },
-]
+export const toLodashPath = (jsonPointer: string): string => {
+  // Remove leading slash if present
+  if (jsonPointer.startsWith('/')) {
+    jsonPointer = jsonPointer.slice(1)
+  }
 
-export const toLodashPath = (path: string): string => {
-  return path
-    .replace(/'\]\['/g, '.')
-    .slice(3, -2)
-    .replace(/'\]/g, '')
-    .replace(/\['/g, '.')
+  // Split the JSON Pointer into tokens
+  const tokens = jsonPointer.split('/')
+
+  // Unescape the special characters and transform into Lodash path
+  return tokens
+    .map((token) => {
+      // Replace tilde representations
+      token = token.replace(/~1/g, '/')
+      token = token.replace(/~0/g, '~')
+
+      // Check if token can be treated as an array index (non-negative integer)
+      if (/^\d+$/.test(token)) {
+        return `[${token}]`
+      }
+      // For nested properties, use dot notation
+      return token
+    })
+    .join('.')
 }
 
 export const parseComponentsFromPath = (
@@ -62,10 +54,32 @@ export const getOptimizableComponents = (
   asyncAPIDocument: AsyncAPIDocumentInterface
 ): OptimizableComponentGroup[] => {
   const optimizeableComponents: OptimizableComponentGroup[] = []
-  for (const componentsPaths of OPTIMIZABLE_PATHS) {
+
+  const optimizableComponents = {
+    // eslint-disable-next-line no-warning-comments
+    //TODO: remove the second all() call after https://github.com/asyncapi/parser-js/pull/854 is merged
+
+    //ignore the error for now
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    servers: asyncAPIDocument.allServers().all().all(),
+    messages: asyncAPIDocument.allMessages().all(),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    channels: asyncAPIDocument.allChannels().all().all(),
+    schemas: asyncAPIDocument.allSchemas().all(),
+    operations: asyncAPIDocument.allOperations().all(),
+  }
+  for (const [type, components] of Object.entries(optimizableComponents)) {
+    if (components.length === 0) continue
     optimizeableComponents.push({
-      type: componentsPaths.type,
-      components: parseComponentsFromPath(asyncAPIDocument, componentsPaths.paths),
+      type,
+      components: components.map((component: any) => ({
+        path: toLodashPath(component.jsonPath()),
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        component: component.json(),
+      })),
     })
   }
   return optimizeableComponents

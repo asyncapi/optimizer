@@ -51,7 +51,11 @@ export class Optimizer {
   async getReport(): Promise<Report> {
     const parser = new Parser()
     const parsedDocument = await parser.parse(this.YAMLorJSON, { applyTraits: false })
-    if (!parsedDocument.document) throw new Error('Parsing failed.')
+    if (!parsedDocument.document) {
+      // eslint-disable-next-line no-undef, no-console
+      console.error(parsedDocument.diagnostics)
+      throw new Error('Parsing failed.')
+    }
     this.components = getOptimizableComponents(parsedDocument.document)
     const rawReports = this.reporters.map((reporter) => reporter(this.components))
     const filteredReports = rawReports.map((report) => ({

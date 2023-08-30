@@ -2,87 +2,52 @@
 const { Optimizer } = require('../lib/Optimizer')
 
 const yaml = `
-asyncapi: 2.0.0
+asyncapi: 3.0.0
 info:
-  title: Streetlights API
-  version: '1.0.0'
+  title: Account Service
+  version: 1.0.0
+  description: This service is in charge of processing user signups
 channels:
-  smartylighting/event/{streetlightId}/lighting/measured:
-    parameters:
-      #this parameter is duplicated. it can be moved to components and ref-ed from here.
-      streetlightId:
-        schema:
-          type: string
-    subscribe:
-      operationId: receiveLightMeasurement
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: lightMeasured
-        title: Light measured
-        contentType: application/json
-        traits:
-          - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
-        payload:
-          type: object
-          properties:
-            lumens:
-              type: integer
-              minimum: 0
-            #full form is used, we can ref it to: #/components/schemas/sentAt
-            sentAt:
-              type: string
-              format: date-time
-  smartylighting/action/{streetlightId}/turn/on:
-    parameters:
-      streetlightId:
-        schema:
-          type: string
-    publish:
-      operationId: turnOn
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: turnOnOff
-        title: Turn on/off
-        traits:
-          - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
-        payload:
-          type: object
-          properties:
-            sentAt:
-              $ref: "#/components/schemas/sentAt"
+  user/signedup:
+    address: user/signedup
+    messages:
+      subscribe.message:
+        $ref: '#/components/messages/UserSignedUp'
+operations:
+  user/signedup.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/user~1signedup'
+    messages:
+      - $ref: '#/components/messages/UserSignedUp'
 components:
   messages:
-    #libarary should be able to find and delete this message, because it is not used anywhere.
-    unusedMessage:
-      name: unusedMessage
-      title: This message is not used in any channel.
-      
-  schemas:
-    #this schema is ref-ed in one channel and used full form in another. library should be able to identify and ref the second channel as well.
-    sentAt:
-      type: string
-      format: date-time`
+    UserSignedUp:
+      payload:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: Name of the user
+          email:
+            type: string
+            format: email
+            description: Email of the user
+    UserSignedUpV2:
+      payload:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: Name of the user
+          email:
+            type: string
+            format: email
+            description: Email of the user
+`
 const optimizer = new Optimizer(yaml)
 optimizer.getReport().then((report) => {
-  //console.log(JSON.stringify(report))
+  console.log(JSON.stringify(report))
   const optimizedDocument = optimizer.getOptimizedDocument({
     rules: {
       reuseComponents: true,
