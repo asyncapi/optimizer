@@ -1,21 +1,12 @@
-export const asyncapiYAMLWithoutComponents = `asyncapi: 2.0.0
+export const asyncapiYAMLWithoutComponents = `asyncapi: 3.0.0
 info:
   title: Streetlights API
-  version: '1.0.0'
+  version: 1.0.0
 channels:
-  smartylighting/event/{streetlightId}/lighting/measured:
-    parameters:
-      #this parameter is duplicated. it can be moved to components and ref-ed from here.
-      streetlightId:
-        schema:
-          type: string
-    subscribe:
-      operationId: receiveLightMeasurement
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
+  'smartylighting/event/{streetlightId}/lighting/measured':
+    address: 'smartylighting/event/{streetlightId}/lighting/measured'
+    messages:
+      receiveLightMeasurement.message:
         name: lightMeasured
         title: Light measured
         contentType: application/json
@@ -33,22 +24,15 @@ channels:
             lumens:
               type: integer
               minimum: 0
-            #full form is used, we can ref it to: #/components/schemas/sentAt
             sentAt:
               type: string
               format: date-time
-  smartylighting/action/{streetlightId}/turn/on:
     parameters:
-      streetlightId:
-        schema:
-          type: string
-    publish:
-      operationId: turnOn
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
+      streetlightId: {}
+  'smartylighting/action/{streetlightId}/turn/on':
+    address: 'smartylighting/action/{streetlightId}/turn/on'
+    messages:
+      turnOn.message:
         name: turnOnOff
         title: Turn on/off
         headers:
@@ -65,159 +49,289 @@ channels:
           properties:
             sentAt:
               type: string
-              format: date-time`;
-
-export const inputYAML = `asyncapi: 2.0.0
-info:
-  title: Streetlights API
-  version: '1.0.0'
-channels:
-  smartylighting/event/{streetlightId}/lighting/measured:
-    parameters:
-      #this parameter is duplicated. it can be moved to components and ref-ed from here.
-      streetlightId:
-        schema:
-          type: string
-    subscribe:
-      operationId: receiveLightMeasurement
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: lightMeasured
-        title: Light measured
-        contentType: application/json
-        traits:
-          - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
-        payload:
-          type: object
-          properties:
-            lumens:
-              type: integer
-              minimum: 0
-            #full form is used, we can ref it to: #/components/schemas/sentAt
-            sentAt:
-              type: string
               format: date-time
-  smartylighting/action/{streetlightId}/turn/on:
     parameters:
-      streetlightId:
-        schema:
-          type: string
-    publish:
-      operationId: turnOn
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: turnOnOff
-        title: Turn on/off
-        traits:
-          - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
-        payload:
-          type: object
-          properties:
-            sentAt:
-              $ref: "#/components/schemas/sentAt"
-components:
-  messages:
-    #libarary should be able to find and delete this message, because it is not used anywhere.
-    unusedMessage:
-      name: unusedMessage
-      title: This message is not used in any channel.
-      
-  schemas:
-    #this schema is ref-ed in one channel and used full form in another. library should be able to identify and ref the second channel as well.
-    sentAt:
-      type: string
-      format: date-time
-  parameters:
-    unusedParameter:
-      schema:
-        type: number`;
-export const outputYAML = `asyncapi: 2.0.0
+      streetlightId: {}
+operations:
+  receiveLightMeasurement:
+    action: send
+    channel:
+      $ref: '#/channels/smartylighting~1event~1{streetlightId}~1lighting~1measured'
+    traits:
+      - bindings:
+          kafka:
+            clientId: 
+              type: string
+              enum: ['myClientId']
+
+    messages:
+      - $ref: >-
+          #/channels/smartylighting~1event~1{streetlightId}~1lighting~1measured/messages/receiveLightMeasurement.message
+  turnOn:
+    action: receive
+    channel:
+      $ref: '#/channels/smartylighting~1action~1{streetlightId}~1turn~1on'
+    traits:
+      - bindings:
+          kafka:
+            clientId:
+              type: string
+              enum: ['myClientId']
+    messages:
+      - $ref: >-
+          #/channels/smartylighting~1action~1{streetlightId}~1turn~1on/messages/turnOn.message
+`
+
+export const inputYAML = `asyncapi: 3.0.0
 info:
-  title: Streetlights API
+  title: Untidy AsyncAPI file
   version: 1.0.0
+  description: >-
+    This file contains duplicate and unused messages across the file and is used to test the optimizer.
 channels:
-  smartylighting/event/{streetlightId}/lighting/measured:
-    parameters:
-      streetlightId:
-        $ref: '#/components/parameters/parameter-1'
-    subscribe:
-      operationId: receiveLightMeasurement
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: lightMeasured
-        title: Light measured
-        contentType: application/json
-        traits:
-          - headers:
-              $ref: '#/components/schemas/schema-1'
+  withDuplicatedMessage1:
+    address: user/signedup
+    messages:
+      duped1:
         payload:
           type: object
-          properties:
-            lumens:
-              type: integer
-              minimum: 0
-            sentAt:
-              $ref: '#/components/schemas/sentAt'
-  smartylighting/action/{streetlightId}/turn/on:
-    parameters:
-      streetlightId:
-        $ref: '#/components/parameters/parameter-1'
-    publish:
-      operationId: turnOn
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: turnOnOff
-        title: Turn on/off
-        traits:
-          - headers:
-              $ref: '#/components/schemas/schema-1'
+          description: I am duplicated
+  withDuplicatedMessage2:
+    address: user/signedup
+    messages:
+      duped2:
         payload:
           type: object
-          properties:
-            sentAt:
-              $ref: '#/components/schemas/sentAt'
+          description: I am duplicated
+  withFullFormMessage:
+    address: user/signedup
+    messages:
+      canBeReused:
+        payload:
+          type: object
+          description: I can be reused.
+  UserSignedUp1:
+    address: user/signedup
+    messages:
+      myMessage:
+        $ref: '#/components/messages/UserSignedUp'
+  UserSignedUp2:
+    address: user/signedup
+    messages:
+      myMessage:
+        $ref: '#/components/messages/UserSignedUp'
+  deleteAccount:
+    address: user/deleteAccount
+    messages:
+      deleteUser:
+        $ref: '#/components/messages/DeleteUser'
+operations:
+  user/deleteAccount.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/deleteAccount'
+    messages:
+      - $ref: '#/components/messages/DeleteUser'
+components:
+  channels:
+    unUsedChannel:
+      address: user/unused
+      messages:
+        myMessage:
+          $ref: '#/components/messages/UserSignedUp'
+  schemas:
+    canBeReused:
+      type: object
+      description: I can be reused.
+  messages:
+    unUsedMessage:
+      payload:
+        type: boolean
+    DeleteUser:
+      payload:
+        type: string
+        description: userId of the user that is going to be deleted
+    UserSignedUp:
+      payload:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: Name of the user
+          email:
+            type: string
+            format: email
+            description: Email of the user
+`
+export const outputYAML = `asyncapi: 3.0.0
+info:
+  title: Untidy AsyncAPI file
+  version: 1.0.0
+  description: >-
+    This file contains duplicate and unused messages across the file and is used
+    to test the optimizer.
+channels:
+  withDuplicatedMessage1:
+    address: user/signedup
+    messages:
+      duped1:
+        $ref: '#/components/messages/message-1'
+  withDuplicatedMessage2:
+    address: user/signedup
+    messages:
+      duped2:
+        $ref: '#/components/messages/message-1'
+  withFullFormMessage:
+    address: user/signedup
+    messages:
+      canBeReused:
+        payload:
+          $ref: '#/components/schemas/canBeReused'
+  UserSignedUp1:
+    $ref: '#/components/channels/channel-1'
+  UserSignedUp2:
+    $ref: '#/components/channels/channel-1'
+  deleteAccount:
+    address: user/deleteAccount
+    messages:
+      deleteUser:
+        $ref: '#/components/messages/DeleteUser'
+operations:
+  user/deleteAccount.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/deleteAccount'
+    messages:
+      - $ref: '#/components/messages/DeleteUser'
 components:
   schemas:
-    sentAt:
-      type: string
-      format: date-time
-    schema-2:
-      type: integer
-      minimum: 0
-      maximum: 100
+    canBeReused:
+      type: object
+      description: I can be reused.
     schema-1:
       type: object
-      properties:
-        my-app-header:
-          $ref: '#/components/schemas/schema-2'
-  parameters:
-    parameter-1:
-      schema:
-        type: string`;
- 
-export const inputJSON = '{"asyncapi":"2.0.0","info":{"title":"Streetlights API","version":"1.0.0"},"channels":{"smartylighting/event/{streetlightId}/lighting/measured":{"parameters":{"streetlightId":{"schema":{"type":"string"}}},"subscribe":{"operationId":"receiveLightMeasurement","traits":[{"bindings":{"kafka":{"clientId":"my-app-id"}}}],"message":{"name":"lightMeasured","title":"Light measured","contentType":"application/json","traits":[{"headers":{"type":"object","properties":{"my-app-header":{"type":"integer","minimum":0,"maximum":100}}}}],"payload":{"type":"object","properties":{"lumens":{"type":"integer","minimum":0},"sentAt":{"type":"string","format":"date-time"}}}}}},"smartylighting/action/{streetlightId}/turn/on":{"parameters":{"streetlightId":{"schema":{"type":"string"}}},"publish":{"operationId":"turnOn","traits":[{"bindings":{"kafka":{"clientId":"my-app-id"}}}],"message":{"name":"turnOnOff","title":"Turn on/off","traits":[{"headers":{"type":"object","properties":{"my-app-header":{"type":"integer","minimum":0,"maximum":100}}}}],"payload":{"type":"object","properties":{"sentAt":{"$ref":"#/components/schemas/sentAt"}}}}}}},"components":{"messages":{"unusedMessage":{"name":"unusedMessage","title":"This message is not used in any channel."}},"schemas":{"sentAt":{"type":"string","format":"date-time"}},"parameters":{"unusedParameter":{"schema":{"type":"number"}}}}}';
-export const outputJSON = '{"asyncapi":"2.0.0","info":{"title":"Streetlights API","version":"1.0.0"},"channels":{"smartylighting/event/{streetlightId}/lighting/measured":{"parameters":{"streetlightId":{"$ref":"#/components/parameters/parameter-1"}},"subscribe":{"operationId":"receiveLightMeasurement","traits":[{"bindings":{"kafka":{"clientId":"my-app-id"}}}],"message":{"name":"lightMeasured","title":"Light measured","contentType":"application/json","traits":[{"headers":{"$ref":"#/components/schemas/schema-1"}}],"payload":{"type":"object","properties":{"lumens":{"type":"integer","minimum":0},"sentAt":{"$ref":"#/components/schemas/sentAt"}}}}}},"smartylighting/action/{streetlightId}/turn/on":{"parameters":{"streetlightId":{"$ref":"#/components/parameters/parameter-1"}},"publish":{"operationId":"turnOn","traits":[{"bindings":{"kafka":{"clientId":"my-app-id"}}}],"message":{"name":"turnOnOff","title":"Turn on/off","traits":[{"headers":{"$ref":"#/components/schemas/schema-1"}}],"payload":{"type":"object","properties":{"sentAt":{"$ref":"#/components/schemas/sentAt"}}}}}}},"components":{"schemas":{"sentAt":{"type":"string","format":"date-time"},"schema-2":{"type":"integer","minimum":0,"maximum":100},"schema-1":{"type":"object","properties":{"my-app-header":{"$ref":"#/components/schemas/schema-2"}}}},"parameters":{"parameter-1":{"schema":{"type":"string"}}}}}';
+      description: I am duplicated
+  messages:
+    DeleteUser:
+      payload:
+        type: string
+        description: userId of the user that is going to be deleted
+    UserSignedUp:
+      payload:
+        type: object
+        properties:
+          displayName:
+            type: string
+            description: Name of the user
+          email:
+            type: string
+            format: email
+            description: Email of the user
+    message-1:
+      payload:
+        $ref: '#/components/schemas/schema-1'
+  channels:
+    channel-1:
+      address: user/signedup
+      messages:
+        myMessage:
+          $ref: '#/components/messages/UserSignedUp'
+`
+
+export const inputJSON = `{
+  'asyncapi': '3.0.0',
+  'info':
+    {
+      'title': 'Untidy AsyncAPI file',
+      'version': '1.0.0',
+      'description': 'This file contains duplicate and unused messages across the file and is used to test the optimizer.',
+    },
+  'channels':
+    {
+      'withDuplicatedMessage1':
+        {
+          'address': 'user/signedup',
+          'messages':
+            { 'duped1': { 'payload': { 'type': 'object', 'description': 'I am duplicated' } } },
+        },
+      'withDuplicatedMessage2':
+        {
+          'address': 'user/signedup',
+          'messages':
+            { 'duped2': { 'payload': { 'type': 'object', 'description': 'I am duplicated' } } },
+        },
+      'withFullFormMessage':
+        {
+          'address': 'user/signedup',
+          'messages':
+            {
+              'canBeReused': { 'payload': { 'type': 'object', 'description': 'I can be reused.' } },
+            },
+        },
+      'UserSignedUp1':
+        {
+          'address': 'user/signedup',
+          'messages': { 'myMessage': { '$ref': '#/components/messages/UserSignedUp' } },
+        },
+      'UserSignedUp2':
+        {
+          'address': 'user/signedup',
+          'messages': { 'myMessage': { '$ref': '#/components/messages/UserSignedUp' } },
+        },
+      'deleteAccount':
+        {
+          'address': 'user/deleteAccount',
+          'messages': { 'deleteUser': { '$ref': '#/components/messages/DeleteUser' } },
+        },
+    },
+  'operations':
+    {
+      'user/deleteAccount.subscribe':
+        {
+          'action': 'send',
+          'channel': { '$ref': '#/channels/deleteAccount' },
+          'messages': [{ '$ref': '#/components/messages/DeleteUser' }],
+        },
+    },
+  'components':
+    {
+      'channels':
+        {
+          'unUsedChannel':
+            {
+              'address': 'user/unused',
+              'messages': { 'myMessage': { '$ref': '#/components/messages/UserSignedUp' } },
+            },
+        },
+      'schemas': { 'canBeReused': { 'type': 'object', 'description': 'I can be reused.' } },
+      'messages':
+        {
+          'unUsedMessage': { 'payload': { 'type': 'boolean' } },
+          'DeleteUser':
+            {
+              'payload':
+                {
+                  'type': 'string',
+                  'description': 'userId of the user that is going to be deleted',
+                },
+            },
+          'UserSignedUp':
+            {
+              'payload':
+                {
+                  'type': 'object',
+                  'properties':
+                    {
+                      'displayName': { 'type': 'string', 'description': 'Name of the user' },
+                      'email':
+                        { 'type': 'string', 'format': 'email', 'description': 'Email of the user' },
+                    },
+                },
+            },
+        },
+    },
+}
+`
+
+// eslint-disable-next-line quotes
+export const outputJSON = `{"asyncapi":"3.0.0","info":{"title":"Untidy AsyncAPI file","version":"1.0.0","description":"This file contains duplicate and unused messages across the file and is used to test the optimizer."},"channels":{"withDuplicatedMessage1":{"address":"user/signedup","messages":{"duped1":{"$ref":"#/components/messages/message-1"}}},"withDuplicatedMessage2":{"address":"user/signedup","messages":{"duped2":{"$ref":"#/components/messages/message-1"}}},"withFullFormMessage":{"address":"user/signedup","messages":{"canBeReused":{"payload":{"$ref":"#/components/schemas/canBeReused"}}}},"UserSignedUp1":{"$ref":"#/components/channels/channel-1"},"UserSignedUp2":{"$ref":"#/components/channels/channel-1"},"deleteAccount":{"address":"user/deleteAccount","messages":{"deleteUser":{"$ref":"#/components/messages/DeleteUser"}}}},"operations":{"user/deleteAccount.subscribe":{"action":"send","channel":{"$ref":"#/channels/deleteAccount"},"messages":[{"$ref":"#/components/messages/DeleteUser"}]}},"components":{"schemas":{"canBeReused":{"type":"object","description":"I can be reused."},"schema-1":{"type":"object","description":"I am duplicated"}},"messages":{"DeleteUser":{"payload":{"type":"string","description":"userId of the user that is going to be deleted"}},"UserSignedUp":{"payload":{"type":"object","properties":{"displayName":{"type":"string","description":"Name of the user"},"email":{"type":"string","format":"email","description":"Email of the user"}}}},"message-1":{"payload":{"$ref":"#/components/schemas/schema-1"}}},"channels":{"channel-1":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}}}}}`
