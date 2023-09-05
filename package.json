@@ -56,7 +56,9 @@
     "access": "public"
   },
   "dependencies": {
-    "@asyncapi/parser": "^v3.0.0-next-major-spec.1",
+    "@asyncapi/parser": "v3.0.0-next-major-spec.2",
+    "@types/debug": "^4.1.8",
+    "debug": "^4.3.4",
     "js-yaml": "^4.1.0",
     "jsonpath-plus": "^6.0.1",
     "lodash": "^4.17.21",
