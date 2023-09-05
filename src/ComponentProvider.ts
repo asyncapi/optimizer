@@ -56,17 +56,9 @@ export const getOptimizableComponents = (
   const optimizeableComponents: OptimizableComponentGroup[] = []
 
   const optimizableComponents = {
-    // eslint-disable-next-line no-warning-comments
-    //TODO: remove the second all() call after https://github.com/asyncapi/parser-js/pull/854 is merged
-
-    //ignore the error for now
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    servers: asyncAPIDocument.allServers().all().all(),
+    servers: asyncAPIDocument.allServers().all(),
     messages: asyncAPIDocument.allMessages().all(),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    channels: asyncAPIDocument.allChannels().all().all(),
+    channels: asyncAPIDocument.allChannels().all(),
     schemas: asyncAPIDocument.allSchemas().all(),
     operations: asyncAPIDocument.allOperations().all(),
   }
