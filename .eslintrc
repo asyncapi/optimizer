@@ -121,7 +121,7 @@
       }
     ],
     "no-console": "error",
-    "wrap-regex": 2,
+    "wrap-regex": 0,
     //"linebreak-style": ["error", "unix"],
     "linebreak-style": 0,
     "arrow-spacing": [
