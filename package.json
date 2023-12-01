@@ -55,7 +55,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@asyncapi/parser": "^2.1.2",
+    "@asyncapi/parser": "^3.0.0",
     "js-yaml": "^4.1.0",
     "jsonpath-plus": "^6.0.1",
     "lodash": "^4.17.21",
