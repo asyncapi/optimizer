@@ -118,15 +118,14 @@ const compareComponents = (x: any, y: any): boolean => {
  *
  * @param component1 The first component that you want to compare with the second component.
  * @param component2 The second component.
-
  * @param referentialEqualityCheck If `true` the function will return true if the two components have referential equality OR they have the same structure. If `false` the it will only return true if they have the same structure but they are NOT referentially equal.
  * @returns whether the two components are equal.
  */
 const isEqual = (component1: any, component2: any, referentialEqualityCheck: boolean): boolean => {
   if (referentialEqualityCheck) {
-    return component1 === component2 || compareComponents(component1, component2);
+    return component1 === component2 || compareComponents(component1, component2)
   }
-  return compareComponents(component1, component2);
+  return component1 !== component2 && compareComponents(component1, component2)
 }
 
 /**

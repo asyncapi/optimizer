@@ -7,7 +7,7 @@ const optimizer = new Optimizer(input)
 optimizer.getReport().then((report) => {
   console.log(JSON.stringify(report))
   const optimizedDocument = optimizer.getOptimizedDocument({
-    output: 'JSON',
+    output: 'YAML',
     rules: {
       reuseComponents: true,
       removeComponents: true,

@@ -39,10 +39,6 @@ const MoveToComponentsExpectedResult: any[] = [
 const RemoveComponentsExpectedResult = [
   { path: 'components.messages.unUsedMessage', action: 'remove' },
   { path: 'components.channels.unUsedChannel', action: 'remove' },
-  {
-    path: 'components.messages.unUsedMessage.payload',
-    action: 'remove',
-  },
   { path: 'components.schemas.canBeReused', action: 'remove' },
 ]
 const ReuseComponentsExpectedResult = [
