@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable security/detect-object-injection */
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser'
 import { OptimizableComponentGroup, OptimizableComponent } from 'index.d'
 
@@ -55,12 +57,31 @@ export const getOptimizableComponents = (
 ): OptimizableComponentGroup[] => {
   const optimizeableComponents: OptimizableComponentGroup[] = []
 
+  const getAllComponents = (type: string) => {
+    // @ts-ignore
+    if (typeof asyncAPIDocument[type] !== 'function') return []
+    // @ts-ignore
+    return asyncAPIDocument[type]().all().concat(asyncAPIDocument.components()[type]().all());
+  };
   const optimizableComponents = {
-    servers: asyncAPIDocument.allServers().all(),
-    messages: asyncAPIDocument.allMessages().all(),
-    channels: asyncAPIDocument.allChannels().all(),
-    schemas: asyncAPIDocument.allSchemas().all(),
-    operations: asyncAPIDocument.allOperations().all(),
+    servers: getAllComponents('servers'),
+    messages: getAllComponents('messages'),
+    channels: getAllComponents('channels'),
+    schemas: getAllComponents('schemas'),
+    operations: getAllComponents('operations'),
+    securitySchemes: getAllComponents('securitySchemes'),
+    serverVariables: getAllComponents('serverVariables'),
+    parameters: getAllComponents('parameters'),
+    correlationIds: getAllComponents('correlationIds'),
+    replies: getAllComponents('replies'),
+    externalDocs: getAllComponents('externalDocs'),
+    tags: getAllComponents('tags'),
+    operationTraits: getAllComponents('operationTraits'),
+    messageTraits: getAllComponents('messageTraits'),
+    serverBindings: getAllComponents('serverBindings'),
+    channelBindings: getAllComponents('channelBindings'),
+    operationBindings: getAllComponents('operationBindings'),
+    messageBindings: getAllComponents('messageBindings'),
   }
   for (const [type, components] of Object.entries(optimizableComponents)) {
     if (components.length === 0) continue

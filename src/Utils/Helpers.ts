@@ -124,9 +124,9 @@ const compareComponents = (x: any, y: any): boolean => {
  */
 const isEqual = (component1: any, component2: any, referentialEqualityCheck: boolean): boolean => {
   if (referentialEqualityCheck) {
-    return component1 === component2 || compareComponents(component1, component2)
+    return component1 === component2 || compareComponents(component1, component2);
   }
-  return component1 !== component2 && compareComponents(component1, component2)
+  return compareComponents(component1, component2);
 }
 
 /**
