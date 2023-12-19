@@ -29,6 +29,41 @@ export const sortReportElements = (report: NewReport): NewReport => {
   report.elements.sort((a, b) => a.action.length - b.action.length || b.path.length - a.path.length)
   return report
 }
+
+// Utility function to get all targets of reports with type 'reuseComponents'
+const getReuseComponentTargets = (
+  reports: { type: string; elements: ReportElement[] }[]
+): Set<string> => {
+  const targets = new Set<string>()
+  for (const report of reports) {
+    if (report.type === 'reuseComponents') {
+      for (const element of report.elements) {
+        if (element.target) {
+          targets.add(element.target)
+        }
+      }
+    }
+  }
+  return targets
+}
+
+// Main function to filter report elements
+export const filterReportElements = (
+  reports: { type: string; elements: ReportElement[] }[]
+): NewReport[] => {
+  const reuseTargets = getReuseComponentTargets(reports)
+
+  return reports.map((report) => {
+    if (report.type === 'removeComponents') {
+      const filteredElements = report.elements.filter((element) => {
+        return !reuseTargets.has(element.path)
+      })
+      return { type: report.type, elements: filteredElements }
+    }
+    return report
+  })
+}
+
 const isExtension = (fieldName: string): boolean => {
   return fieldName.startsWith('x-')
 }

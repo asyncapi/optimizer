@@ -13,6 +13,7 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "build": "tsc",
+    "dev": "tsc --watch",
     "docs": "jsdoc2md lib/Optimizer.js -f lib/**/*.js > API.md",
     "example": "tsc && node examples/index.js",
     "lint": "eslint --max-warnings 0 --config .eslintrc .",
@@ -56,6 +57,8 @@
   },
   "dependencies": {
     "@asyncapi/parser": "^3.0.2",
+    "@types/debug": "^4.1.8",
+    "debug": "^4.3.4",
     "js-yaml": "^4.1.0",
     "jsonpath-plus": "^6.0.1",
     "lodash": "^4.17.21",

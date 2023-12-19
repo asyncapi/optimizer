@@ -4,47 +4,48 @@ import { Parser } from '@asyncapi/parser'
 import { getOptimizableComponents } from '../../src/ComponentProvider'
 import { OptimizableComponentGroup } from '../../src/index.d'
 
-const MoveToComponentsExpectedResult = [
+const MoveToComponentsExpectedResult: any[] = [
   {
-    path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.subscribe.message.traits[0].headers',
+    path: 'channels.withDuplicatedMessage1.messages.duped1',
+    action: 'move',
+    target: 'components.messages.message-1',
+  },
+  {
+    path: 'channels.withDuplicatedMessage2.messages.duped2',
+    action: 'reuse',
+    target: 'components.messages.message-1',
+  },
+  {
+    path: 'channels.UserSignedUp1',
+    action: 'move',
+    target: 'components.channels.channel-1',
+  },
+  {
+    path: 'channels.UserSignedUp2',
+    action: 'reuse',
+    target: 'components.channels.channel-1',
+  },
+  {
+    path: 'channels.withDuplicatedMessage1.messages.duped1.payload',
     action: 'move',
     target: 'components.schemas.schema-1',
   },
   {
-    path: 'channels.smartylighting/action/{streetlightId}/turn/on.publish.message.traits[0].headers',
+    path: 'channels.withDuplicatedMessage2.messages.duped2.payload',
     action: 'reuse',
     target: 'components.schemas.schema-1',
-  },
-  {
-    path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.subscribe.message.traits[0].headers.properties.my-app-header',
-    action: 'move',
-    target: 'components.schemas.schema-2',
-  },
-  {
-    path: 'channels.smartylighting/action/{streetlightId}/turn/on.publish.message.traits[0].headers.properties.my-app-header',
-    action: 'reuse',
-    target: 'components.schemas.schema-2',
-  },
-  {
-    path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.parameters.streetlightId',
-    action: 'move',
-    target: 'components.parameters.parameter-1',
-  },
-  {
-    path: 'channels.smartylighting/action/{streetlightId}/turn/on.parameters.streetlightId',
-    action: 'reuse',
-    target: 'components.parameters.parameter-1',
   },
 ]
 const RemoveComponentsExpectedResult = [
-  { path: 'components.messages.unusedMessage', action: 'remove' },
-  { path: 'components.parameters.unusedParameter', action: 'remove' },
+  { path: 'components.messages.unUsedMessage', action: 'remove' },
+  { path: 'components.channels.unUsedChannel', action: 'remove' },
+  { path: 'components.schemas.canBeReused', action: 'remove' },
 ]
 const ReuseComponentsExpectedResult = [
   {
-    path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.subscribe.message.payload.properties.sentAt',
+    path: 'channels.withFullFormMessage.messages.canBeReused.payload',
     action: 'reuse',
-    target: 'components.schemas.sentAt',
+    target: 'components.schemas.canBeReused',
   },
 ]
 

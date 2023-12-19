@@ -1,7 +1,8 @@
 import { Action } from '../Optimizer'
 import { createReport, isEqual, isInComponents } from '../Utils'
 import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'index.d'
-
+import Debug from 'debug'
+const debug = Debug('reporter:moveToComponents')
 /**
  *
  * @param optimizableComponentGroup components that you want to analyze for duplicates.
@@ -49,7 +50,11 @@ const findDuplicateComponents = (
       }
     }
   }
-
+  debug(
+    'duplicte %s: %O',
+    optimizableComponentGroup.type,
+    resultElements.map((element) => element.path)
+  )
   return resultElements
 }
 

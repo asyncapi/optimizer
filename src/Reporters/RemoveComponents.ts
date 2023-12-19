@@ -1,6 +1,8 @@
 import { Action } from '../Optimizer'
 import { OptimizableComponentGroup, ReportElement, Reporter } from '../index.d'
 import { createReport, isInComponents } from '../Utils'
+import Debug from 'debug'
+const debug = Debug('reporter:removeComponents')
 
 const findUnusedComponents = (componentsGroup: OptimizableComponentGroup): ReportElement[] => {
   const allComponents = componentsGroup.components
@@ -12,6 +14,11 @@ const findUnusedComponents = (componentsGroup: OptimizableComponentGroup): Repor
   )
   const unusedComponents = [...insideComponentsSection].filter(
     (component) => !outsideComponentsSection.has(component.component)
+  )
+  debug(
+    'unused %s inside components section: %O',
+    componentsGroup.type,
+    unusedComponents.map((component) => component.path)
   )
   return unusedComponents.map((component) => ({ path: component.path, action: Action.Remove }))
 }

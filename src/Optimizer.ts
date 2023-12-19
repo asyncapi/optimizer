@@ -12,7 +12,8 @@ import YAML from 'js-yaml'
 import merge from 'merge-deep'
 import * as _ from 'lodash'
 import { getOptimizableComponents } from './ComponentProvider'
-import { hasParent, sortReportElements, toJS } from './Utils'
+import { filterReportElements, hasParent, sortReportElements, toJS } from './Utils'
+import Debug from 'debug'
 
 export enum Action {
   Move = 'move',
@@ -51,15 +52,21 @@ export class Optimizer {
   async getReport(): Promise<Report> {
     const parser = new Parser()
     const parsedDocument = await parser.parse(this.YAMLorJSON, { applyTraits: false })
-    if (!parsedDocument.document) throw new Error('Parsing failed.')
+    if (!parsedDocument.document) {
+      // eslint-disable-next-line no-undef, no-console
+      console.error(parsedDocument.diagnostics)
+      throw new Error('Parsing failed.')
+    }
     this.components = getOptimizableComponents(parsedDocument.document)
     const rawReports = this.reporters.map((reporter) => reporter(this.components))
-    const filteredReports = rawReports.map((report) => ({
+    const reportsWithParents = rawReports.map((report) => ({
       type: report.type,
       elements: report.elements.filter((reportElement) =>
         hasParent(reportElement, this.outputObject)
       ),
     }))
+
+    const filteredReports = filterReportElements(reportsWithParents)
     const sortedReports = filteredReports.map((report) => sortReportElements(report))
     this.reports = sortedReports
 
@@ -124,6 +131,7 @@ export class Optimizer {
   }
 
   private applyReport(changes: ReportElement[]): void {
+    const debug = Debug('optimizer:applyReport')
     for (const change of changes) {
       switch (change.action) {
         case Action.Move:
@@ -131,6 +139,7 @@ export class Optimizer {
           _.set(this.outputObject, change.path, {
             $ref: `#/${change.target?.replace(/\./g, '/')}`,
           })
+          debug('moved %s to %s', change.path, change.target)
           break
 
         case Action.Reuse:
@@ -139,12 +148,14 @@ export class Optimizer {
               $ref: `#/${change.target?.replace(/\./g, '/')}`,
             })
           }
+          debug('%s reused %s', change.path, change.target)
           break
 
         case Action.Remove:
           _.unset(this.outputObject, change.path)
           //if parent becomes empty after removing, parent should be removed as well.
           this.removeEmptyParent(change.path)
+          debug('removed %s', change.path)
           break
       }
     }
