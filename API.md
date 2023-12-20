@@ -132,7 +132,7 @@ Converts JSON or YAML string object.
 | --- | --- | --- |
 | [reuseComponents] | <code>Boolean</code> | whether to reuse components from `components` section or not. Defaults to `true`. |
 | [removeComponents] | <code>Boolean</code> | whether to remove un-used components from `components` section or not. Defaults to `true`. |
-| [moveToComponents] | <code>Boolean</code> | whether to move duplicated components to the `components` section or not. Defaults to `true`. |
+| [moveDuplicatesToComponents] | <code>Boolean</code> | whether to move duplicated components to the `components` section or not. Defaults to `true`. |
 
 <a name="Options"></a>
 
@@ -144,4 +144,3 @@ Converts JSON or YAML string object.
 | --- | --- | --- |
 | [rules] | [<code>Rules</code>](#Rules) | the list of rules that specifies which type of optimizations should be applied. |
 | [output] | <code>String</code> | specifies which type of output user wants, `'JSON'` or `'YAML'`. Defaults to `'YAML'`; |
-
