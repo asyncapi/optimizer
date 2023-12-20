@@ -1,10 +1,10 @@
-import { moveToComponents, reuseComponents, removeComponents } from '../../src/Reporters'
+import { moveDuplicatesToComponents, reuseComponents, removeComponents } from '../../src/Reporters'
 import { inputYAML } from '../fixtures'
 import { Parser } from '@asyncapi/parser'
 import { getOptimizableComponents } from '../../src/ComponentProvider'
 import { OptimizableComponentGroup } from '../../src/index.d'
 
-const MoveToComponentsExpectedResult: any[] = [
+const moveDuplicatesToComponentsExpectedResult: any[] = [
   {
     path: 'channels.withDuplicatedMessage1.messages.duped1',
     action: 'move',
@@ -55,11 +55,11 @@ describe('Optimizers', () => {
     const asyncapiDocument = await new Parser().parse(inputYAML, { applyTraits: false })
     optimizableComponents = getOptimizableComponents(asyncapiDocument.document!)
   })
-  describe('MoveToComponents', () => {
+  describe('moveDuplicatesToComponents', () => {
     test('should contain the correct optimizations.', () => {
-      const report = moveToComponents(optimizableComponents)
-      expect(report.elements).toEqual(MoveToComponentsExpectedResult)
-      expect(report.type).toEqual('moveToComponents')
+      const report = moveDuplicatesToComponents(optimizableComponents)
+      expect(report.elements).toEqual(moveDuplicatesToComponentsExpectedResult)
+      expect(report.type).toEqual('moveDuplicatesToComponents')
     })
   })
 
