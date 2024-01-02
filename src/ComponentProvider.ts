@@ -74,6 +74,7 @@ export const getOptimizableComponents = (
     parameters: getAllComponents('parameters'),
     correlationIds: getAllComponents('correlationIds'),
     replies: getAllComponents('replies'),
+    replyAddresses: getAllComponents('replyAddresses'),
     externalDocs: getAllComponents('externalDocs'),
     tags: getAllComponents('tags'),
     operationTraits: getAllComponents('operationTraits'),
