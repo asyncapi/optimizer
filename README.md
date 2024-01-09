@@ -137,7 +137,7 @@ the report value will be:
       action: 'remove',
     }
   ],
-  moveToComponents: [
+  moveDuplicatesToComponents: [
     {
       //move will ref the current path to the moved component as well.
       path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.parameters.streetlightId',
@@ -159,7 +159,7 @@ const optimizedDocument = optimizer.getOptimizedDocument({
   rules: {
     reuseComponents: true,
     removeComponents: true,
-    moveToComponents: true 
+    moveDuplicatesToComponents: true 
   }
 });
 /*

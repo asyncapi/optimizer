@@ -2,7 +2,7 @@ import { Action } from '../Optimizer'
 import { createReport, isEqual, isInComponents } from '../Utils'
 import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'index.d'
 import Debug from 'debug'
-const debug = Debug('reporter:moveToComponents')
+const debug = Debug('reporter:moveDuplicatesToComponents')
 /**
  *
  * @param optimizableComponentGroup components that you want to analyze for duplicates.
@@ -58,8 +58,8 @@ const findDuplicateComponents = (
   return resultElements
 }
 
-export const moveToComponents: Reporter = (optimizableComponentsGroup) => {
-  return createReport(findDuplicateComponents, optimizableComponentsGroup, 'moveToComponents')
+export const moveDuplicatesToComponents: Reporter = (optimizableComponentsGroup) => {
+  return createReport(findDuplicateComponents, optimizableComponentsGroup, 'moveDuplicatesToComponents')
 }
 
 function getOutsideComponents(

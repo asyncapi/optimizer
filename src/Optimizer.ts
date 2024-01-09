@@ -7,7 +7,7 @@ import {
   Reporter,
 } from './index.d'
 import { Parser } from '@asyncapi/parser'
-import { removeComponents, reuseComponents, moveToComponents } from './Reporters'
+import { removeComponents, reuseComponents, moveDuplicatesToComponents } from './Reporters'
 import YAML from 'js-yaml'
 import merge from 'merge-deep'
 import * as _ from 'lodash'
@@ -42,7 +42,7 @@ export class Optimizer {
    */
   constructor(private YAMLorJSON: any) {
     this.outputObject = toJS(this.YAMLorJSON)
-    this.reporters = [removeComponents, reuseComponents, moveToComponents]
+    this.reporters = [removeComponents, reuseComponents, moveDuplicatesToComponents]
   }
 
   /**
@@ -78,7 +78,7 @@ export class Optimizer {
    * @typedef {Object} Rules
    * @property {Boolean=} reuseComponents - whether to reuse components from `components` section or not. Defaults to `true`.
    * @property {Boolean=} removeComponents - whether to remove un-used components from `components` section or not. Defaults to `true`.
-   * @property {Boolean=} moveToComponents - whether to move duplicated components to the `components` section or not. Defaults to `true`.
+   * @property {Boolean=} moveDuplicatesToComponents - whether to move duplicated components to the `components` section or not. Defaults to `true`.
    */
 
   /**
@@ -98,7 +98,7 @@ export class Optimizer {
       rules: {
         reuseComponents: true,
         removeComponents: true,
-        moveToComponents: true,
+        moveDuplicatesToComponents: true,
       },
       output: Output.YAML,
     }

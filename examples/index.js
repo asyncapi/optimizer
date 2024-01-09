@@ -11,7 +11,7 @@ optimizer.getReport().then((report) => {
     rules: {
       reuseComponents: true,
       removeComponents: true,
-      moveToComponents: true,
+      moveDuplicatesToComponents: true,
     },
   })
   //store optimizedDocument as to output.yaml
