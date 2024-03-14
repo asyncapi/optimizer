@@ -35,6 +35,7 @@ interface Rules {
   removeComponents?: boolean
   moveAllToComponents?: boolean
   moveDuplicatesToComponents?: boolean
+  schemas?: boolean
 }
 export interface Options {
   rules?: Rules

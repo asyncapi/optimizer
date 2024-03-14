@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable security/detect-object-injection */
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser'
-import { OptimizableComponentGroup, OptimizableComponent } from 'index.d'
+import { OptimizableComponentGroup, OptimizableComponent, Options } from 'index.d'
 
 import { JSONPath } from 'jsonpath-plus'
 import _ from 'lodash'
@@ -53,15 +53,16 @@ export const parseComponentsFromPath = (
 }
 
 export const getOptimizableComponents = (
-  asyncAPIDocument: AsyncAPIDocumentInterface
+  asyncAPIDocument: AsyncAPIDocumentInterface,
+  options?: Options
 ): OptimizableComponentGroup[] => {
   const optimizeableComponents: OptimizableComponentGroup[] = []
   const getAllComponents = (type: string) => {
     // @ts-ignore
     if (typeof asyncAPIDocument[type] !== 'function') return []
     // @ts-ignore
-    return asyncAPIDocument[type]().all().concat(asyncAPIDocument.components()[type]().all());
-  };
+    return asyncAPIDocument[type]().all().concat(asyncAPIDocument.components()[type]().all())
+  }
   const optimizableComponents = {
     servers: getAllComponents('servers'),
     messages: getAllComponents('messages'),
@@ -83,10 +84,14 @@ export const getOptimizableComponents = (
     operationBindings: getAllComponents('operationBindings'),
     messageBindings: getAllComponents('messageBindings'),
   }
-  // to remove `schemas` from the optimized AsyncAPI Document, uncomment the next line
-  // delete optimizableComponents.schemas
-  // const options = { includeSchemas: true }
-  // !options.includeSchemas && delete optimizableComponents.schemas
+  // In the case of `if (!options?.rules?.schemas)`, if `schemas` property is
+  // simply absent in the `options` object, the program's behavior will not turn
+  // to default `schemas: true`, but the absence of `schemas` will be considered
+  // `schemas: false`, due to `undefined` being considered `false`. Thus,
+  // explicit check is performed.
+  if (options?.rules?.schemas === false) {
+    delete optimizableComponents.schemas
+  }
   for (const [type, components] of Object.entries(optimizableComponents)) {
     if (components.length === 0) continue
     optimizeableComponents.push({

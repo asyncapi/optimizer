@@ -45,7 +45,7 @@ export class Optimizer {
   /**
    * @param {any} YAMLorJSON - YAML or JSON document that you want to optimize. You can pass Object, YAML or JSON version of your AsyncAPI document here.
    */
-  constructor(private YAMLorJSON: any) {
+  constructor(private YAMLorJSON: any, private options?: Options) {
     this.outputObject = toJS(this.YAMLorJSON)
     this.reporters = [
       removeComponents,
@@ -53,8 +53,9 @@ export class Optimizer {
       moveAllToComponents,
       moveDuplicatesToComponents,
     ]
+    this.options = options
   }
-
+  
   /**
    * @returns {Report} an object containing all of the optimizations that the library can do.
    *
@@ -67,7 +68,7 @@ export class Optimizer {
       console.error(parsedDocument.diagnostics)
       throw new Error('Parsing failed.')
     }
-    this.components = getOptimizableComponents(parsedDocument.document)
+    this.components = getOptimizableComponents(parsedDocument.document, this.options)
     const rawReports = this.reporters.map((reporter) => reporter(this.components))
     const reportsWithParents = rawReports.map((report) => ({
       type: report.type,
@@ -89,6 +90,7 @@ export class Optimizer {
    * @property {Boolean=} removeComponents - whether to remove un-used components from `components` section or not. Defaults to `true`.
    * @property {Boolean=} moveAllToComponents - whether to move all AsyncAPI Specification-valid components to the `components` section or not.
    * @property {Boolean=} moveDuplicatesToComponents - whether to move duplicated components to the `components` section or not. Defaults to `true`.
+   * @property {Boolean=} schemas - whether to add calculated `schemas` to the optimized AsyncAPI Document. Defaults to `true`.
    */
 
   /**
@@ -108,12 +110,13 @@ export class Optimizer {
       rules: {
         reuseComponents: true,
         removeComponents: true,
-        moveAllToComponents: false,
-        moveDuplicatesToComponents: true, // there is no need to move duplicates if `moveAllToComponents` is true
+        moveAllToComponents: true,
+        moveDuplicatesToComponents: false, // there is no need to move duplicates if `moveAllToComponents` is `true`
+        schemas: true,
       },
       output: Output.YAML,
     }
-    options = merge(defaultOptions, options)
+    options = merge(defaultOptions, this.options)
     if (!this.reports) {
       throw new Error(
         'No report has been generated. please first generate a report by calling getReport method.'
