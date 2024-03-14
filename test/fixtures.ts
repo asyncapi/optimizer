@@ -90,6 +90,7 @@ info:
     This file contains duplicate and unused messages across the file and is used to test the optimizer.
 channels:
   withDuplicatedMessage1:
+    x-origin: ./messages.yaml#/withDuplicatedMessage1FromXOrigin
     address: user/signedup
     messages:
       duped1:
@@ -172,15 +173,16 @@ info:
     to test the optimizer.
 channels:
   withDuplicatedMessage1:
+    x-origin: ./messages.yaml#/withDuplicatedMessage1FromXOrigin
     address: user/signedup
     messages:
       duped1:
-        $ref: '#/components/messages/message-1'
+        $ref: '#/components/messages/withDuplicatedMessage1'
   withDuplicatedMessage2:
     address: user/signedup
     messages:
       duped2:
-        $ref: '#/components/messages/message-1'
+        $ref: '#/components/messages/withDuplicatedMessage1'
   withFullFormMessage:
     address: user/signedup
     messages:
@@ -188,9 +190,9 @@ channels:
         payload:
           $ref: '#/components/schemas/canBeReused'
   UserSignedUp1:
-    $ref: '#/components/channels/channel-1'
+    $ref: '#/components/channels/UserSignedUp1'
   UserSignedUp2:
-    $ref: '#/components/channels/channel-1'
+    $ref: '#/components/channels/UserSignedUp1'
   deleteAccount:
     address: user/deleteAccount
     messages:
@@ -208,7 +210,7 @@ components:
     canBeReused:
       type: object
       description: I can be reused.
-    schema-1:
+    withDuplicatedMessage1:
       type: object
       description: I am duplicated
   messages:
@@ -227,11 +229,11 @@ components:
             type: string
             format: email
             description: Email of the user
-    message-1:
+    withDuplicatedMessage1:
       payload:
-        $ref: '#/components/schemas/schema-1'
+        $ref: '#/components/schemas/withDuplicatedMessage1'
   channels:
-    channel-1:
+    UserSignedUp1:
       address: user/signedup
       messages:
         myMessage:
@@ -250,6 +252,7 @@ export const inputJSON = `{
     {
       'withDuplicatedMessage1':
         {
+          'x-origin': './messages.yaml#/withDuplicatedMessage1FromXOrigin',
           'address': 'user/signedup',
           'messages':
             { 'duped1': { 'payload': { 'type': 'object', 'description': 'I am duplicated' } } },
@@ -334,4 +337,4 @@ export const inputJSON = `{
 `
 
 // eslint-disable-next-line quotes
-export const outputJSON = `{"asyncapi":"3.0.0","info":{"title":"Untidy AsyncAPI file","version":"1.0.0","description":"This file contains duplicate and unused messages across the file and is used to test the optimizer."},"channels":{"withDuplicatedMessage1":{"address":"user/signedup","messages":{"duped1":{"$ref":"#/components/messages/message-1"}}},"withDuplicatedMessage2":{"address":"user/signedup","messages":{"duped2":{"$ref":"#/components/messages/message-1"}}},"withFullFormMessage":{"address":"user/signedup","messages":{"canBeReused":{"payload":{"$ref":"#/components/schemas/canBeReused"}}}},"UserSignedUp1":{"$ref":"#/components/channels/channel-1"},"UserSignedUp2":{"$ref":"#/components/channels/channel-1"},"deleteAccount":{"address":"user/deleteAccount","messages":{"deleteUser":{"$ref":"#/components/messages/DeleteUser"}}}},"operations":{"user/deleteAccount.subscribe":{"action":"send","channel":{"$ref":"#/channels/deleteAccount"},"messages":[{"$ref":"#/channels/deleteAccount/messages/deleteUser"}]}},"components":{"schemas":{"canBeReused":{"type":"object","description":"I can be reused."},"schema-1":{"type":"object","description":"I am duplicated"}},"messages":{"DeleteUser":{"payload":{"type":"string","description":"userId of the user that is going to be deleted"}},"UserSignedUp":{"payload":{"type":"object","properties":{"displayName":{"type":"string","description":"Name of the user"},"email":{"type":"string","format":"email","description":"Email of the user"}}}},"message-1":{"payload":{"$ref":"#/components/schemas/schema-1"}}},"channels":{"channel-1":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}}}}}`
+export const outputJSON = `{"asyncapi":"3.0.0","info":{"title":"Untidy AsyncAPI file","version":"1.0.0","description":"This file contains duplicate and unused messages across the file and is used to test the optimizer."},"channels":{"withDuplicatedMessage1":{"x-origin":"./messages.yaml#/withDuplicatedMessage1FromXOrigin","address":"user/signedup","messages":{"duped1":{"$ref":"#/components/messages/withDuplicatedMessage1"}}},"withDuplicatedMessage2":{"address":"user/signedup","messages":{"duped2":{"$ref":"#/components/messages/withDuplicatedMessage1"}}},"withFullFormMessage":{"address":"user/signedup","messages":{"canBeReused":{"payload":{"$ref":"#/components/schemas/canBeReused"}}}},"UserSignedUp1":{"$ref":"#/components/channels/UserSignedUp1"},"UserSignedUp2":{"$ref":"#/components/channels/UserSignedUp1"},"deleteAccount":{"address":"user/deleteAccount","messages":{"deleteUser":{"$ref":"#/components/messages/DeleteUser"}}}},"operations":{"user/deleteAccount.subscribe":{"action":"send","channel":{"$ref":"#/channels/deleteAccount"},"messages":[{"$ref":"#/channels/deleteAccount/messages/deleteUser"}]}},"components":{"schemas":{"canBeReused":{"type":"object","description":"I can be reused."},"withDuplicatedMessage1":{"type":"object","description":"I am duplicated"}},"messages":{"DeleteUser":{"payload":{"type":"string","description":"userId of the user that is going to be deleted"}},"UserSignedUp":{"payload":{"type":"object","properties":{"displayName":{"type":"string","description":"Name of the user"},"email":{"type":"string","format":"email","description":"Email of the user"}}}},"withDuplicatedMessage1":{"payload":{"$ref":"#/components/schemas/withDuplicatedMessage1"}}},"channels":{"UserSignedUp1":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}}}}}`

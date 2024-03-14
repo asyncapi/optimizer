@@ -108,8 +108,8 @@ export class Optimizer {
       rules: {
         reuseComponents: true,
         removeComponents: true,
-        moveAllToComponents: true,
-        moveDuplicatesToComponents: false, // there is no need to move duplicates if `moveAllToComponents` is true
+        moveAllToComponents: false,
+        moveDuplicatesToComponents: true, // there is no need to move duplicates if `moveAllToComponents` is true
       },
       output: Output.YAML,
     }
