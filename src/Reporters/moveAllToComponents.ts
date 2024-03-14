@@ -17,7 +17,7 @@ const findAllComponents = (
 
   const resultElements: ReportElement[] = []
 
-  for (const [index, component] of outsideComponentsSection.entries()) {
+  for (const component of outsideComponentsSection.values()) {
     const existingResult = resultElements.filter(
       (reportElement) => component.path === reportElement.path
     )[0]

@@ -17,8 +17,6 @@ const findDuplicateComponents = (
 
   const resultElements: ReportElement[] = []
 
-  let counter = 1
-
   for (const [index, component] of outsideComponentsSection.entries()) {
     for (const compareComponent of outsideComponentsSection.slice(index + 1)) {
       if (isEqual(component.component, compareComponent.component, false)) {
@@ -26,9 +24,12 @@ const findDuplicateComponents = (
           (reportElement) => component.path === reportElement.path
         )[0]
         if (!existingResult) {
-          const componentName =
-            component.component.name ||
-            `${optimizableComponentGroup.type.slice(0, -1)}-${counter++}`
+          let componentName: string
+          if (component.component['x-origin']) {
+            componentName = String(component.component['x-origin']).split('/').reverse()[0]
+          } else {
+            componentName = String(component.path).split('.')[1]
+          }
           const target = `components.${optimizableComponentGroup.type}.${componentName}`
           resultElements.push({
             path: component.path,

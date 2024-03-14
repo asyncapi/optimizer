@@ -83,8 +83,10 @@ export const getOptimizableComponents = (
     operationBindings: getAllComponents('operationBindings'),
     messageBindings: getAllComponents('messageBindings'),
   }
-  const options = { includeSchemas: false }
-  !options.includeSchemas && delete optimizableComponents.schemas
+  // to remove `schemas` from the optimized AsyncAPI Document, uncomment the next line
+  // delete optimizableComponents.schemas
+  // const options = { includeSchemas: true }
+  // !options.includeSchemas && delete optimizableComponents.schemas
   for (const [type, components] of Object.entries(optimizableComponents)) {
     if (components.length === 0) continue
     optimizeableComponents.push({
