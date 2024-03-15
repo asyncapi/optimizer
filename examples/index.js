@@ -5,7 +5,7 @@ const { Optimizer } = require('../lib/Optimizer')
 const input = require('fs').readFileSync('./examples/input.yaml', 'utf8')
 const optimizer = new Optimizer(input)
 optimizer.getReport().then((report) => {
-  console.log(JSON.stringify(report))
+  console.log(report)
   const optimizedDocument = optimizer.getOptimizedDocument({
     output: 'YAML',
     rules: {
