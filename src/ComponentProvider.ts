@@ -56,7 +56,6 @@ export const getOptimizableComponents = (
   asyncAPIDocument: AsyncAPIDocumentInterface
 ): OptimizableComponentGroup[] => {
   const optimizeableComponents: OptimizableComponentGroup[] = []
-
   const getAllComponents = (type: string) => {
     // @ts-ignore
     if (typeof asyncAPIDocument[type] !== 'function') return []
@@ -84,6 +83,8 @@ export const getOptimizableComponents = (
     operationBindings: getAllComponents('operationBindings'),
     messageBindings: getAllComponents('messageBindings'),
   }
+  const options = { includeSchemas: false }
+  !options.includeSchemas && delete optimizableComponents.schemas
   for (const [type, components] of Object.entries(optimizableComponents)) {
     if (components.length === 0) continue
     optimizeableComponents.push({

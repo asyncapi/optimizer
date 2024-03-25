@@ -18,6 +18,7 @@ export type OptimizableComponentGroup = {
 export interface Report {
   reuseComponents?: ReportElement[]
   removeComponents?: ReportElement[]
+  moveAllToComponents?: ReportElement[]
   moveDuplicatesToComponents?: ReportElement[]
 }
 
@@ -32,6 +33,7 @@ export type Reporter = (optimizeableComponents: OptimizableComponentGroup[]) => 
 interface Rules {
   reuseComponents?: boolean
   removeComponents?: boolean
+  moveAllToComponents?: boolean
   moveDuplicatesToComponents?: boolean
 }
 export interface Options {
