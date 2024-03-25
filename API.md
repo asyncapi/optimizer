@@ -76,6 +76,16 @@ This function is used to get the optimized document after seeing the report.
 | --- | --- | --- |
 | [Options] | [<code>Options</code>](#Options) | the options are a way to customize the final output. |
 
+<a name="findAllComponents"></a>
+
+## findAllComponents(optimizableComponentGroup) ⇒
+**Kind**: global function  
+**Returns**: A list of optimization report elements.  
+
+| Param | Description |
+| --- | --- |
+| optimizableComponentGroup | list of all AsyncAPI Specification-valid components. |
+
 <a name="findDuplicateComponents"></a>
 
 ## findDuplicateComponents(optimizableComponentGroup) ⇒
@@ -132,6 +142,7 @@ Converts JSON or YAML string object.
 | --- | --- | --- |
 | [reuseComponents] | <code>Boolean</code> | whether to reuse components from `components` section or not. Defaults to `true`. |
 | [removeComponents] | <code>Boolean</code> | whether to remove un-used components from `components` section or not. Defaults to `true`. |
+| [moveAllToComponents] | <code>Boolean</code> | whether to move all AsyncAPI Specification-valid components to the `components` section or not. Defaults to `true`. |
 | [moveDuplicatesToComponents] | <code>Boolean</code> | whether to move duplicated components to the `components` section or not. Defaults to `true`. |
 
 <a name="Options"></a>
