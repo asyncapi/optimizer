@@ -90,7 +90,7 @@ export class Optimizer {
    * @property {Boolean=} removeComponents - whether to remove un-used components from `components` section or not. Defaults to `true`.
    * @property {Boolean=} moveAllToComponents - whether to move all AsyncAPI Specification-valid components to the `components` section or not.
    * @property {Boolean=} moveDuplicatesToComponents - whether to move duplicated components to the `components` section or not. Defaults to `true`.
-   * @property {Boolean=} schemas - whether to add calculated `schemas` to the optimized AsyncAPI Document. Defaults to `true`.
+   * @property {Boolean=} schemas - whether to add calculated `schemas` to the optimized AsyncAPI Document or not. Defaults to `true`.
    */
 
   /**

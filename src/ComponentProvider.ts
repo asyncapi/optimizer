@@ -87,7 +87,7 @@ export const getOptimizableComponents = (
   // In the case of `if (!options?.rules?.schemas)`, if `schemas` property is
   // simply absent in the `options` object, the program's behavior will not turn
   // to default `schemas: true`, but the absence of `schemas` will be considered
-  // `schemas: false`, due to `undefined` being considered `false`. Thus,
+  // `schemas: false`, due to `undefined` being considered `false` in JS. Thus,
   // explicit check is performed.
   if (options?.rules?.schemas === false) {
     delete optimizableComponents.schemas
