@@ -35,11 +35,15 @@ interface Rules {
   removeComponents?: boolean
   moveAllToComponents?: boolean
   moveDuplicatesToComponents?: boolean
-  schemas?: boolean
+}
+
+export interface DisableOptimizationFor {
+  schema?: boolean
 }
 export interface Options {
   rules?: Rules
   output?: Output
+  disableOptimizationFor?: DisableOptimizationFor // non-approved type
 }
 
 export interface IOptimizer {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable security/detect-object-injection */
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser'
-import { OptimizableComponentGroup, OptimizableComponent, Options } from 'index.d'
+import { OptimizableComponentGroup, OptimizableComponent } from 'index.d'
 
 import { JSONPath } from 'jsonpath-plus'
 import _ from 'lodash'
@@ -54,7 +54,6 @@ export const parseComponentsFromPath = (
 
 export const getOptimizableComponents = (
   asyncAPIDocument: AsyncAPIDocumentInterface,
-  options?: Options
 ): OptimizableComponentGroup[] => {
   const optimizeableComponents: OptimizableComponentGroup[] = []
   const getAllComponents = (type: string) => {
@@ -83,14 +82,6 @@ export const getOptimizableComponents = (
     channelBindings: getAllComponents('channelBindings'),
     operationBindings: getAllComponents('operationBindings'),
     messageBindings: getAllComponents('messageBindings'),
-  }
-  // In the case of `if (!options?.rules?.schemas)`, if `schemas` property is
-  // simply absent in the `options` object, the program's behavior will not turn
-  // to default `schemas: true`, but the absence of `schemas` will be considered
-  // `schemas: false`, due to `undefined` being considered `false` in JS. Thus,
-  // explicit check is performed.
-  if (options?.rules?.schemas === false) {
-    delete optimizableComponents.schemas
   }
   for (const [type, components] of Object.entries(optimizableComponents)) {
     if (components.length === 0) continue
