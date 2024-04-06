@@ -1,5 +1,5 @@
 import { Action } from '../Optimizer'
-import { createReport, isEqual, isInComponents } from '../Utils'
+import { createReport, isEqual, isInComponents, getComponentName } from '../Utils'
 import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'index.d'
 import Debug from 'debug'
 const debug = Debug('reporter:moveAllToComponents')
@@ -22,12 +22,7 @@ const findAllComponents = (
       (reportElement) => component.path === reportElement.path
     )[0]
     if (!existingResult) {
-      let componentName: string
-      if (component.component['x-origin']) {
-        componentName = String(component.component['x-origin']).split('/').reverse()[0]
-      } else {
-        componentName = String(component.path).split('.').reverse()[0]
-      }
+      const componentName = getComponentName(component)
       const target = `components.${optimizableComponentGroup.type}.${componentName}`
       resultElements.push({
         path: component.path,
