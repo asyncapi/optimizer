@@ -26,7 +26,7 @@ const findAllComponents = (
       if (component.component['x-origin']) {
         componentName = String(component.component['x-origin']).split('/').reverse()[0]
       } else {
-        componentName = String(component.path).split('.')[1]
+        componentName = String(component.path).split('.').reverse()[0]
       }
       const target = `components.${optimizableComponentGroup.type}.${componentName}`
       resultElements.push({

@@ -88,14 +88,18 @@ export class Optimizer {
    * @typedef {Object} Rules
    * @property {Boolean=} reuseComponents - whether to reuse components from `components` section or not. Defaults to `true`.
    * @property {Boolean=} removeComponents - whether to remove un-used components from `components` section or not. Defaults to `true`.
-   * @property {Boolean=} moveAllToComponents - whether to move all AsyncAPI Specification-valid components to the `components` section or not.
-   * @property {Boolean=} moveDuplicatesToComponents - whether to move duplicated components to the `components` section or not. Defaults to `true`.
+   * @property {Boolean=} moveAllToComponents - whether to move all AsyncAPI Specification-valid components to the `components` section or not. Defaults to `true`.
+   * @property {Boolean=} moveDuplicatesToComponents - whether to move duplicated components to the `components` section or not. Defaults to `false`.
    */
-
+  /**
+   * @typedef {Object} DisableOptimizationFor
+   * @property {Boolean=} schema - whether object `schema` should be excluded from the process of optimization (`true` instructs **not** to add calculated `schemas` to the optimized AsyncAPI Document.)
+   */
   /**
    * @typedef {Object} Options
    * @property {Rules=} rules - the list of rules that specifies which type of optimizations should be applied.
    * @property {String=} output - specifies which type of output user wants, `'JSON'` or `'YAML'`. Defaults to `'YAML'`;
+   * @property {DisableOptimizationFor=} disableOptimizationFor - the list of objects that should be excluded from the process of optimization.
    */
   /**
    * This function is used to get the optimized document after seeing the report.

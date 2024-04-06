@@ -11,96 +11,96 @@ import { OptimizableComponentGroup } from '../../src/index.d'
 
 const moveAllToComponentsExpectedResult: any[] = [
   {
-    action: 'move',
     path: 'channels.withDuplicatedMessage1.messages.duped1',
-    target: 'components.messages.withDuplicatedMessage1',
+    action: 'move',
+    target: 'components.messages.duped1',
   },
   {
-    action: 'move',
     path: 'channels.withDuplicatedMessage2.messages.duped2',
-    target: 'components.messages.withDuplicatedMessage2',
+    action: 'move',
+    target: 'components.messages.duped2',
   },
   {
-    action: 'move',
     path: 'channels.withFullFormMessage.messages.canBeReused',
-    target: 'components.messages.withFullFormMessage',
+    action: 'move',
+    target: 'components.messages.canBeReused',
   },
   {
-    action: 'move',
     path: 'channels.withDuplicatedMessage1',
+    action: 'move',
     target: 'components.channels.withDuplicatedMessage1FromXOrigin',
   },
   {
-    action: 'move',
     path: 'channels.withDuplicatedMessage2',
+    action: 'move',
     target: 'components.channels.withDuplicatedMessage2',
   },
   {
-    action: 'move',
     path: 'channels.withFullFormMessage',
+    action: 'move',
     target: 'components.channels.withFullFormMessage',
   },
   {
-    action: 'move',
     path: 'channels.UserSignedUp1',
+    action: 'move',
     target: 'components.channels.UserSignedUp1',
   },
   {
-    action: 'move',
     path: 'channels.UserSignedUp2',
+    action: 'move',
     target: 'components.channels.UserSignedUp2',
   },
   {
-    action: 'move',
     path: 'channels.deleteAccount',
+    action: 'move',
     target: 'components.channels.deleteAccount',
   },
   {
-    action: 'move',
     path: 'channels.withDuplicatedMessage1.messages.duped1.payload',
-    target: 'components.schemas.withDuplicatedMessage1',
+    action: 'move',
+    target: 'components.schemas.payload',
   },
   {
-    action: 'move',
     path: 'channels.withDuplicatedMessage2.messages.duped2.payload',
-    target: 'components.schemas.withDuplicatedMessage2',
+    action: 'move',
+    target: 'components.schemas.payload',
   },
   {
-    action: 'move',
     path: 'channels.UserSignedUp1.messages.myMessage.payload',
-    target: 'components.schemas.UserSignedUp1',
+    action: 'move',
+    target: 'components.schemas.payload',
   },
   {
-    action: 'move',
     path: 'channels.UserSignedUp1.messages.myMessage.payload.properties.displayName',
-    target: 'components.schemas.UserSignedUp1',
+    action: 'move',
+    target: 'components.schemas.displayName',
   },
   {
-    action: 'move',
     path: 'channels.UserSignedUp1.messages.myMessage.payload.properties.email',
-    target: 'components.schemas.UserSignedUp1',
+    action: 'move',
+    target: 'components.schemas.email',
   },
   {
-    action: 'move',
     path: 'channels.deleteAccount.messages.deleteUser.payload',
-    target: 'components.schemas.deleteAccount',
+    action: 'move',
+    target: 'components.schemas.payload',
   },
   {
-    action: 'move',
     path: 'operations.user/deleteAccount.subscribe',
-    target: 'components.operations.user/deleteAccount',
+    action: 'move',
+    target: 'components.operations.subscribe',
   },
 ]
 const moveDuplicatesToComponentsExpectedResult: any[] = [
   {
     path: 'channels.withDuplicatedMessage1.messages.duped1',
     action: 'move',
-    target: 'components.messages.withDuplicatedMessage1',
+    target: 'components.messages.duped1',
   },
   {
     path: 'channels.withDuplicatedMessage2.messages.duped2',
     action: 'reuse',
-    target: 'components.messages.withDuplicatedMessage1',
+    target: 'components.messages.duped1',
   },
   {
     path: 'channels.UserSignedUp1',
@@ -115,12 +115,12 @@ const moveDuplicatesToComponentsExpectedResult: any[] = [
   {
     path: 'channels.withDuplicatedMessage1.messages.duped1.payload',
     action: 'move',
-    target: 'components.schemas.withDuplicatedMessage1',
+    target: 'components.schemas.payload',
   },
   {
     path: 'channels.withDuplicatedMessage2.messages.duped2.payload',
     action: 'reuse',
-    target: 'components.schemas.withDuplicatedMessage1',
+    target: 'components.schemas.payload',
   },
 ]
 const RemoveComponentsExpectedResult = [

@@ -5,7 +5,7 @@ import Debug from 'debug'
 const debug = Debug('reporter:moveDuplicatesToComponents')
 /**
  *
- * @param optimizableComponentGroup components that you want to analyze for duplicates.
+ * @param optimizableComponentGroup all AsyncAPI Specification-valid components that you want to analyze for duplicates.
  * @returns A list of optimization report elements.
  */
 const findDuplicateComponents = (
@@ -28,7 +28,7 @@ const findDuplicateComponents = (
           if (component.component['x-origin']) {
             componentName = String(component.component['x-origin']).split('/').reverse()[0]
           } else {
-            componentName = String(component.path).split('.')[1]
+            componentName = String(component.path).split('.').reverse()[0]
           }
           const target = `components.${optimizableComponentGroup.type}.${componentName}`
           resultElements.push({
@@ -60,7 +60,11 @@ const findDuplicateComponents = (
 }
 
 export const moveDuplicatesToComponents: Reporter = (optimizableComponentsGroup) => {
-  return createReport(findDuplicateComponents, optimizableComponentsGroup, 'moveDuplicatesToComponents')
+  return createReport(
+    findDuplicateComponents,
+    optimizableComponentsGroup,
+    'moveDuplicatesToComponents'
+  )
 }
 
 function getOutsideComponents(

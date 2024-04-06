@@ -15,11 +15,9 @@ optimizer.getReport().then((report) => {
       moveDuplicatesToComponents: false,
     },
     disableOptimizationFor: {
-      schema: true,
+      schema: false,
     },
   })
   //store optimizedDocument as to output.yaml
   require('fs').writeFileSync('./examples/output.yaml', optimizedDocument)
 })
-
-// , { rules: { schemas: false } }
