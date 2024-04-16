@@ -10,6 +10,8 @@ user will only interact with this class. here we generate different kind of repo
 ## Functions
 
 <dl>
+<dt><a href="#findAllComponents">findAllComponents(optimizableComponentGroup)</a> ⇒</dt>
+<dd></dd>
 <dt><a href="#findDuplicateComponents">findDuplicateComponents(optimizableComponentGroup)</a> ⇒</dt>
 <dd></dd>
 <dt><a href="#hasParent">hasParent()</a></dt>
@@ -32,6 +34,8 @@ user will only interact with this class. here we generate different kind of repo
 
 <dl>
 <dt><a href="#Rules">Rules</a> : <code>Object</code></dt>
+<dd></dd>
+<dt><a href="#DisableOptimizationFor">DisableOptimizationFor</a> : <code>Object</code></dt>
 <dd></dd>
 <dt><a href="#Options">Options</a> : <code>Object</code></dt>
 <dd></dd>
@@ -76,6 +80,16 @@ This function is used to get the optimized document after seeing the report.
 | --- | --- | --- |
 | [Options] | [<code>Options</code>](#Options) | the options are a way to customize the final output. |
 
+<a name="findAllComponents"></a>
+
+## findAllComponents(optimizableComponentGroup) ⇒
+**Kind**: global function  
+**Returns**: A list of optimization report elements.  
+
+| Param | Description |
+| --- | --- |
+| optimizableComponentGroup | all AsyncAPI Specification-valid components. |
+
 <a name="findDuplicateComponents"></a>
 
 ## findDuplicateComponents(optimizableComponentGroup) ⇒
@@ -84,7 +98,7 @@ This function is used to get the optimized document after seeing the report.
 
 | Param | Description |
 | --- | --- |
-| optimizableComponentGroup | components that you want to analyze for duplicates. |
+| optimizableComponentGroup | all AsyncAPI Specification-valid components that you want to analyze for duplicates. |
 
 <a name="hasParent"></a>
 
@@ -132,7 +146,18 @@ Converts JSON or YAML string object.
 | --- | --- | --- |
 | [reuseComponents] | <code>Boolean</code> | whether to reuse components from `components` section or not. Defaults to `true`. |
 | [removeComponents] | <code>Boolean</code> | whether to remove un-used components from `components` section or not. Defaults to `true`. |
-| [moveDuplicatesToComponents] | <code>Boolean</code> | whether to move duplicated components to the `components` section or not. Defaults to `true`. |
+| [moveAllToComponents] | <code>Boolean</code> | whether to move all AsyncAPI Specification-valid components to the `components` section or not. Defaults to `true`. |
+| [moveDuplicatesToComponents] | <code>Boolean</code> | whether to move duplicated components to the `components` section or not. Defaults to `false`. |
+
+<a name="DisableOptimizationFor"></a>
+
+## DisableOptimizationFor : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| [schema] | <code>Boolean</code> | whether object `schema` should be excluded from the process of optimization (`true` instructs **not** to add calculated `schemas` to the optimized AsyncAPI Document.) |
 
 <a name="Options"></a>
 
@@ -144,3 +169,5 @@ Converts JSON or YAML string object.
 | --- | --- | --- |
 | [rules] | [<code>Rules</code>](#Rules) | the list of rules that specifies which type of optimizations should be applied. |
 | [output] | <code>String</code> | specifies which type of output user wants, `'JSON'` or `'YAML'`. Defaults to `'YAML'`; |
+| [disableOptimizationFor] | [<code>DisableOptimizationFor</code>](#DisableOptimizationFor) | the list of objects that should be excluded from the process of optimization. |
+

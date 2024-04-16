@@ -1,11 +1,11 @@
 import { Action } from '../Optimizer'
-import { createReport, isEqual, isInComponents } from '../Utils'
+import { createReport, isEqual, isInComponents, getComponentName } from '../Utils'
 import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'index.d'
 import Debug from 'debug'
 const debug = Debug('reporter:moveDuplicatesToComponents')
 /**
  *
- * @param optimizableComponentGroup components that you want to analyze for duplicates.
+ * @param optimizableComponentGroup all AsyncAPI Specification-valid components that you want to analyze for duplicates.
  * @returns A list of optimization report elements.
  */
 const findDuplicateComponents = (
@@ -17,8 +17,6 @@ const findDuplicateComponents = (
 
   const resultElements: ReportElement[] = []
 
-  let counter = 1
-
   for (const [index, component] of outsideComponentsSection.entries()) {
     for (const compareComponent of outsideComponentsSection.slice(index + 1)) {
       if (isEqual(component.component, compareComponent.component, false)) {
@@ -26,9 +24,7 @@ const findDuplicateComponents = (
           (reportElement) => component.path === reportElement.path
         )[0]
         if (!existingResult) {
-          const componentName =
-            component.component.name ||
-            `${optimizableComponentGroup.type.slice(0, -1)}-${counter++}`
+          const componentName = getComponentName(component)
           const target = `components.${optimizableComponentGroup.type}.${componentName}`
           resultElements.push({
             path: component.path,
@@ -59,7 +55,11 @@ const findDuplicateComponents = (
 }
 
 export const moveDuplicatesToComponents: Reporter = (optimizableComponentsGroup) => {
-  return createReport(findDuplicateComponents, optimizableComponentsGroup, 'moveDuplicatesToComponents')
+  return createReport(
+    findDuplicateComponents,
+    optimizableComponentsGroup,
+    'moveDuplicatesToComponents'
+  )
 }
 
 function getOutsideComponents(

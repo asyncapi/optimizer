@@ -53,16 +53,15 @@ export const parseComponentsFromPath = (
 }
 
 export const getOptimizableComponents = (
-  asyncAPIDocument: AsyncAPIDocumentInterface
+  asyncAPIDocument: AsyncAPIDocumentInterface,
 ): OptimizableComponentGroup[] => {
   const optimizeableComponents: OptimizableComponentGroup[] = []
-
   const getAllComponents = (type: string) => {
     // @ts-ignore
     if (typeof asyncAPIDocument[type] !== 'function') return []
     // @ts-ignore
-    return asyncAPIDocument[type]().all().concat(asyncAPIDocument.components()[type]().all());
-  };
+    return asyncAPIDocument[type]().all().concat(asyncAPIDocument.components()[type]().all())
+  }
   const optimizableComponents = {
     servers: getAllComponents('servers'),
     messages: getAllComponents('messages'),
