@@ -10,228 +10,195 @@ AsyncAPI offers many ways to reuse certain parts of the document like messages o
 
 - [Testing](#testing)
 - [Usage](#usage)
-  * [Node.js](#nodejs)
-  * [Generating report](#generating-report)
-  * [Applying the suggested changes](#applying-the-suggested-changes)
+  - [Node.js](#nodejs)
+  - [Generating report](#generating-report)
+  - [Applying the suggested changes](#applying-the-suggested-changes)
 - [API documentation](#api-documentation)
 
 <!-- tocstop -->
 
 ## Testing
-1) Clone the project
-  `git clone https://github.com/asyncapi/optimizer.git`
-2) Install the dependencies
-  `npm i`
-3) for a quick check you can run `npm run example`. You can open `examples/index.js` modify it or add your own AsyncAPI document for optimization.
+
+1. Clone the project
+   `git clone https://github.com/asyncapi/optimizer.git`
+2. Install the dependencies
+   `npm i`
+3. for a quick check you can run `npm run example`. You can open `examples/index.js` modify it or add your own AsyncAPI document for optimization.
 
 ## Usage
 
 ### Node.js
 
 ```typescript
-import { Optimizer } from '@asyncapi/optimizer';
-import type { Report } from '@asyncapi/optimizer';
+import { Optimizer } from '@asyncapi/optimizer'
+import type { Report } from '@asyncapi/optimizer'
 
-const yaml =`
-asyncapi: 2.0.0
+const yaml = `
+asyncapi: 3.0.0
 info:
-  title: Streetlights API
-  version: '1.0.0'
-
+  title: Example Service
+  version: 1.0.0
+  description: Example Service.
+servers:
+  production:
+    host: 'test.mosquitto.org:{port}'
+    protocol: mqtt
+    description: Test broker
+    variables:
+      port:
+        description: Secure connection (TLS) is available through port 8883.
+        default: '1883'
+        enum:
+          - '1883'
+          - '8883'
+operations:
+  user/deleteAccount.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/commentLikedChannel'
 channels:
-
-  smartylighting/event/{streetlightId}/lighting/measured:
-    parameters:
-      #this parameter is duplicated. it can be moved to components and ref-ed from here.
-      streetlightId:
-        schema:
-          type: string
-    subscribe:
-      operationId: receiveLightMeasurement
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: lightMeasured
-        title: Light measured
-        contentType: application/json
-        traits:
-          - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
+  commentLikedChannel:
+    address: comment/liked
+    messages:
+      commentLikedMessage:
+        description: Message that is being sent when a comment has been liked by someone.
         payload:
           type: object
+          title: commentLikedPayload
           properties:
-            lumens:
-              type: integer
-              minimum: 0
-            #full form is used, we can ref it to: #/components/schemas/sentAt
-            sentAt:
+            commentId:
               type: string
-              format: date-time
+              description: an id object
+              x-origin: ./schemas.yaml#/schemas/idSchema
+          x-origin: ./schemas.yaml#/schemas/commentLikedSchema
+        x-origin: ./messages.yaml#/messages/commentLikedMessage
+    x-origin: ./channels.yaml#/channels/commentLikedChannel`
 
-  smartylighting/action/{streetlightId}/turn/on:
-    parameters:
-      streetlightId:
-        schema:
-          type: string
-    publish:
-      operationId: turnOn
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: turnOnOff
-        title: Turn on/off
-        traits:
-          - headers:
-              type: object
-              properties:
-                my-app-header:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
-        payload:
-          type: object
-          properties:
-            sentAt:
-              $ref: "#/components/schemas/sentAt"
-
-components:
-  messages:
-    #libarary should be able to find and delete this message, because it is not used anywhere.
-    unusedMessage:
-      name: unusedMessage
-      title: This message is not used in any channel.
-      
-  schemas:
-    #this schema is ref-ed in one channel and used full form in another. library should be able to identify and ref the second channel as well.
-    sentAt:
-      type: string
-      format: date-time`;
-
-const optimizer = new Optimizer(yaml);
+const optimizer = new Optimizer(yaml)
 ```
+
 ### Generating report
+
 ```typescript
-const report: Report = await optimizer.getReport();
+const report: Report = await optimizer.getReport()
 /*
 the report value will be:
 {
-  reuseComponents: [
+  removeComponents: [],
+  reuseComponents: [],
+  moveAllToComponents: [
     {
-      path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.message.payload.properties.sentAt',
-      action: 'reuse',
-      target: 'components.schemas.sentAt'
-    }
-  ],
-  removeComponents: [
-    {
-      path: 'components.messages.unusedMessage',
-      action: 'remove',
-    }
-  ],
-  moveToComponents: [
-    {
-      //move will ref the current path to the moved component as well.
-      path: 'channels.smartylighting/event/{streetlightId}/lighting/measured.parameters.streetlightId',
+      path: 'channels.commentLikedChannel.messages.commentLikedMessage.payload.properties.commentId',
       action: 'move',
-      target: 'components.parameters.streetlightId'
+      target: 'components.schemas.idSchema'
     },
     {
-      path: 'channels.smartylighting/action/{streetlightId}/turn/on.parameters.streetlightId',
-      action: 'reuse',
-      target: 'components.parameters.streetlightId'
+      path: 'channels.commentLikedChannel.messages.commentLikedMessage.payload',
+      action: 'move',
+      target: 'components.schemas.commentLikedSchema'
+    },
+    {
+      path: 'channels.commentLikedChannel.messages.commentLikedMessage',
+      action: 'move',
+      target: 'components.messages.commentLikedMessage'
+    },
+    {
+      path: 'operations.user/deleteAccount.subscribe',
+      action: 'move',
+      target: 'components.operations.subscribe'
+    },
+    {
+      path: 'channels.commentLikedChannel',
+      action: 'move',
+      target: 'components.channels.commentLikedChannel'
+    },
+    {
+      path: 'servers.production',
+      action: 'move',
+      target: 'components.servers.production'
     }
-  ]
+  ],
+  moveDuplicatesToComponents: []
 }
  */
 ```
+
 ### Applying the suggested changes
+
 ```typescript
 const optimizedDocument = optimizer.getOptimizedDocument({
+  output: 'YAML',
   rules: {
     reuseComponents: true,
     removeComponents: true,
-    moveToComponents: true 
-  }
-});
+    moveAllToComponents: true,
+    moveDuplicatesToComponents: false,
+  },
+  disableOptimizationFor: {
+    schema: false,
+  },
+})
 /*
 the optimizedDocument value will be:
 
-asyncapi: 2.0.0
+asyncapi: 3.0.0
 info:
-  title: Streetlights API
+  title: Example Service
   version: 1.0.0
-channels:
-  "smartylighting/event/{streetlightId}/lighting/measured":
-    parameters:
-      streetlightId:
-        $ref: "#/components/parameters/parameter-1"
+  description: Example Service.
+servers:
+  production:
+    $ref: '#/components/servers/production'
+operations:
+  user/deleteAccount.subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/commentLikedChannel'
+  user/deleteAccount:
     subscribe:
-      operationId: receiveLightMeasurement
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: lightMeasured
-        title: Light measured
-        contentType: application/json
-        traits:
-          - headers:
-              $ref: "#/components/schemas/schema-1"
-        payload:
-          type: object
-          properties:
-            lumens:
-              type: integer
-              minimum: 0
-            sentAt:
-              $ref: "#/components/schemas/sentAt"
-  "smartylighting/action/{streetlightId}/turn/on":
-    parameters:
-      streetlightId:
-        $ref: "#/components/parameters/parameter-1"
-    publish:
-      operationId: turnOn
-      traits:
-        - bindings:
-            kafka:
-              clientId: my-app-id
-      message:
-        name: turnOnOff
-        title: Turn on/off
-        traits:
-          - headers:
-              $ref: "#/components/schemas/schema-1"
-        payload:
-          type: object
-          properties:
-            sentAt:
-              $ref: "#/components/schemas/sentAt"
+      $ref: '#/components/operations/subscribe'
+channels:
+  commentLikedChannel:
+    $ref: '#/components/channels/commentLikedChannel'
 components:
   schemas:
-    sentAt:
+    idSchema:
       type: string
-      format: date-time
-    schema-1:
+      description: an id object
+      x-origin: ./schemas.yaml#/schemas/idSchema
+    commentLikedSchema:
       type: object
+      title: commentLikedPayload
       properties:
-        my-app-header:
-          type: integer
-          minimum: 0
-          maximum: 100
-  parameters:
-    parameter-1:
-      schema:
-        type: string`
+        commentId:
+          $ref: '#/components/schemas/idSchema'
+      x-origin: ./schemas.yaml#/schemas/commentLikedSchema
+  messages:
+    commentLikedMessage:
+      description: Message that is being sent when a comment has been liked by someone.
+      payload:
+        $ref: '#/components/schemas/commentLikedSchema'
+      x-origin: ./messages.yaml#/messages/commentLikedMessage
+  operations: {}
+  channels:
+    commentLikedChannel:
+      address: comment/liked
+      messages:
+        commentLikedMessage:
+          $ref: '#/components/messages/commentLikedMessage'
+      x-origin: ./channels.yaml#/channels/commentLikedChannel
+  servers:
+    production:
+      host: test.mosquitto.org:{port}
+      protocol: mqtt
+      description: Test broker
+      variables:
+        port:
+          description: Secure connection (TLS) is available through port 8883.
+          default: '1883'
+          enum:
+            - '1883'
+            - '8883'
  */
 ```
 

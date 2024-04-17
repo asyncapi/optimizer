@@ -158,4 +158,15 @@ const toJS = (asyncapiYAMLorJSON: any): any => {
     'Unknown input: Please make sure that your input is an Object/String of a valid AsyncAPI specification document.'
   )
 }
-export { compareComponents, isEqual, isInComponents, isInChannels, toJS }
+
+const getComponentName = (component: OptimizableComponent): string => {
+  let componentName
+  if (component.component['x-origin']) {
+    componentName = String(component.component['x-origin']).split('/').reverse()[0]
+  } else {
+    componentName = String(component.path).split('.').reverse()[0]
+  }
+  return componentName
+}
+
+export { compareComponents, isEqual, isInComponents, isInChannels, toJS, getComponentName }
