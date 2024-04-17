@@ -10,9 +10,9 @@ AsyncAPI offers many ways to reuse certain parts of the document like messages o
 
 - [Testing](#testing)
 - [Usage](#usage)
-  - [Node.js](#nodejs)
-  - [Generating report](#generating-report)
-  - [Applying the suggested changes](#applying-the-suggested-changes)
+  * [Node.js](#nodejs)
+  * [Generating report](#generating-report)
+  * [Applying the suggested changes](#applying-the-suggested-changes)
 - [API documentation](#api-documentation)
 
 <!-- tocstop -->
