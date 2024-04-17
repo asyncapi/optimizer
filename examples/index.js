@@ -1,9 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { Optimizer } = require('../lib/Optimizer')
+const fs = require('fs')
+const path = require('path')
 
-// read input.yaml file synconously and store it as an string
-const input = require('fs').readFileSync('./examples/input.yaml', 'utf8')
+// Construct absolute paths to input and output files
+const inputFilePath = path.join(__dirname, 'input.yaml')
+const outputFilePath = path.join(__dirname, 'output.yaml')
+
+// Read input.yaml file synchronously and store it as a string
+const input = fs.readFileSync(inputFilePath, 'utf8')
 const optimizer = new Optimizer(input)
+
 optimizer.getReport().then((report) => {
   console.log(report)
   const optimizedDocument = optimizer.getOptimizedDocument({
@@ -14,6 +21,7 @@ optimizer.getReport().then((report) => {
       moveToComponents: true,
     },
   })
-  //store optimizedDocument as to output.yaml
-  require('fs').writeFileSync('./examples/output.yaml', optimizedDocument)
+
+  // Store optimizedDocument to output.yaml
+  fs.writeFileSync(outputFilePath, optimizedDocument)
 })
