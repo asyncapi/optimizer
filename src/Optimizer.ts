@@ -7,7 +7,12 @@ import {
   Reporter,
 } from './index.d'
 import { Parser } from '@asyncapi/parser'
-import { removeComponents, reuseComponents, moveToComponents } from './Reporters'
+import {
+  removeComponents,
+  reuseComponents,
+  moveAllToComponents,
+  moveDuplicatesToComponents,
+} from './Reporters'
 import YAML from 'js-yaml'
 import merge from 'merge-deep'
 import * as _ from 'lodash'
@@ -42,7 +47,12 @@ export class Optimizer {
    */
   constructor(private YAMLorJSON: any) {
     this.outputObject = toJS(this.YAMLorJSON)
-    this.reporters = [removeComponents, reuseComponents, moveToComponents]
+    this.reporters = [
+      removeComponents,
+      reuseComponents,
+      moveAllToComponents,
+      moveDuplicatesToComponents,
+    ]
   }
 
   /**
@@ -78,13 +88,18 @@ export class Optimizer {
    * @typedef {Object} Rules
    * @property {Boolean=} reuseComponents - whether to reuse components from `components` section or not. Defaults to `true`.
    * @property {Boolean=} removeComponents - whether to remove un-used components from `components` section or not. Defaults to `true`.
-   * @property {Boolean=} moveToComponents - whether to move duplicated components to the `components` section or not. Defaults to `true`.
+   * @property {Boolean=} moveAllToComponents - whether to move all AsyncAPI Specification-valid components to the `components` section or not. Defaults to `true`.
+   * @property {Boolean=} moveDuplicatesToComponents - whether to move duplicated components to the `components` section or not. Defaults to `false`.
    */
-
+  /**
+   * @typedef {Object} DisableOptimizationFor
+   * @property {Boolean=} schema - whether object `schema` should be excluded from the process of optimization (`true` instructs **not** to add calculated `schemas` to the optimized AsyncAPI Document.)
+   */
   /**
    * @typedef {Object} Options
    * @property {Rules=} rules - the list of rules that specifies which type of optimizations should be applied.
    * @property {String=} output - specifies which type of output user wants, `'JSON'` or `'YAML'`. Defaults to `'YAML'`;
+   * @property {DisableOptimizationFor=} disableOptimizationFor - the list of objects that should be excluded from the process of optimization.
    */
   /**
    * This function is used to get the optimized document after seeing the report.
@@ -98,9 +113,13 @@ export class Optimizer {
       rules: {
         reuseComponents: true,
         removeComponents: true,
-        moveToComponents: true,
+        moveAllToComponents: true,
+        moveDuplicatesToComponents: false, // there is no need to move duplicates if `moveAllToComponents` is `true`
       },
       output: Output.YAML,
+      disableOptimizationFor: {
+        schema: false,
+      },
     }
     options = merge(defaultOptions, options)
     if (!this.reports) {
@@ -109,6 +128,11 @@ export class Optimizer {
       )
     }
     for (const report of this.reports) {
+      if (options.disableOptimizationFor?.schema === true) {
+        report.elements = report.elements.filter(
+          (element) => !element.target?.includes('.schemas.')
+        )
+      }
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       if (options.rules[report.type] === true) {

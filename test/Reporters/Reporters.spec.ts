@@ -1,39 +1,126 @@
-import { moveToComponents, reuseComponents, removeComponents } from '../../src/Reporters'
+import {
+  moveAllToComponents,
+  moveDuplicatesToComponents,
+  reuseComponents,
+  removeComponents,
+} from '../../src/Reporters'
 import { inputYAML } from '../fixtures'
 import { Parser } from '@asyncapi/parser'
 import { getOptimizableComponents } from '../../src/ComponentProvider'
 import { OptimizableComponentGroup } from '../../src/index.d'
 
-const MoveToComponentsExpectedResult: any[] = [
+const moveAllToComponentsExpectedResult: any[] = [
   {
     path: 'channels.withDuplicatedMessage1.messages.duped1',
     action: 'move',
-    target: 'components.messages.message-1',
+    target: 'components.messages.duped1',
   },
   {
     path: 'channels.withDuplicatedMessage2.messages.duped2',
-    action: 'reuse',
-    target: 'components.messages.message-1',
+    action: 'move',
+    target: 'components.messages.duped2',
+  },
+  {
+    path: 'channels.withFullFormMessage.messages.canBeReused',
+    action: 'move',
+    target: 'components.messages.canBeReused',
+  },
+  {
+    path: 'channels.withDuplicatedMessage1',
+    action: 'move',
+    target: 'components.channels.withDuplicatedMessage1FromXOrigin',
+  },
+  {
+    path: 'channels.withDuplicatedMessage2',
+    action: 'move',
+    target: 'components.channels.withDuplicatedMessage2',
+  },
+  {
+    path: 'channels.withFullFormMessage',
+    action: 'move',
+    target: 'components.channels.withFullFormMessage',
   },
   {
     path: 'channels.UserSignedUp1',
     action: 'move',
-    target: 'components.channels.channel-1',
+    target: 'components.channels.UserSignedUp1',
   },
   {
     path: 'channels.UserSignedUp2',
-    action: 'reuse',
-    target: 'components.channels.channel-1',
+    action: 'move',
+    target: 'components.channels.UserSignedUp2',
+  },
+  {
+    path: 'channels.deleteAccount',
+    action: 'move',
+    target: 'components.channels.deleteAccount',
   },
   {
     path: 'channels.withDuplicatedMessage1.messages.duped1.payload',
     action: 'move',
-    target: 'components.schemas.schema-1',
+    target: 'components.schemas.payload',
+  },
+  {
+    path: 'channels.withDuplicatedMessage2.messages.duped2.payload',
+    action: 'move',
+    target: 'components.schemas.payload',
+  },
+  {
+    path: 'channels.UserSignedUp1.messages.myMessage.payload',
+    action: 'move',
+    target: 'components.schemas.payload',
+  },
+  {
+    path: 'channels.UserSignedUp1.messages.myMessage.payload.properties.displayName',
+    action: 'move',
+    target: 'components.schemas.displayName',
+  },
+  {
+    path: 'channels.UserSignedUp1.messages.myMessage.payload.properties.email',
+    action: 'move',
+    target: 'components.schemas.email',
+  },
+  {
+    path: 'channels.deleteAccount.messages.deleteUser.payload',
+    action: 'move',
+    target: 'components.schemas.payload',
+  },
+  {
+    path: 'operations.user/deleteAccount.subscribe',
+    action: 'move',
+    target: 'components.operations.subscribe',
+  },
+]
+const moveDuplicatesToComponentsExpectedResult: any[] = [
+  {
+    path: 'channels.withDuplicatedMessage1.messages.duped1',
+    action: 'move',
+    target: 'components.messages.duped1',
+  },
+  {
+    path: 'channels.withDuplicatedMessage2.messages.duped2',
+    action: 'reuse',
+    target: 'components.messages.duped1',
+  },
+  {
+    path: 'channels.UserSignedUp1',
+    action: 'move',
+    target: 'components.channels.UserSignedUp1',
+  },
+  {
+    path: 'channels.UserSignedUp2',
+    action: 'reuse',
+    target: 'components.channels.UserSignedUp1',
+  },
+  {
+    path: 'channels.withDuplicatedMessage1.messages.duped1.payload',
+    action: 'move',
+    target: 'components.schemas.payload',
   },
   {
     path: 'channels.withDuplicatedMessage2.messages.duped2.payload',
     action: 'reuse',
-    target: 'components.schemas.schema-1',
+    target: 'components.schemas.payload',
   },
 ]
 const RemoveComponentsExpectedResult = [
@@ -55,11 +142,19 @@ describe('Optimizers', () => {
     const asyncapiDocument = await new Parser().parse(inputYAML, { applyTraits: false })
     optimizableComponents = getOptimizableComponents(asyncapiDocument.document!)
   })
-  describe('MoveToComponents', () => {
+  describe('moveAllToComponents', () => {
     test('should contain the correct optimizations.', () => {
-      const report = moveToComponents(optimizableComponents)
-      expect(report.elements).toEqual(MoveToComponentsExpectedResult)
-      expect(report.type).toEqual('moveToComponents')
+      const report = moveAllToComponents(optimizableComponents)
+      expect(report.elements).toEqual(moveAllToComponentsExpectedResult)
+      expect(report.type).toEqual('moveAllToComponents')
+    })
+  })
+
+  describe('moveDuplicatesToComponents', () => {
+    test('should contain the correct optimizations.', () => {
+      const report = moveDuplicatesToComponents(optimizableComponents)
+      expect(report.elements).toEqual(moveDuplicatesToComponentsExpectedResult)
+      expect(report.type).toEqual('moveDuplicatesToComponents')
     })
   })
 
