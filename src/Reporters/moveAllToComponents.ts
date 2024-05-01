@@ -1,6 +1,6 @@
 import { Action } from '../Optimizer'
 import { createReport, isEqual, isInComponents, getComponentName } from '../Utils'
-import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'index.d'
+import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'types'
 import Debug from 'debug'
 const debug = Debug('reporter:moveAllToComponents')
 /**

@@ -1,4 +1,4 @@
-import { Action, Output } from 'Optimizer'
+import type { Action, Output } from './Optimizer'
 
 export interface ReportElement {
   path: string

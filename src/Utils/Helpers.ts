@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import YAML from 'js-yaml'
-import { OptimizableComponentGroup, NewReport, ReportElement, OptimizableComponent } from 'index.d'
+import { OptimizableComponentGroup, NewReport, ReportElement, OptimizableComponent } from 'types'
 
 /**
  * Checks if a component's parent is a ref or not.

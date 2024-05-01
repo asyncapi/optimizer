@@ -4,7 +4,7 @@ import {
   OptimizableComponentGroup,
   ReportElement,
   Reporter,
-} from '../index.d'
+} from '../types'
 import { createReport, isEqual, isInChannels, isInComponents } from '../Utils'
 import Debug from 'debug'
 const debug = Debug('reporter:reuseComponents')

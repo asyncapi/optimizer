@@ -5,7 +5,7 @@ import {
   Options,
   OptimizableComponentGroup,
   Reporter,
-} from './index.d'
+} from './types'
 import { Parser } from '@asyncapi/parser'
 import {
   removeComponents,

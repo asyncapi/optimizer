@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable security/detect-object-injection */
 import type { AsyncAPIDocumentInterface } from '@asyncapi/parser'
-import { OptimizableComponentGroup, OptimizableComponent } from 'index.d'
+import { OptimizableComponentGroup, OptimizableComponent } from 'types'
 
 import { JSONPath } from 'jsonpath-plus'
 import _ from 'lodash'

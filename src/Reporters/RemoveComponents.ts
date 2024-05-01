@@ -1,5 +1,5 @@
 import { Action } from '../Optimizer'
-import { OptimizableComponentGroup, ReportElement, Reporter } from '../index.d'
+import { OptimizableComponentGroup, ReportElement, Reporter } from '../types'
 import { createReport, isInComponents } from '../Utils'
 import Debug from 'debug'
 const debug = Debug('reporter:removeComponents')
