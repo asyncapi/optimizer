@@ -188,7 +188,7 @@ function updateExistingRefs(asyncapiComponent: any, changePath: string, changeTa
             key['$ref'] = keyValue.replace(changePath, changeTarget)
           }
         } else {
-          iterateComponent(key as any)
+          iterateComponent(key)
         }
       }
     })
