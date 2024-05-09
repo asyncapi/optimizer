@@ -17,7 +17,7 @@ import YAML from 'js-yaml'
 import merge from 'merge-deep'
 import * as _ from 'lodash'
 import { getOptimizableComponents } from './ComponentProvider'
-import { filterReportElements, hasParent, sortReportElements, toJS } from './Utils'
+import { filterReportElements, hasParent, sortReportElements, toJS, updateExistingRefs } from './Utils'
 import Debug from 'debug'
 
 export enum Action {
@@ -163,6 +163,7 @@ export class Optimizer {
           _.set(this.outputObject, change.path, {
             $ref: `#/${change.target?.replace(/\./g, '/')}`,
           })
+          updateExistingRefs(this.outputObject, change.path, change.target as string)
           debug('moved %s to %s', change.path, change.target)
           break
 

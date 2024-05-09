@@ -169,4 +169,42 @@ const getComponentName = (component: OptimizableComponent): string => {
   return componentName
 }
 
-export { compareComponents, isEqual, isInComponents, isInChannels, toJS, getComponentName }
+function updateExistingRefs(asyncapiComponent: any, changePath: string, changeTarget: string): any {
+  const changePathArray = changePath.split('.')
+  changePathArray.unshift('#')
+  changePath = changePathArray.join('/')
+
+  const changeTargetArray = changeTarget.split('.')
+  changeTargetArray.unshift('#')
+  changeTarget = changeTargetArray.join('/')
+
+  function iterateComponent(asyncapiComponent: any) {
+    // eslint-disable-next-line github/array-foreach
+    Object.values(asyncapiComponent).forEach((key: any) => {
+      if (key && typeof key === 'object' && key !== '$ref') {
+        if (Object.keys(key).indexOf('$ref') !== -1) {
+          const keyValue = key['$ref']
+          if (keyValue.startsWith(`${changePath}/`)) {
+            key['$ref'] = keyValue.replace(changePath, changeTarget)
+          }
+        } else {
+          iterateComponent(key as any)
+        }
+      }
+    })
+  }
+
+  iterateComponent(asyncapiComponent)
+
+  return asyncapiComponent
+}
+
+export {
+  compareComponents,
+  isEqual,
+  isInComponents,
+  isInChannels,
+  toJS,
+  getComponentName,
+  updateExistingRefs,
+}
