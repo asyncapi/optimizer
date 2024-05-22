@@ -11,9 +11,9 @@ const outputFilePath = path.join(__dirname, 'output.yaml')
 const input = fs.readFileSync(inputFilePath, 'utf8')
 const optimizer = new Optimizer(input)
 
-optimizer.getReport().then((report) => {
+optimizer.getReport().then(async (report) => {
   console.log(report)
-  const optimizedDocument = optimizer.getOptimizedDocument({
+  const optimizedDocument = await optimizer.getOptimizedDocument({
     output: 'YAML',
     rules: {
       reuseComponents: true,

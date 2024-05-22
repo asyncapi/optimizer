@@ -30,6 +30,11 @@ export enum Output {
   JSON = 'JSON',
   YAML = 'YAML',
 }
+
+const parser = new Parser()
+
+let validationResult: any[] = [];
+
 /**
  * this class is the starting point of the library.
  * user will only interact with this class. here we generate different kind of reports using optimizers, apply changes and return the results to the user.
@@ -60,7 +65,6 @@ export class Optimizer {
    *
    */
   async getReport(): Promise<Report> {
-    const parser = new Parser()
     const parsedDocument = await parser.parse(this.YAMLorJSON, { applyTraits: false })
     if (!parsedDocument.document) {
       // eslint-disable-next-line no-undef, no-console
@@ -108,7 +112,7 @@ export class Optimizer {
    * @returns {string } returns an stringified version of the YAML output.
    *
    */
-  getOptimizedDocument(options?: Options): string {
+  async getOptimizedDocument(options?: Options): Promise<string> {
     const defaultOptions = {
       rules: {
         reuseComponents: true,
@@ -140,6 +144,30 @@ export class Optimizer {
       }
     }
 
+    // Option `noValidation: true` is used by the testing system, which
+    // intentionally feeds Bundler wrong AsyncAPI Documents, thus it is not
+    // documented.
+    if (!options.noValidation) {
+      validationResult = await parser.validate(JSON.parse(JSON.stringify(this.outputObject)))
+    }
+
+    // If Parser's `validate()` function returns a non-empty array with at least
+    // one `severity: 0`, that means there was at least one error during
+    // validation, not a `warning: 1`, `info: 2`, or `hint: 3`. Thus, array's
+    // elements with `severity: 0` are outputted as a list of remarks, and the
+    // program exits without doing anything further.
+    if (
+      validationResult.length !== 0 &&
+      validationResult.map((element: any) => element.severity).includes(0)
+    ) {
+      // eslint-disable-next-line no-undef, no-console
+      console.log(
+        'Validation of the optimized AsyncAPI Document failed.\nList of remarks:\n',
+        validationResult.filter((element: any) => element.severity === 0)
+      )
+      throw new Error('Validation of the optimized AsyncAPI Document failed.')
+    }
+
     if (options.output === Output.JSON) {
       return JSON.stringify(this.outputObject)
     }
@@ -163,7 +191,7 @@ export class Optimizer {
           _.set(this.outputObject, change.path, {
             $ref: `#/${change.target?.replace(/\./g, '/')}`,
           })
-          updateExistingRefs(this.outputObject, change.path, change.target as string)
+          // updateExistingRefs(this.outputObject, change.path, change.target as string)
           debug('moved %s to %s', change.path, change.target)
           break
 
