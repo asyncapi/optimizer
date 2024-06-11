@@ -7,7 +7,7 @@ import {
 import { inputYAML } from '../fixtures'
 import { Parser } from '@asyncapi/parser'
 import { getOptimizableComponents } from '../../src/ComponentProvider'
-import { OptimizableComponentGroup } from '../../src/index.d'
+import { OptimizableComponentGroup } from '../../src/types'
 
 const moveAllToComponentsExpectedResult: any[] = [
   {
