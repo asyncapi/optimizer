@@ -44,6 +44,7 @@ export interface Options {
   rules?: Rules
   output?: Output
   disableOptimizationFor?: DisableOptimizationFor // non-approved type
+  noValidation?: boolean
 }
 
 export interface IOptimizer {

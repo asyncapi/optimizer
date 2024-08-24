@@ -18,7 +18,7 @@ describe('Optimizer', () => {
     const optimizer = new Optimizer(inputYAML)
     await optimizer.getReport()
     expect(
-      optimizer
+      await optimizer
         .getOptimizedDocument({
           output: Output.YAML,
           rules: {
@@ -31,7 +31,6 @@ describe('Optimizer', () => {
             schema: false,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCFalse_mDTCTrue_schemaFalse.trim())
   })
 
@@ -52,7 +51,6 @@ describe('Optimizer', () => {
             schema: false,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCFalse_mDTCTrue_schemaFalse.trim())
   })
 
@@ -73,7 +71,6 @@ describe('Optimizer', () => {
             schema: false,
           },
         })
-        .trim()
     ).toEqual(outputJSON_mATCFalse_mDTCTrue_schemaFalse.trim())
   })
 
@@ -94,7 +91,6 @@ describe('Optimizer', () => {
             schema: false,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCTrue_mDTCFalse_schemaFalse.trim())
   })
 
@@ -115,7 +111,6 @@ describe('Optimizer', () => {
             schema: false,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCTrue_mDTCFalse_schemaFalse.trim())
   })
 
@@ -136,7 +131,6 @@ describe('Optimizer', () => {
             schema: false,
           },
         })
-        .trim()
     ).toEqual(outputJSON_mATCTrue_mDTCFalse_schemaFalse.trim())
   })
 
@@ -157,7 +151,6 @@ describe('Optimizer', () => {
             schema: true,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCFalse_mDTCTrue_schemaTrue.trim())
   })
 
@@ -178,7 +171,6 @@ describe('Optimizer', () => {
             schema: true,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCFalse_mDTCTrue_schemaTrue.trim())
   })
 
@@ -199,7 +191,6 @@ describe('Optimizer', () => {
             schema: true,
           },
         })
-        .trim()
     ).toEqual(outputJSON_mATCFalse_mDTCTrue_schemaTrue.trim())
   })
 
@@ -220,7 +211,6 @@ describe('Optimizer', () => {
             schema: true,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCTrue_mDTCFalse_schemaTrue.trim())
   })
 
@@ -241,7 +231,6 @@ describe('Optimizer', () => {
             schema: true,
           },
         })
-        .trim()
     ).toEqual(outputYAML_mATCTrue_mDTCFalse_schemaTrue.trim())
   })
 
@@ -262,7 +251,6 @@ describe('Optimizer', () => {
             schema: true,
           },
         })
-        .trim()
     ).toEqual(outputJSON_mATCTrue_mDTCFalse_schemaTrue.trim())
   })
 })
