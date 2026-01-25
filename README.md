@@ -4,18 +4,17 @@ AsyncAPI offers many ways to reuse certain parts of the document like messages o
 
 ![npm](https://img.shields.io/npm/v/@asyncapi/optimizer?style=for-the-badge) ![npm](https://img.shields.io/npm/dt/@asyncapi/optimizer?style=for-the-badge)
 
-<!-- toc is generated with GitHub Actions do not remove toc markers -->
-
-<!-- toc -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Testing](#testing)
 - [Usage](#usage)
-  * [Node.js](#nodejs)
-  * [Generating report](#generating-report)
-  * [Applying the suggested changes](#applying-the-suggested-changes)
+  - [Node.js](#nodejs)
+  - [Generating report](#generating-report)
+  - [Applying the suggested changes](#applying-the-suggested-changes)
 - [API documentation](#api-documentation)
 
-<!-- tocstop -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Testing
 
