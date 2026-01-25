@@ -164,9 +164,100 @@ const getComponentName = (component: OptimizableComponent): string => {
   if (component.component['x-origin']) {
     componentName = String(component.component['x-origin']).split('/').reverse()[0]
   } else {
-    componentName = String(component.path).split('.').reverse()[0]
+    // Use lodashPathToSegments to properly handle bracket notation paths
+    // e.g., "operations['user/deleteAccount.subscribe']" should return "user/deleteAccount.subscribe"
+    const segments = lodashPathToSegments(component.path)
+    componentName = segments[segments.length - 1]
   }
   return componentName
 }
 
-export { compareComponents, isEqual, isInComponents, isInChannels, toJS, getComponentName }
+/**
+ * Converts a property name to a lodash path segment.
+ * Uses bracket notation if the name contains a dot to prevent lodash from
+ * interpreting it as nested properties.
+ * e.g., "user.fifo" → "['user.fifo']", "simple" → "simple"
+ */
+const toLodashPathSegment = (name: string): string => {
+  if (name.includes('.')) {
+    return `['${name}']`
+  }
+  return name
+}
+
+/**
+ * Converts a lodash path (potentially with bracket notation) to an array of path segments.
+ * e.g., "channels['user.fifo'].publish.message" → ["channels", "user.fifo", "publish", "message"]
+ */
+const lodashPathToSegments = (lodashPath: string): string[] => {
+  const parts: string[] = []
+  let current = ''
+  let inBracket = false
+  let bracketContent = ''
+
+  for (let i = 0; i < lodashPath.length; i++) {
+    const char = lodashPath[i]
+
+    if (char === '[' && !inBracket) {
+      // Starting a bracket notation
+      if (current) {
+        parts.push(current)
+        current = ''
+      }
+      inBracket = true
+      bracketContent = ''
+    } else if (char === ']' && inBracket) {
+      // Ending a bracket notation
+      // Remove surrounding quotes if present
+      let content = bracketContent
+      if ((content.startsWith("'") && content.endsWith("'")) ||
+          (content.startsWith('"') && content.endsWith('"'))) {
+        content = content.slice(1, -1)
+      }
+      parts.push(content)
+      inBracket = false
+    } else if (inBracket) {
+      bracketContent += char
+    } else if (char === '.') {
+      // Dot separator (not inside brackets)
+      if (current) {
+        parts.push(current)
+        current = ''
+      }
+    } else {
+      current += char
+    }
+  }
+
+  // Don't forget the last part
+  if (current) {
+    parts.push(current)
+  }
+
+  return parts
+}
+
+/**
+ * Escapes special characters for JSON Pointer format.
+ * According to RFC 6901:
+ * - '~' must be escaped as '~0'
+ * - '/' must be escaped as '~1'
+ */
+const escapeJsonPointerSegment = (segment: string): string => {
+  return segment.replace(/~/g, '~0').replace(/\//g, '~1')
+}
+
+/**
+ * Converts a lodash path (potentially with bracket notation) to a JSON Pointer format.
+ * This handles paths like: channels['user.fifo'].publish.message
+ * And converts them to: channels/user.fifo/publish/message
+ * 
+ * Special characters in segment values are escaped according to RFC 6901:
+ * - '~' → '~0'
+ * - '/' → '~1'
+ */
+const lodashPathToJsonPointer = (lodashPath: string): string => {
+  return lodashPathToSegments(lodashPath).map(escapeJsonPointerSegment).join('/')
+}
+
+export { compareComponents, isEqual, isInComponents, isInChannels, toJS, getComponentName, lodashPathToJsonPointer, toLodashPathSegment }

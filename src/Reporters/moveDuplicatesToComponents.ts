@@ -1,5 +1,5 @@
 import { Action } from '../Optimizer'
-import { createReport, isEqual, isInComponents, getComponentName } from '../Utils'
+import { createReport, isEqual, isInComponents, getComponentName, toLodashPathSegment } from '../Utils'
 import { OptimizableComponent, OptimizableComponentGroup, ReportElement, Reporter } from 'types'
 import Debug from 'debug'
 const debug = Debug('reporter:moveDuplicatesToComponents')
@@ -25,7 +25,9 @@ const findDuplicateComponents = (
         )[0]
         if (!existingResult) {
           const componentName = getComponentName(component)
-          const target = `components.${optimizableComponentGroup.type}.${componentName}`
+          // Use bracket notation if the component name contains a dot
+          const componentNameSegment = toLodashPathSegment(componentName)
+          const target = `components.${optimizableComponentGroup.type}${componentNameSegment.startsWith('[') ? '' : '.'}${componentNameSegment}`
           resultElements.push({
             path: component.path,
             action: Action.Move,

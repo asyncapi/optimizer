@@ -16,20 +16,38 @@ export const toLodashPath = (jsonPointer: string): string => {
   const tokens = jsonPointer.split('/')
 
   // Unescape the special characters and transform into Lodash path
-  return tokens
-    .map((token) => {
-      // Replace tilde representations
-      token = token.replace(/~1/g, '/')
-      token = token.replace(/~0/g, '~')
+  const pathParts: string[] = []
+  for (const rawToken of tokens) {
+    // Replace tilde representations (JSON Pointer escaping)
+    let token = rawToken.replace(/~1/g, '/')
+    token = token.replace(/~0/g, '~')
 
-      // Check if token can be treated as an array index (non-negative integer)
-      if (/^\d+$/.test(token)) {
-        return `[${token}]`
+    // Check if token can be treated as an array index (non-negative integer)
+    if (/^\d+$/.test(token)) {
+      pathParts.push(`[${token}]`)
+    } else if (token.includes('.')) {
+      // If the token contains a dot, use bracket notation to prevent lodash
+      // from interpreting it as a path separator (e.g., channel names like "user.fifo")
+      pathParts.push(`['${token}']`)
+    } else {
+      pathParts.push(token)
+    }
+  }
+
+  // Join parts, handling bracket notation properly
+  return pathParts
+    .map((part, index) => {
+      // Array indices and bracket notation should not have a preceding dot
+      if (part.startsWith('[')) {
+        return part
       }
-      // For nested properties, use dot notation
-      return token
+      // First element should not have a preceding dot
+      if (index === 0) {
+        return part
+      }
+      return `.${part}`
     })
-    .join('.')
+    .join('')
 }
 
 export const parseComponentsFromPath = (

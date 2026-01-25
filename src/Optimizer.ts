@@ -17,7 +17,7 @@ import YAML from 'js-yaml'
 import merge from 'merge-deep'
 import * as _ from 'lodash'
 import { getOptimizableComponents } from './ComponentProvider'
-import { filterReportElements, hasParent, sortReportElements, toJS } from './Utils'
+import { filterReportElements, hasParent, sortReportElements, toJS, lodashPathToJsonPointer } from './Utils'
 import Debug from 'debug'
 
 export enum Action {
@@ -161,7 +161,7 @@ export class Optimizer {
         case Action.Move:
           _.set(this.outputObject, change.target as string, _.get(this.outputObject, change.path))
           _.set(this.outputObject, change.path, {
-            $ref: `#/${change.target?.replace(/\./g, '/')}`,
+            $ref: `#/${lodashPathToJsonPointer(change.target as string)}`,
           })
           debug('moved %s to %s', change.path, change.target)
           break
@@ -169,7 +169,7 @@ export class Optimizer {
         case Action.Reuse:
           if (_.get(this.outputObject, change.target as string)) {
             _.set(this.outputObject, change.path, {
-              $ref: `#/${change.target?.replace(/\./g, '/')}`,
+              $ref: `#/${lodashPathToJsonPointer(change.target as string)}`,
             })
           }
           debug('%s reused %s', change.path, change.target)
