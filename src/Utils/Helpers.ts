@@ -159,32 +159,6 @@ const toJS = (asyncapiYAMLorJSON: any): any => {
   )
 }
 
-const getComponentName = (component: OptimizableComponent): string => {
-  let componentName
-  if (component.component['x-origin']) {
-    componentName = String(component.component['x-origin']).split('/').reverse()[0]
-  } else {
-    // Use lodashPathToSegments to properly handle bracket notation paths
-    // e.g., "operations['user/deleteAccount.subscribe']" should return "user/deleteAccount.subscribe"
-    const segments = lodashPathToSegments(component.path)
-    componentName = segments[segments.length - 1]
-  }
-  return componentName
-}
-
-/**
- * Converts a property name to a lodash path segment.
- * Uses bracket notation if the name contains a dot to prevent lodash from
- * interpreting it as nested properties.
- * e.g., "user.fifo" → "['user.fifo']", "simple" → "simple"
- */
-const toLodashPathSegment = (name: string): string => {
-  if (name.includes('.')) {
-    return `['${name}']`
-  }
-  return name
-}
-
 /**
  * Converts a lodash path (potentially with bracket notation) to an array of path segments.
  * e.g., "channels['user.fifo'].publish.message" → ["channels", "user.fifo", "publish", "message"]
@@ -210,7 +184,7 @@ const lodashPathToSegments = (lodashPath: string): string[] => {
       // Ending a bracket notation
       // Remove surrounding quotes if present
       let content = bracketContent
-      if ((content.startsWith("'") && content.endsWith("'")) ||
+      if ((content.startsWith('\'') && content.endsWith('\'')) ||
           (content.startsWith('"') && content.endsWith('"'))) {
         content = content.slice(1, -1)
       }
@@ -235,6 +209,32 @@ const lodashPathToSegments = (lodashPath: string): string[] => {
   }
 
   return parts
+}
+
+const getComponentName = (component: OptimizableComponent): string => {
+  let componentName
+  if (component.component['x-origin']) {
+    componentName = String(component.component['x-origin']).split('/').reverse()[0]
+  } else {
+    // Use lodashPathToSegments to properly handle bracket notation paths
+    // e.g., "operations['user/deleteAccount.subscribe']" should return "user/deleteAccount.subscribe"
+    const segments = lodashPathToSegments(component.path)
+    componentName = segments[segments.length - 1]
+  }
+  return componentName
+}
+
+/**
+ * Converts a property name to a lodash path segment.
+ * Uses bracket notation if the name contains a dot to prevent lodash from
+ * interpreting it as nested properties.
+ * e.g., "user.fifo" → "['user.fifo']", "simple" → "simple"
+ */
+const toLodashPathSegment = (name: string): string => {
+  if (name.includes('.')) {
+    return `['${name}']`
+  }
+  return name
 }
 
 /**
