@@ -164,51 +164,11 @@ const toJS = (asyncapiYAMLorJSON: any): any => {
  * e.g., "channels['user.fifo'].publish.message" → ["channels", "user.fifo", "publish", "message"]
  */
 const lodashPathToSegments = (lodashPath: string): string[] => {
-  const parts: string[] = []
-  let current = ''
-  let inBracket = false
-  let bracketContent = ''
-
-  for (let i = 0; i < lodashPath.length; i++) {
-    const char = lodashPath[i]
-
-    if (char === '[' && !inBracket) {
-      // Starting a bracket notation
-      if (current) {
-        parts.push(current)
-        current = ''
-      }
-      inBracket = true
-      bracketContent = ''
-    } else if (char === ']' && inBracket) {
-      // Ending a bracket notation
-      // Remove surrounding quotes if present
-      let content = bracketContent
-      if ((content.startsWith('\'') && content.endsWith('\'')) ||
-          (content.startsWith('"') && content.endsWith('"'))) {
-        content = content.slice(1, -1)
-      }
-      parts.push(content)
-      inBracket = false
-    } else if (inBracket) {
-      bracketContent += char
-    } else if (char === '.') {
-      // Dot separator (not inside brackets)
-      if (current) {
-        parts.push(current)
-        current = ''
-      }
-    } else {
-      current += char
-    }
-  }
-
-  // Don't forget the last part
-  if (current) {
-    parts.push(current)
-  }
-
-  return parts
+  // lodash already supports parsing bracket notation and numeric indices safely.
+  // Examples:
+  // - _.toPath("channels['user.fifo'].publish") => ["channels","user.fifo","publish"]
+  // - _.toPath("channels.myChannel.messages[0]") => ["channels","myChannel","messages","0"]
+  return _.toPath(lodashPath).map((segment) => String(segment))
 }
 
 const getComponentName = (component: OptimizableComponent): string => {
