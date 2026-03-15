@@ -393,14 +393,7 @@ channels:
     $ref: '#/components/channels/deleteAccount'
 operations:
   user/deleteAccount.subscribe:
-    action: send
-    channel:
-      $ref: '#/channels/deleteAccount'
-    messages:
-      - $ref: '#/channels/deleteAccount/messages/deleteUser'
-  user/deleteAccount:
-    subscribe:
-      $ref: '#/components/operations/subscribe'
+    $ref: '#/components/operations/user~1deleteAccount.subscribe'
 components:
   schemas:
     canBeReused:
@@ -434,7 +427,13 @@ components:
     duped2:
       payload:
         $ref: '#/components/schemas/payload'
-  operations: {}
+  operations:
+    user/deleteAccount.subscribe:
+      action: send
+      channel:
+        $ref: '#/channels/deleteAccount'
+      messages:
+        - $ref: '#/channels/deleteAccount/messages/deleteUser'
   channels:
     withDuplicatedMessage1FromXOrigin:
       x-origin: ./messages.yaml#/withDuplicatedMessage1FromXOrigin
@@ -475,7 +474,7 @@ components:
           $ref: '#/components/messages/DeleteUser'`
           
 // eslint-disable-next-line quotes
-export const outputJSON_mATCTrue_mDTCFalse_schemaFalse = `{"asyncapi":"3.0.0","info":{"title":"Untidy AsyncAPI file","version":"1.0.0","description":"This file contains duplicate and unused messages across the file and is used to test the optimizer."},"channels":{"withDuplicatedMessage1":{"$ref":"#/components/channels/withDuplicatedMessage1FromXOrigin"},"withDuplicatedMessage2":{"$ref":"#/components/channels/withDuplicatedMessage2"},"withFullFormMessage":{"$ref":"#/components/channels/withFullFormMessage"},"UserSignedUp1":{"$ref":"#/components/channels/UserSignedUp1"},"UserSignedUp2":{"$ref":"#/components/channels/UserSignedUp2"},"deleteAccount":{"$ref":"#/components/channels/deleteAccount"}},"operations":{"user/deleteAccount.subscribe":{"action":"send","channel":{"$ref":"#/channels/deleteAccount"},"messages":[{"$ref":"#/channels/deleteAccount/messages/deleteUser"}]},"user/deleteAccount":{"subscribe":{"$ref":"#/components/operations/subscribe"}}},"components":{"schemas":{"canBeReused":{"type":"object","description":"I can be reused."},"payload":{"type":"object","description":"I am duplicated"}},"messages":{"DeleteUser":{"payload":{"type":"string","description":"userId of the user that is going to be deleted"}},"UserSignedUp":{"payload":{"type":"object","properties":{"displayName":{"type":"string","description":"Name of the user"},"email":{"type":"string","format":"email","description":"Email of the user"}}}},"canBeReused":{"payload":{"$ref":"#/components/schemas/canBeReused"}},"duped1":{"payload":{"$ref":"#/components/schemas/payload"}},"duped2":{"payload":{"$ref":"#/components/schemas/payload"}}},"operations":{},"channels":{"withDuplicatedMessage1FromXOrigin":{"x-origin":"./messages.yaml#/withDuplicatedMessage1FromXOrigin","address":"user/signedup","messages":{"duped1":{"$ref":"#/components/messages/duped1"}}},"withDuplicatedMessage2":{"address":"user/signedup","messages":{"duped2":{"$ref":"#/components/messages/duped2"}}},"withFullFormMessage":{"address":"user/signedup","messages":{"canBeReused":{"$ref":"#/components/messages/canBeReused"}}},"UserSignedUp1":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp","payload":{"properties":{"displayName":{"$ref":"#/components/schemas/displayName"},"email":{"$ref":"#/components/schemas/email"}}}}}},"UserSignedUp2":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}},"deleteAccount":{"address":"user/deleteAccount","messages":{"deleteUser":{"$ref":"#/components/messages/DeleteUser"}}}}}}`
+export const outputJSON_mATCTrue_mDTCFalse_schemaFalse = `{"asyncapi":"3.0.0","info":{"title":"Untidy AsyncAPI file","version":"1.0.0","description":"This file contains duplicate and unused messages across the file and is used to test the optimizer."},"channels":{"withDuplicatedMessage1":{"$ref":"#/components/channels/withDuplicatedMessage1FromXOrigin"},"withDuplicatedMessage2":{"$ref":"#/components/channels/withDuplicatedMessage2"},"withFullFormMessage":{"$ref":"#/components/channels/withFullFormMessage"},"UserSignedUp1":{"$ref":"#/components/channels/UserSignedUp1"},"UserSignedUp2":{"$ref":"#/components/channels/UserSignedUp2"},"deleteAccount":{"$ref":"#/components/channels/deleteAccount"}},"operations":{"user/deleteAccount.subscribe":{"$ref":"#/components/operations/user~1deleteAccount.subscribe"}},"components":{"schemas":{"canBeReused":{"type":"object","description":"I can be reused."},"payload":{"type":"object","description":"I am duplicated"}},"messages":{"DeleteUser":{"payload":{"type":"string","description":"userId of the user that is going to be deleted"}},"UserSignedUp":{"payload":{"type":"object","properties":{"displayName":{"type":"string","description":"Name of the user"},"email":{"type":"string","format":"email","description":"Email of the user"}}}},"canBeReused":{"payload":{"$ref":"#/components/schemas/canBeReused"}},"duped1":{"payload":{"$ref":"#/components/schemas/payload"}},"duped2":{"payload":{"$ref":"#/components/schemas/payload"}}},"operations":{"user/deleteAccount.subscribe":{"action":"send","channel":{"$ref":"#/channels/deleteAccount"},"messages":[{"$ref":"#/channels/deleteAccount/messages/deleteUser"}]}},"channels":{"withDuplicatedMessage1FromXOrigin":{"x-origin":"./messages.yaml#/withDuplicatedMessage1FromXOrigin","address":"user/signedup","messages":{"duped1":{"$ref":"#/components/messages/duped1"}}},"withDuplicatedMessage2":{"address":"user/signedup","messages":{"duped2":{"$ref":"#/components/messages/duped2"}}},"withFullFormMessage":{"address":"user/signedup","messages":{"canBeReused":{"$ref":"#/components/messages/canBeReused"}}},"UserSignedUp1":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp","payload":{"properties":{"displayName":{"$ref":"#/components/schemas/displayName"},"email":{"$ref":"#/components/schemas/email"}}}}}},"UserSignedUp2":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}},"deleteAccount":{"address":"user/deleteAccount","messages":{"deleteUser":{"$ref":"#/components/messages/DeleteUser"}}}}}}`
 
 export const outputYAML_mATCFalse_mDTCTrue_schemaTrue = `asyncapi: 3.0.0
 info:
@@ -576,14 +575,7 @@ channels:
     $ref: '#/components/channels/deleteAccount'
 operations:
   user/deleteAccount.subscribe:
-    action: send
-    channel:
-      $ref: '#/channels/deleteAccount'
-    messages:
-      - $ref: '#/channels/deleteAccount/messages/deleteUser'
-  user/deleteAccount:
-    subscribe:
-      $ref: '#/components/operations/subscribe'
+    $ref: '#/components/operations/user~1deleteAccount.subscribe'
 components:
   schemas:
     canBeReused:
@@ -617,7 +609,13 @@ components:
       payload:
         type: object
         description: I am duplicated
-  operations: {}
+  operations:
+    user/deleteAccount.subscribe:
+      action: send
+      channel:
+        $ref: '#/channels/deleteAccount'
+      messages:
+        - $ref: '#/channels/deleteAccount/messages/deleteUser'
   channels:
     withDuplicatedMessage1FromXOrigin:
       x-origin: ./messages.yaml#/withDuplicatedMessage1FromXOrigin
@@ -652,4 +650,4 @@ components:
           $ref: '#/components/messages/DeleteUser'`
           
 // eslint-disable-next-line quotes
-export const outputJSON_mATCTrue_mDTCFalse_schemaTrue = `{"asyncapi":"3.0.0","info":{"title":"Untidy AsyncAPI file","version":"1.0.0","description":"This file contains duplicate and unused messages across the file and is used to test the optimizer."},"channels":{"withDuplicatedMessage1":{"$ref":"#/components/channels/withDuplicatedMessage1FromXOrigin"},"withDuplicatedMessage2":{"$ref":"#/components/channels/withDuplicatedMessage2"},"withFullFormMessage":{"$ref":"#/components/channels/withFullFormMessage"},"UserSignedUp1":{"$ref":"#/components/channels/UserSignedUp1"},"UserSignedUp2":{"$ref":"#/components/channels/UserSignedUp2"},"deleteAccount":{"$ref":"#/components/channels/deleteAccount"}},"operations":{"user/deleteAccount.subscribe":{"action":"send","channel":{"$ref":"#/channels/deleteAccount"},"messages":[{"$ref":"#/channels/deleteAccount/messages/deleteUser"}]},"user/deleteAccount":{"subscribe":{"$ref":"#/components/operations/subscribe"}}},"components":{"schemas":{"canBeReused":{"type":"object","description":"I can be reused."}},"messages":{"DeleteUser":{"payload":{"type":"string","description":"userId of the user that is going to be deleted"}},"UserSignedUp":{"payload":{"type":"object","properties":{"displayName":{"type":"string","description":"Name of the user"},"email":{"type":"string","format":"email","description":"Email of the user"}}}},"canBeReused":{"payload":{"type":"object","description":"I can be reused."}},"duped1":{"payload":{"type":"object","description":"I am duplicated"}},"duped2":{"payload":{"type":"object","description":"I am duplicated"}}},"operations":{},"channels":{"withDuplicatedMessage1FromXOrigin":{"x-origin":"./messages.yaml#/withDuplicatedMessage1FromXOrigin","address":"user/signedup","messages":{"duped1":{"$ref":"#/components/messages/duped1"}}},"withDuplicatedMessage2":{"address":"user/signedup","messages":{"duped2":{"$ref":"#/components/messages/duped2"}}},"withFullFormMessage":{"address":"user/signedup","messages":{"canBeReused":{"$ref":"#/components/messages/canBeReused"}}},"UserSignedUp1":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}},"UserSignedUp2":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}},"deleteAccount":{"address":"user/deleteAccount","messages":{"deleteUser":{"$ref":"#/components/messages/DeleteUser"}}}}}}`
+export const outputJSON_mATCTrue_mDTCFalse_schemaTrue = `{"asyncapi":"3.0.0","info":{"title":"Untidy AsyncAPI file","version":"1.0.0","description":"This file contains duplicate and unused messages across the file and is used to test the optimizer."},"channels":{"withDuplicatedMessage1":{"$ref":"#/components/channels/withDuplicatedMessage1FromXOrigin"},"withDuplicatedMessage2":{"$ref":"#/components/channels/withDuplicatedMessage2"},"withFullFormMessage":{"$ref":"#/components/channels/withFullFormMessage"},"UserSignedUp1":{"$ref":"#/components/channels/UserSignedUp1"},"UserSignedUp2":{"$ref":"#/components/channels/UserSignedUp2"},"deleteAccount":{"$ref":"#/components/channels/deleteAccount"}},"operations":{"user/deleteAccount.subscribe":{"$ref":"#/components/operations/user~1deleteAccount.subscribe"}},"components":{"schemas":{"canBeReused":{"type":"object","description":"I can be reused."}},"messages":{"DeleteUser":{"payload":{"type":"string","description":"userId of the user that is going to be deleted"}},"UserSignedUp":{"payload":{"type":"object","properties":{"displayName":{"type":"string","description":"Name of the user"},"email":{"type":"string","format":"email","description":"Email of the user"}}}},"canBeReused":{"payload":{"type":"object","description":"I can be reused."}},"duped1":{"payload":{"type":"object","description":"I am duplicated"}},"duped2":{"payload":{"type":"object","description":"I am duplicated"}}},"operations":{"user/deleteAccount.subscribe":{"action":"send","channel":{"$ref":"#/channels/deleteAccount"},"messages":[{"$ref":"#/channels/deleteAccount/messages/deleteUser"}]}},"channels":{"withDuplicatedMessage1FromXOrigin":{"x-origin":"./messages.yaml#/withDuplicatedMessage1FromXOrigin","address":"user/signedup","messages":{"duped1":{"$ref":"#/components/messages/duped1"}}},"withDuplicatedMessage2":{"address":"user/signedup","messages":{"duped2":{"$ref":"#/components/messages/duped2"}}},"withFullFormMessage":{"address":"user/signedup","messages":{"canBeReused":{"$ref":"#/components/messages/canBeReused"}}},"UserSignedUp1":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}},"UserSignedUp2":{"address":"user/signedup","messages":{"myMessage":{"$ref":"#/components/messages/UserSignedUp"}}},"deleteAccount":{"address":"user/deleteAccount","messages":{"deleteUser":{"$ref":"#/components/messages/DeleteUser"}}}}}}`
