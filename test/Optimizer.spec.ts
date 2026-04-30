@@ -246,6 +246,27 @@ describe('Optimizer', () => {
     ).toEqual(outputYAML_mATCTrue_mDTCFalse_schemaTrue.trim())
   })
 
+  it('should not produce $ref values with square-bracket array indices (JSON Pointer bug fix)', async () => {
+    // Regression test for https://github.com/asyncapi/cli/issues/1990
+    // When traits or other array members are moved/reused, the optimizer used
+    // lodash path notation (e.g. `operations.op.traits.[0]`) directly, which
+    // produced invalid JSON Pointer refs like `#/operations/op/traits/[0]`.
+    // Valid JSON Pointer requires bare integers: `#/operations/op/traits/0`.
+    const optimizer = new Optimizer(inputYAML)
+    await optimizer.getReport()
+    const optimized = optimizer.getOptimizedDocument({
+      output: Output.YAML,
+      rules: {
+        reuseComponents: true,
+        removeComponents: true,
+        moveAllToComponents: true,
+        moveDuplicatesToComponents: true,
+      },
+    })
+    // No $ref should contain square brackets around a number
+    expect(optimized).not.toMatch(/\$ref:.*\[\d+\]/)
+  })
+
   it('should produce the correct JSON output and `{ moveAllToComponents: true, moveDuplicatesToComponents: false }, disableOptimizationFor: { schema: true } }`.', async () => {
     const optimizer = new Optimizer(inputYAML)
     await optimizer.getReport()

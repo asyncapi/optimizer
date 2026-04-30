@@ -220,7 +220,7 @@ export class Optimizer {
         case Action.Move:
           _.set(this.outputObject, change.target as string, _.get(this.outputObject, change.path))
           _.set(this.outputObject, change.path, {
-            $ref: `#/${change.target?.replace(/\./g, '/')}`,
+            $ref: `#/${toJsonPointer(change.target)}`,
           })
           debug('moved %s to %s', change.path, change.target)
           break
@@ -228,7 +228,7 @@ export class Optimizer {
         case Action.Reuse:
           if (_.get(this.outputObject, change.target as string)) {
             _.set(this.outputObject, change.path, {
-              $ref: `#/${change.target?.replace(/\./g, '/')}`,
+              $ref: `#/${toJsonPointer(change.target)}`,
             })
           }
           debug('%s reused %s', change.path, change.target)
@@ -248,6 +248,20 @@ export class Optimizer {
     }
   }
 }
+/**
+ * Converts a lodash-style path (e.g. `components.schemas.[0]`) to a valid
+ * JSON Pointer path segment (e.g. `components/schemas/0`).
+ * Lodash represents array indices as `[N]`, which is not valid in JSON Pointer
+ * syntax where array indices must appear as plain integers without brackets.
+ */
+function toJsonPointer(lodashPath: string | undefined): string {
+  if (!lodashPath) return ''
+  return lodashPath
+    .replace(/\.\[(\d+)\]/g, '/$1') // convert `.[N]` to `/N`
+    .replace(/^\[(\d+)\]/g, '$1')   // convert leading `[N]` to `N`
+    .replace(/\./g, '/')             // convert remaining `.` to `/`
+}
+
 function convertToReportFormat(reports: NewReport[]): Report {
   const result = {}
   for (const report of reports) {
