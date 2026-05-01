@@ -154,6 +154,65 @@ export class Optimizer {
     }
   }
 
+  /**
+   * Resolves a dot-notation lodash path string into an array of individual key segments,
+   * using the actual object to correctly handle keys that contain dots in their names.
+   *
+   * For example, given the object `{ components: { messages: { "Unused-Event-1.0": {...} } } }`
+   * and the path `"components.messages.Unused-Event-1.0"`, lodash would normally misinterpret
+   * `Unused-Event-1.0` as `Unused-Event-1` → nested key `0`. This function checks the real
+   * object at each level and greedily merges segments when a combined key exists.
+   *
+   * @param dotPath - A lodash dot-notation path string.
+   * @param obj - The object to navigate for key-existence checks.
+   * @returns An array of key segments that can be used safely with _.get / _.set / _.unset.
+   */
+  static resolveObjectPath(dotPath: string, obj: any): string[] {
+    const parts = dotPath.split('.')
+    const result: string[] = []
+    let current = obj
+
+    let i = 0
+    while (i < parts.length) {
+      if (current == null || typeof current !== 'object') {
+        // Can't navigate further — append remaining parts as-is
+        result.push(...parts.slice(i))
+        break
+      }
+
+      const part = parts[i]
+
+      if (part in current) {
+        // Exact key match — use it directly
+        result.push(part)
+        current = current[part]
+        i++
+      } else {
+        // Key not found at this level.  Try progressively combining more dot-separated
+        // segments until we find a key that exists (handles keys containing dots).
+        let found = false
+        for (let j = i + 1; j <= parts.length; j++) {
+          const combined = parts.slice(i, j).join('.')
+          if (combined in current) {
+            result.push(combined)
+            current = current[combined]
+            i = j
+            found = true
+            break
+          }
+        }
+        if (!found) {
+          // No matching key found even after combining — fall back to original segment
+          result.push(part)
+          current = undefined
+          i++
+        }
+      }
+    }
+
+    return result
+  }
+
   private applyReport(changes: ReportElement[]): void {
     const debug = Debug('optimizer:applyReport')
     for (const change of changes) {
@@ -175,12 +234,16 @@ export class Optimizer {
           debug('%s reused %s', change.path, change.target)
           break
 
-        case Action.Remove:
-          _.unset(this.outputObject, change.path)
-          //if parent becomes empty after removing, parent should be removed as well.
+        case Action.Remove: {
+          // Use object-aware path resolution so that keys containing dots (e.g. "Event.1.0")
+          // are treated as a single segment rather than being split by lodash.
+          const resolvedPath = Optimizer.resolveObjectPath(change.path, this.outputObject)
+          _.unset(this.outputObject, resolvedPath)
+          // If parent becomes empty after removing, parent should be removed as well.
           this.removeEmptyParent(change.path)
           debug('removed %s', change.path)
           break
+        }
       }
     }
   }
