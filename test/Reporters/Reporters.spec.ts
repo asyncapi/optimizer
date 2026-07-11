@@ -86,9 +86,9 @@ const moveAllToComponentsExpectedResult: any[] = [
     target: 'components.schemas.payload',
   },
   {
-    path: 'operations.user/deleteAccount.subscribe',
+    path: 'operations[\'user/deleteAccount.subscribe\']',
     action: 'move',
-    target: 'components.operations.subscribe',
+    target: 'components.operations[\'user/deleteAccount.subscribe\']',
   },
 ]
 const moveDuplicatesToComponentsExpectedResult: any[] = [
