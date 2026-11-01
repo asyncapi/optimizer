@@ -2,12 +2,54 @@ import * as _ from 'lodash'
 import YAML from 'js-yaml'
 import { OptimizableComponentGroup, NewReport, ReportElement, OptimizableComponent } from 'types'
 
+const findMatchingObjectKey = (current: any, remaining: string): string | undefined => {
+  if (!current || typeof current !== 'object') {
+    return undefined
+  }
+  return Object.keys(current)
+    .filter((key) => remaining === key || remaining.startsWith(`${key}.`))
+    .sort((a, b) => b.length - a.length)[0]
+}
+
+export const toPathArray = (obj: any, dotPath: string): string[] => {
+  const segments: string[] = []
+  let current = obj
+  let remaining = dotPath
+
+  while (remaining.length > 0) {
+    const matchingKey = findMatchingObjectKey(current, remaining)
+    if (matchingKey !== undefined) {
+      segments.push(matchingKey)
+      current = _.get(current, [matchingKey])
+      remaining = remaining === matchingKey ? '' : remaining.slice(matchingKey.length + 1)
+      continue
+    }
+
+    if (segments.length === 2 && segments[0] === 'components') {
+      segments.push(remaining)
+      break
+    }
+
+    const dotIndex = remaining.indexOf('.')
+    if (dotIndex === -1) {
+      segments.push(remaining)
+      break
+    }
+    const nextSegment = remaining.slice(0, dotIndex)
+    segments.push(nextSegment)
+    current = _.get(current, [nextSegment])
+    remaining = remaining.slice(dotIndex + 1)
+  }
+
+  return segments
+}
+
 /**
  * Checks if a component's parent is a ref or not.
  */
 export const hasParent = (reportElement: ReportElement, asyncapiFile: any): boolean => {
-  const childPath = reportElement.path
-  const parentPath = childPath.substring(0, childPath.lastIndexOf('.'))
+  const childPath = toPathArray(asyncapiFile, reportElement.path)
+  const parentPath = childPath.slice(0, -1)
   const parent = _.get(asyncapiFile, parentPath)
   return !_.has(parent, '$ref')
 }
