@@ -265,4 +265,156 @@ describe('Optimizer', () => {
         .trim()
     ).toEqual(outputJSON_mATCTrue_mDTCFalse_schemaTrue.trim())
   })
+
+  it('should remove unused components when component names contain periods', async () => {
+    const inputWithPeriodNames = `asyncapi: 3.0.0
+info:
+  title: my-app
+  version: 1.0.0
+channels:
+  some_channel:
+    address: some_address
+    messages:
+      Some-Event:
+        $ref: '#/components/messages/Some-Event'
+operations:
+  receiveEvent:
+    channel:
+      $ref: '#/channels/some_channel'
+    action: receive
+components:
+  messages:
+    Some-Event:
+      payload:
+        type: object
+        properties:
+          id:
+            type: string
+    Unused-Event-1.0:
+      payload:
+        type: object
+        properties:
+          foo:
+            type: object
+            $ref: '#/components/schemas/Unused-Schema'
+          bar:
+            type: array
+            items:
+              $ref: '#/components/schemas/Unused-Schema-2.0'
+  schemas:
+    Unused-Schema:
+      type: object
+      properties:
+        name:
+          type: string
+    Unused-Schema-2.0:
+      type: object
+      properties:
+        name:
+          type: string
+`
+    const expectedOutput = `asyncapi: 3.0.0
+info:
+  title: my-app
+  version: 1.0.0
+channels:
+  some_channel:
+    address: some_address
+    messages:
+      Some-Event:
+        $ref: '#/components/messages/Some-Event'
+operations:
+  receiveEvent:
+    channel:
+      $ref: '#/channels/some_channel'
+    action: receive
+components:
+  messages:
+    Some-Event:
+      payload:
+        type: object
+        properties:
+          id:
+            type: string`
+
+    const optimizer = new Optimizer(inputWithPeriodNames)
+    await optimizer.getReport()
+    expect(
+      optimizer
+        .getOptimizedDocument({
+          output: Output.YAML,
+          rules: {
+            reuseComponents: false,
+            removeComponents: true,
+            moveAllToComponents: false,
+            moveDuplicatesToComponents: false,
+          },
+        })
+        .trim()
+    ).toEqual(expectedOutput.trim())
+  })
+
+  it('should reuse components without duplicating channels when channel names contain periods', async () => {
+    const inputWithFifoChannel = `asyncapi: 2.0.0
+info:
+  title: Service
+  version: 1.0.0
+channels:
+  '{ENV}-user-created.fifo':
+    publish:
+      message:
+        payload:
+          type: object
+          properties:
+            eventName:
+              type: string
+              description: The name of the event.
+        x-origin: UserCreated.yaml
+components:
+  messages:
+    UserCreated:
+      payload:
+        type: object
+        properties:
+          eventName:
+            type: string
+            description: The name of the event.
+      x-origin: UserCreated.yaml
+`
+    const expectedOutput = `asyncapi: 2.0.0
+info:
+  title: Service
+  version: 1.0.0
+channels:
+  '{ENV}-user-created.fifo':
+    publish:
+      message:
+        $ref: '#/components/messages/UserCreated'
+components:
+  messages:
+    UserCreated:
+      payload:
+        type: object
+        properties:
+          eventName:
+            type: string
+            description: The name of the event.
+      x-origin: UserCreated.yaml`
+
+    const optimizer = new Optimizer(inputWithFifoChannel)
+    await optimizer.getReport()
+    expect(
+      optimizer
+        .getOptimizedDocument({
+          output: Output.YAML,
+          rules: {
+            reuseComponents: true,
+            removeComponents: false,
+            moveAllToComponents: false,
+            moveDuplicatesToComponents: false,
+          },
+        })
+        .trim()
+    ).toEqual(expectedOutput.trim())
+  })
 })

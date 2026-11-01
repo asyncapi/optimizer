@@ -17,7 +17,7 @@ import YAML from 'js-yaml'
 import merge from 'merge-deep'
 import * as _ from 'lodash'
 import { getOptimizableComponents } from './ComponentProvider'
-import { filterReportElements, hasParent, sortReportElements, toJS } from './Utils'
+import { filterReportElements, hasParent, sortReportElements, toJS, toPathArray } from './Utils'
 import Debug from 'debug'
 
 export enum Action {
@@ -146,8 +146,8 @@ export class Optimizer {
     return YAML.dump(this.outputObject)
   }
 
-  private removeEmptyParent(childPath: string): void {
-    const parentPath = childPath.substring(0, childPath.lastIndexOf('.'))
+  private removeEmptyParent(childPath: string[]): void {
+    const parentPath = childPath.slice(0, -1)
     const parent = _.get(this.outputObject, parentPath)
     if (_.isEmpty(parent)) {
       _.unset(this.outputObject, parentPath)
@@ -166,21 +166,26 @@ export class Optimizer {
           debug('moved %s to %s', change.path, change.target)
           break
 
-        case Action.Reuse:
-          if (_.get(this.outputObject, change.target as string)) {
-            _.set(this.outputObject, change.path, {
-              $ref: `#/${change.target?.replace(/\./g, '/')}`,
+        case Action.Reuse: {
+          const targetPath = toPathArray(this.outputObject, change.target as string)
+          if (_.get(this.outputObject, targetPath)) {
+            const changePath = toPathArray(this.outputObject, change.path)
+            _.set(this.outputObject, changePath, {
+              $ref: `#/${targetPath.join('/')}`,
             })
           }
           debug('%s reused %s', change.path, change.target)
           break
+        }
 
-        case Action.Remove:
-          _.unset(this.outputObject, change.path)
+        case Action.Remove: {
+          const removePath = toPathArray(this.outputObject, change.path)
+          _.unset(this.outputObject, removePath)
           //if parent becomes empty after removing, parent should be removed as well.
-          this.removeEmptyParent(change.path)
+          this.removeEmptyParent(removePath)
           debug('removed %s', change.path)
           break
+        }
       }
     }
   }
